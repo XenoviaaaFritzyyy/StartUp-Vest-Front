@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Login from './Components/Login';
-import Singup from './Components/Signup';
+import Signup from './Components/Signup';
 import Profile from './Components/Profile';
 import reportWebVitals from './reportWebVitals';
-import Signup from './Components/Signup';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
