@@ -8,6 +8,9 @@ import Profile from './Components/Profile';
 // import StartUpView from './VisitorView/startupProfileView';
 // import FundingRoundView from './VisitorView/fundingRoundView';
 // import UserView from './VisitorView/userProfileView';
+// import FundingRound from './Components/FundingRound';
+// import People from './Components/People';
+// import CapTable from './Components/CapTable';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
