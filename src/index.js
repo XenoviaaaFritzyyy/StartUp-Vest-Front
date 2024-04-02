@@ -1,16 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Login from './Components/Login';
-import Signup from './Components/Signup';
+// import Login from './Components/Login';
+// import Signup from './Components/Signup';
 import Profile from './Components/Profile';
-import Companies from './Components/Companies'
+// import Companies from './Components/Companies'
+// import StartUpView from './VisitorView/startupProfileView';
+// import FundingRoundView from './VisitorView/fundingRoundView';
+// import UserView from './VisitorView/userProfileView';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Companies />
+    <Profile />
   </React.StrictMode>
 );
 

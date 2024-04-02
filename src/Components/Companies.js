@@ -1,13 +1,13 @@
-import {useState, useMemo} from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper, IconButton, Tooltip } from '@mui/material';
+import { useState, useMemo } from 'react';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper, TextField, Avatar } from '@mui/material';
 import PropTypes from 'prop-types';
-import SortIcon from '@mui/icons-material/Sort';
+import SearchIcon from '@mui/icons-material/Search';
 import { visuallyHidden } from '@mui/utils';
 
 import Navbar from '../Navbar/Navbar';
 const drawerWidth = 240;
 
-function createData(id, startup, owner, industry, location, description) {
+function createData(id, startup, owner, industry, location, description, avatar) {
   return {
     id,
     startup,
@@ -15,6 +15,7 @@ function createData(id, startup, owner, industry, location, description) {
     industry,
     location,
     description,
+    avatar,
   };
 }
 
@@ -103,13 +104,11 @@ function EnhancedTableHead(props) {
             align="left"
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ width: headCell.width }}
-          >
+            style={{ width: headCell.width, fontWeight: 'bold' }}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
+              onClick={createSortHandler(headCell.id)}>
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
@@ -130,9 +129,16 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-function EnhancedTableToolbar() {
+function EnhancedTableToolbar({ onRequestSearch }) {
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearch = (event) => {
+    setSearchText(event.target.value);
+    onRequestSearch(event.target.value);
+  };
+
   return (
-    <Toolbar sx={{ pt: 3, mb: 3 }}>
+    <Toolbar sx={{ pt: 5, mb: 3 }}>
       <Typography
         sx={{ flex: '1 1 100%', color: '#009688', fontWeight: 'bold' }}
         variant="h5"
@@ -140,11 +146,15 @@ function EnhancedTableToolbar() {
         component="div">
         Search Companies
       </Typography>
-      <Tooltip title="Filter list">
-        <IconButton>
-          <SortIcon />
-        </IconButton>
-      </Tooltip>
+
+      <TextField variant="standard"
+        placeholder="Search…"
+        onChange={handleSearch}
+        value={searchText}
+        sx={{width: 350 }}
+        InputProps={{
+          startAdornment: <SearchIcon />,
+        }}/>
     </Toolbar>
   );
 }
@@ -154,6 +164,7 @@ export default function Companies() {
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filteredRows, setFilteredRows] = useState(rows);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -170,16 +181,27 @@ export default function Companies() {
     setPage(0);
   };
 
+  const handleSearch = (searchText) => {
+    const filtered = rows.filter(row =>
+      row.startup.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.owner.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.industry.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.location.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.description.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredRows(filtered);
+  };
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredRows.length) : 0;
 
   const visibleRows = useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(filteredRows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
   return (
@@ -187,19 +209,19 @@ export default function Companies() {
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', mb: 2, pl: 5, pr: 5 }}>
-        <EnhancedTableToolbar />
+      <Paper sx={{ width: '100%', pl: 5, pr: 5 }}>
+        <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size="medium"
-          >
+            size="medium">
+
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
+              onRequestSort={handleRequestSort}/>
+              
             <TableBody>
               {visibleRows.map((row, index) => (
                 <TableRow
@@ -207,8 +229,13 @@ export default function Companies() {
                   tabIndex={-1}
                   key={row.id}
                   sx={{ cursor: 'pointer' }}>
-                    
-                  <TableCell component="th" scope="row" padding="none">{row.startup}</TableCell>
+
+                  <TableCell component="th" scope="row" padding="none">
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid #009688'}}>{row.avatar}</Avatar>
+                      {row.startup}
+                    </Box>
+                  </TableCell>
                   <TableCell align="left">{row.owner}</TableCell>
                   <TableCell align="left">{row.industry}</TableCell>
                   <TableCell align="left">{row.location}</TableCell>
@@ -216,26 +243,22 @@ export default function Companies() {
                 </TableRow>
               ))}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
+                <TableRow style={{height: 53 * emptyRows,}}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={filteredRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+          onRowsPerPageChange={handleChangeRowsPerPage}/>
       </Paper>
     </Box>
   );
