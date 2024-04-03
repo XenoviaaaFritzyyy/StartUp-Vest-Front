@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-// import Login from './Components/Login';
+import Login from './Components/Login';
 // import Signup from './Components/Signup';
-import Profile from './Components/Profile';
+// import Profile from './Components/Profile';
 // import Companies from './Components/Companies'
 // import StartUpView from './VisitorView/startupProfileView';
 // import FundingRoundView from './VisitorView/fundingRoundView';
@@ -16,7 +16,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Profile />
+    <Login />
   </React.StrictMode>
 );
 

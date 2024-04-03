@@ -53,8 +53,8 @@ function Profile() {
         <>
             <Navbar />
             <Toolbar />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
-                <Typography variant="h4" sx={{ paddingLeft: 8, color: '#009688', fontWeight: 'bold' }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
+                <Typography variant="h4" sx={{ paddingLeft: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
                     Account Information
                 </Typography>
 
@@ -66,7 +66,7 @@ function Profile() {
                     <Grid container spacing={2} sx={{ ml: 6 }}>
                         <Grid item xs={12} sm={3}>
                             <label htmlFor="avatar-upload">
-                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px #009688 solid' }} src={avatar}></Avatar>
+                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={avatar}></Avatar>
                             </label>
                             <input
                                 type="file"
@@ -79,7 +79,7 @@ function Profile() {
                             <Typography sx={{mt: 1, ml: 6.5, color: '#414a4c'}}>Upload Photo</Typography>
                         </Grid>
 
-                        <Grid item xs={12} sm={7.5}>
+                        <Grid item xs={12} sm={7.8}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <label>First Name</label>
@@ -113,7 +113,7 @@ function Profile() {
 
                                 <Grid item>
                                     <Button variant="contained"
-                                        sx={{ ml: 70, mt: 2, background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688' } }} onClick={handleEditClick}>
+                                        sx={{ ml: 74, mt: 2, width: 150,background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleEditClick}>
                                         {isEditable ? 'Save Changes' : 'Edit Profile'}
                                     </Button>
                                 </Grid>
@@ -122,24 +122,24 @@ function Profile() {
                     </Grid>
                 </Box>
                 
-                <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 2, pb: 3, pt: 3, pl:5, pr: 5,  display: 'flex', alignItems: 'center' }}>
-                    <Avatar src="/images/business.png" sx={{ marginRight: 2, width: 100, height: 100, border: '3px #009688 solid' }}>H</Avatar>
+                <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 2, pb: 3, pt: 3, pl:6.5, pr: 6.5,  display: 'flex', alignItems: 'center' }}>
+                    <Avatar src="/images/business.png" sx={{ marginRight: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
                     <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500', marginRight: 2 }}>
                         Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
                     </Typography>
                     
-                    <Button variant="contained" sx={{ background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688' }}} onClick={handleOpenBusinessProfile}>
+                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenBusinessProfile}>
                         Create Business Profile
                     </Button>
                 </Box>
 
-                <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 2, pb: 3, pt: 3, pl:5, pr: 5,  display: 'flex', alignItems: 'center' }}>
-                    <Avatar src="/images/funding.jpg" sx={{ marginRight: 2, width: 100, height: 100, border: '3px #009688 solid' }}></Avatar>
+                <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 2, pb: 3, pt: 3, pl:6.5, pr: 6.5,  display: 'flex', alignItems: 'center' }}>
+                    <Avatar src="/images/funding.jpg" sx={{ marginRight: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}></Avatar>
                     <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500', marginRight: 2 }}>
                         Starting a funding event secures vital support for startups, driving growth <br/>and innovation.
                     </Typography>
 
-                    <Button variant="contained" onClick={handleOpenFundingRound} sx={{ background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688'}}} >
+                    <Button variant="contained" onClick={handleOpenFundingRound} sx={{ background: 'rgba(0, 116, 144, 1)', width: 235, '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)'}}} >
                         Create Funding Event
                     </Button>
                 </Box>
@@ -172,11 +172,11 @@ function Profile() {
 
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: '#009688'}} onClick={handleCloseBusinessProfile}>
+                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseBusinessProfile}>
                                 Cancel
                             </Button>
 
-                            <Button variant="contained" sx={{ background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688' }}}>
+                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
                                 Create Profile
                             </Button>
                         </Box>
@@ -212,11 +212,11 @@ function Profile() {
 
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: '#009688'}} onClick={handleCloseFundingRound}>
+                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseFundingRound}>
                                 Cancel
                             </Button>
 
-                            <Button variant="contained" sx={{ background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688' }}}>
+                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
                                 Create Funding Round
                             </Button>
                         </Box>

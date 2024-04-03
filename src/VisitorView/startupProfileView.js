@@ -22,7 +22,7 @@ function StartUpView() {
 
       <Box display="flex" alignItems="center">
         <Box mr={4}>
-          <Avatar variant="rounded" sx={{ width: 180, height: 180, border: '5px solid #009688', borderRadius: 3, ml: 5 }}></Avatar>
+          <Avatar variant="rounded" sx={{ width: 180, height: 180, border: '5px solid rgba(0, 116, 144, 1)', borderRadius: 3, ml: 5 }}></Avatar>
         </Box>
         <Typography variant="h4" gutterBottom>Facebook</Typography>
 

@@ -140,7 +140,7 @@ function EnhancedTableToolbar({ onRequestSearch }) {
   return (
     <Toolbar sx={{ pt: 5, mb: 3 }}>
       <Typography
-        sx={{ flex: '1 1 100%', color: '#009688', fontWeight: 'bold' }}
+        sx={{ flex: '1 1 100%', color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}
         variant="h5"
         id="tableTitle"
         component="div">
@@ -230,9 +230,9 @@ export default function Companies() {
                   key={row.id}
                   sx={{ cursor: 'pointer' }}>
 
-                  <TableCell component="th" scope="row" padding="none">
+                  <TableCell component="th" scope="row" padding="1">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid #009688'}}>{row.avatar}</Avatar>
+                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)'}}>{row.avatar}</Avatar>
                       {row.startup}
                     </Box>
                   </TableCell>
