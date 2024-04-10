@@ -1,3 +1,5 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import '../Css/Signup.css';
 
 function Signup() {
@@ -55,7 +57,7 @@ function Signup() {
                         <button type="button" class="signup-button">Sign Up</button>
 
                         <div class="login">
-                        <label>Already have an account? <u className="clickable">Sign In</u></label>
+                            <label>Already have an account? <Link to="/login" className="clickable">Sign In</Link></label>
                         </div>
                     </div>
                 </div>

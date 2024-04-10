@@ -1,3 +1,5 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import '../Css/Login.css';
 
 function Login() {
@@ -11,40 +13,41 @@ function Login() {
         </div>
 
         <div className="login-right-container">
-        <img src='images/logo.png' alt="Startup Vest Logo" className="login-logo" />
+          <img src='images/logo.png' alt="Startup Vest Logo" className="login-logo" />
 
-        <div className='login-right-container-form'>
-          <header className='login-header'>Sign In</header>
-          <form action="#" className='login-form'>
-            <div className="login-details">
-              <div className="details">
-                <div className="fields">
-                  <div className="login-input-field">
-                    <label>Email*</label>
-                    <input type="text" placeholder="example@gmail.com" required />
-                  </div>
+          <div className='login-right-container-form'>
+            <header className='login-header'>Sign In</header>
+            <form action="#" className='login-form'>
+              <div className="login-details">
+                <div className="details">
+                  <div className="fields">
+                    <div className="login-input-field">
+                      <label>Email*</label>
+                      <input type="text" placeholder="example@gmail.com" required />
+                    </div>
 
-                  <div className="login-input-field">
-                    <label>Password*</label>
-                    <input type="password" placeholder="Example123" required />
-                  </div>
+                    <div className="login-input-field">
+                      <label>Password*</label>
+                      <input type="password" placeholder="Example123" required />
+                    </div>
 
-                  <div className="login-forgotpass">
-                    <label>Forgot password?</label>
+                    <div className="login-forgotpass">
+                      <label>Forgot password?</label>
+                    </div>
                   </div>
-                </div>
-                <button type="button" className="login-button">Sign In</button>
-                <div className="signup">
-                  <label>Don't have an account? <u className="clickable">Sign Up</u></label>
+                  <button type="button" className="login-button">Sign In</button>
+                  <div className="signup">
+                    <label>Don't have an account? <Link to="/signup" className="clickable">Sign Up</Link></label>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
       </div>  
     </div>
   );
 }
 
 export default Login;
+
