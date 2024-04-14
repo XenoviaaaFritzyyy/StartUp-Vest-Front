@@ -1,16 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Login from './Components/Login';
-import Signup from './Components/Signup';
-import Profile from './Components/Profile';
+import App from './App';
+//import Login from './Components/Login';
+// import Signup from './Components/Signup';
+// import Profile from './Components/Profile';
+// import Companies from './Components/Companies'
+// import StartUpView from './VisitorView/startupProfileView';
+// import FundingRoundView from './VisitorView/fundingRoundView';
+// import UserView from './VisitorView/userProfileView';
+// import FundingRound from './Components/FundingRound';
+// import People from './Components/People';
+// import CapTable from './Components/CapTable';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Signup />
-    {/* <Login /> */}
+    <App />
   </React.StrictMode>
 );
 

@@ -2,19 +2,18 @@
 
   .login-container {
     display: flex;
-    margin: 25px 0 0 50px;
+    margin: 25px 0 0 150px;
     height: 640px;
   }
   
-  
   .login-left-container {
-    width: 60%;
+    width: 55%;
     background: rgba(0, 116, 144, 1);
+    box-shadow: 0 5px 10px rgba(0,0,0,.5);
     display: flex;
     text-align: center;
     flex-direction: column;
     color: white;
-    padding-top: 20px;
     margin-right: 50px;
     border-radius: 10px;
   }
@@ -27,24 +26,41 @@
   
   .login-motto {
     font-size: 1.5em;
-    margin-top: -5px;
+    margin-top: -25px;
   }
   
   .login-right-container {
-    width: 25%;
+    width: 30%;
     height: 70%;
-    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+    margin-top: 50px;
+  }
+
+  .login-picture {
+    width: 565px;
+    height: 300px;
     border-radius: 10px;
-    background-color: white;
-    padding: 30px 50px 0 50px;
-    margin-top: 130px;
+    margin: 0 0 10px 100px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  }
+
+  .login-logo {
+    width: 320px;
+    height: auto;
+    margin: 0 0 10px 50px;
   }
   
+  .login-right-container-form {
+    box-shadow: 0 5px 10px rgba(0,0,0,.5);
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px 50px 50px 50px;
+  }
+
   .login-header {
     font-size: 2em;
     font-weight: 500;
     text-align: center;
-    color: #009688;
+    color: rgba(0, 116, 144, 1);
     margin-bottom: 20px;
   }
   
@@ -56,11 +72,11 @@
   .login-input-field label {
     display: block;
     margin-bottom: 10px;
-    color: #009688;
+    color: rgba(0, 116, 144, 1);
   }
   
   .login-input-field {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
 
   .login-input-field input {
@@ -75,7 +91,7 @@
     width: 100%;
     background: rgba(0, 116, 144, 1);
     color: white;
-    margin-top: 10px;
+    margin-top: 25px;
     padding: 15px;
     border: none;
     border-radius: 10px;
@@ -92,16 +108,16 @@
     text-align: end;
 }
 
-.signup {
-    margin-top: 10px;
-    text-align: center;
-}
+  .signup {
+      margin-top: 10px;
+      text-align: center;
+  }
 
-.signup label {
-    color: #B9B9B9;
-}
+  .signup label {
+      color: #B9B9B9;
+  }
 
-.login-forgotpass label, .signup u {
-    cursor: pointer;
-    color: #009688;
-}
+  .login-forgotpass label, .signup u {
+      cursor: pointer;
+      color: rgba(0, 116, 144, 1);
+  }

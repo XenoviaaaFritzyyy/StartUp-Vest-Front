@@ -233,7 +233,7 @@ function CreateFundingRound() {
                     </Grid>
                 ))}
                 <Grid item xs={12} sm={11}>
-                    <Button variant="contained" onClick={handleAddInvestor} sx={{ background: '#009688', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#009688' }}}>Add Investor</Button>
+                    <Button variant="contained" onClick={handleAddInvestor} sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>Add Investor</Button>
                 </Grid>
             </Grid>
         </Box>

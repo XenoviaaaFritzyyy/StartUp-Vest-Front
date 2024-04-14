@@ -56,8 +56,8 @@ function CreateBusinessProfile() {
             </Typography>
 
             <Grid item xs={12} sm={3}>
-                <label htmlFor="avatar-upload" onClick={handleAvatarClick}> {/* Add onClick handler to label */}
-                    <Avatar sx={{ width: 200, height: 200, mb: 2, ml: 49.5,cursor: 'pointer', border: '5px #009688 solid' }} src={avatar}></Avatar>
+                <label htmlFor="avatar-upload" onClick={handleAvatarClick}>
+                    <Avatar sx={{ width: 200, height: 200, mb: 2, ml: 49.5,cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={avatar}></Avatar>
                 </label>
             
                 <input
@@ -75,7 +75,7 @@ function CreateBusinessProfile() {
                 </Typography>
 
             <Box sx={{ display: 'flex', gap: 2, pl: 5, pb: 5, textAlign: 'center' }}>
-            <Card onClick={() => handleCardClick('Startup Company')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '2px solid #009688' : 'none' }}>
+            <Card onClick={() => handleCardClick('Startup Company')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
                             Startup Company
@@ -86,7 +86,7 @@ function CreateBusinessProfile() {
                 </CardContent>
             </Card>
 
-            <Card onClick={() => handleCardClick('Investor')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '2px solid #009688' : 'none' }}>
+            <Card onClick={() => handleCardClick('Investor')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Investor

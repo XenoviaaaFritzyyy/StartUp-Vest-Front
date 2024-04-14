@@ -1,4 +1,4 @@
-/* Login.css */
+/* Signup.css */
 
 .signup-container {
     display: flex;
@@ -18,7 +18,7 @@
     flex-direction: column;
     text-align: center;
     justify-content: center;
-    color: #009688;
+    color: rgba(0, 116, 144, 1);
     font-size: 5em;
     font-weight: bold;
 }
@@ -76,7 +76,7 @@
     width: 73.5%;
     border: none;
     outline: none;
-    color: #009688;
+    color: rgba(0, 116, 144, 1);
     border-radius: 5px;
     margin: 25px 0 0 80px;
     background-color: #F2F2F2;

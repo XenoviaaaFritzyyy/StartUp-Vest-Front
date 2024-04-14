@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Box, Drawer, AppBar, List, Typography, CssBaseline, Toolbar, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, IconButton } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
@@ -26,8 +27,9 @@ export default function Navbar() {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, background: 'rgba(0, 116, 144, 1)' }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            StartUp Vest
+        <Avatar sx={{ ml: -3, width: 70, height: 70}} src='images/logoonly.png'></Avatar>
+          <Typography variant="h6" noWrap component="div" sx={{ml: -1}}>
+            STARTUP VEST
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>H</Avatar>
