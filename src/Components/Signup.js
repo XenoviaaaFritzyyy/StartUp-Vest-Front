@@ -121,7 +121,6 @@ function Signup() {
                             </div>
 
                             <button type="submit" class="signup-button">Sign Up</button>
-
                         <div class="login">
                             <label>Already have an account? <Link to="/login" className="clickable">Sign In</Link></label>
                         </div>
