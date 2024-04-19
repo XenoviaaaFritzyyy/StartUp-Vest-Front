@@ -25,7 +25,6 @@ const rows = [
   createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
   createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
   createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-
 ];
 
 function descendingComparator(a, b, orderBy) {
