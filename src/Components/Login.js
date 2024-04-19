@@ -55,7 +55,6 @@ function Login() {
                     </div>
                   </div>
                   <button type="submit" className="login-button">Sign In</button>
-                  <button type="submit" className="login-button">Sign In</button>
                   <div className="signup">
                     <label>Don't have an account? <Link to="/signup" className="clickable">Sign Up</Link></label>
                   </div>
