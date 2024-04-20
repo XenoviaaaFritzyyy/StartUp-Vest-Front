@@ -17,6 +17,8 @@ function Login() {
         email,
         password,
       });
+      // Save the token to local storage.
+      localStorage.setItem('token', response.data.jwt);
       console.log('Login successful:', response.data);
       setLoggedIn(true);
       navigate('/companies');

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "../Navbar/Navbar";
 import CreateBusinessProfile from '../Form/CreateBusinessProfile';
 import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions } from '@mui/material';
 import CreateFundingRound from '../Form/CreateFundingRound';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -17,6 +18,32 @@ function Profile() {
     const [isEditable, setIsEditable] = useState(false);
     const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
     const [openCreateFundingRound, setCreateFundingRound] = useState(false);
+
+    // Fetch user data when the component mounts.
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    const fetchUserData = async () => {
+        try {
+            // Replace '/api/user' with the path to your API endpoint.
+            const response = await axios.get('http://localhost:3000/users/profile', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+                },
+            });
+
+            // Update the state variables with the fetched data.
+            setFirstName(response.data.firstName);
+            setLastName(response.data.lastName);
+            setEmail(response.data.email);
+            setPhone(response.data.contactNumber);
+            setGender(response.data.gender);
+            setAvatar(response.data.avatar);
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+        }
+    };
 
     const handleEditClick = () => {
         setIsEditable(!isEditable);
@@ -104,10 +131,10 @@ function Profile() {
                                 <Grid item xs={6}>
                                     <label>Gender</label>
                                     <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable}>
-                                        <MenuItem value={'male'}>Male</MenuItem>
-                                        <MenuItem value={'female'}>Female</MenuItem>
-                                        <MenuItem value={'neutral'}>Neutral</MenuItem>
-                                        <MenuItem value={'other'}>Other</MenuItem>
+                                        <MenuItem value={'Male'}>Male</MenuItem>
+                                        <MenuItem value={'Female'}>Female</MenuItem>
+                                        <MenuItem value={'Neutral'}>Neutral</MenuItem>
+                                        <MenuItem value={'Other'}>Other</MenuItem>
                                     </Select>
                                 </Grid>
 
