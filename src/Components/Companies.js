@@ -230,7 +230,7 @@ export default function Companies() {
                   key={row.id}
                   sx={{ cursor: 'pointer' }}>
 
-                  <TableCell component="th" scope="row" padding="1">
+                  <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)'}}>{row.avatar}</Avatar>
                       {row.startup}

@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { Box, Drawer, AppBar, List, Typography, CssBaseline, Toolbar, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, IconButton } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
@@ -22,6 +24,31 @@ export default function Navbar() {
     { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
   ];
 
+  // Add state variables for the user's first and last name.
+const [firstName, setFirstName] = useState('');
+const [lastName, setLastName] = useState('');
+
+// Fetch user data when the component mounts.
+useEffect(() => {
+    fetchUserData();
+}, []);
+
+const fetchUserData = async () => {
+    try {
+        // Replace '/api/user' with the path to your API endpoint.
+        const response = await axios.get('http://localhost:3000/users/profile', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+            },
+        });
+
+        // Update the first and last name state variables.
+        setFirstName(response.data.firstName);
+        setLastName(response.data.lastName);
+    } catch (error) {
+        console.error('Failed to fetch user data:', error);
+    }
+};
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -57,7 +84,7 @@ export default function Navbar() {
               <ListItemButton component={Link} to="/profile">
                 <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
-                  Hazelyn Balingcasag
+                  {firstName} {lastName}
                 </Typography>
               </ListItemButton>
             </ListItem>
