@@ -14,12 +14,12 @@ const drawerWidth = 240;
 
 export default function Navbar() {
   const menuItems = [
-    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/> },
+    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/dashboard' },
+    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, path: '/captable' },
+    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies' },
+    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground' },
+    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people' },
+    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
   ];
 
   return (
@@ -27,18 +27,20 @@ export default function Navbar() {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, background: 'rgba(0, 116, 144, 1)' }}>
         <Toolbar>
-        <Avatar sx={{ ml: -3, width: 70, height: 70}} src='images/logoonly.png'></Avatar>
-          <Typography variant="h6" noWrap component="div" sx={{ml: -1}}>
-            STARTUP VEST
-          </Typography>
+            <Avatar sx={{ ml: -3, width: 70, height: 70}} src='images/logoonly.png'></Avatar>
+            <Typography variant="h6" noWrap component="div" sx={{ml: -1}}>
+              STARTUP VEST
+            </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>H</Avatar>
-            <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
-              Hazelyn Balingcasag
-            </Typography>
-            <IconButton size="medium" aria-label="show 17 new notifications" color="inherit" sx={{marginRight: 5}}>
-              <NotificationsIcon />
-            </IconButton>
+          <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
+            Hazelyn Balingcasag
+          </Typography>
+          </Link>
+          <IconButton size="medium" aria-label="show 17 new notifications" color="inherit" sx={{marginRight: 5}}>
+            <NotificationsIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -52,7 +54,7 @@ export default function Navbar() {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton component={Link} to="/profile">
                 <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   Hazelyn Balingcasag
@@ -62,7 +64,7 @@ export default function Navbar() {
             <Divider />
             {menuItems.map((item) => (
               <ListItem key={item.text} disablePadding sx={{marginTop: 1}}>
-                <ListItemButton>
+                <ListItemButton component={Link} to={item.path}>
                   <ListItemText primary={item.text} />
                   <ListItemIcon>
                     {item.icon}
@@ -74,8 +76,8 @@ export default function Navbar() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemText primary="Logout" />
-              <ListItemIcon>
-                <LogoutIcon sx={{color: '#F2F2F2'}}/>
+                <ListItemIcon>
+                  <LogoutIcon sx={{color: '#F2F2F2'}}/>
                 </ListItemIcon>
               </ListItemButton>
             </ListItem>

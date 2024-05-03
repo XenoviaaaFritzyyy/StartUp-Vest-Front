@@ -121,3 +121,19 @@
       cursor: pointer;
       color: rgba(0, 116, 144, 1);
   }
+
+  /* Password visibility toggle */
+  .password-input-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-container input {
+    flex: 1;
+  }
+  
+  .password-visibility-toggle {
+    margin-left: 5px; /* Adjust spacing between input field and toggle button */
+    cursor: pointer;
+  }
+  

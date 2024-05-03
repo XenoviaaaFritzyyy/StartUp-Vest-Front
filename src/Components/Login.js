@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import '../Css/Login.css';
 
 function Login() {
+  // State variables to track password visibility
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
     <div className="login-logo-container">      
       <div className="login-container">
@@ -28,7 +38,17 @@ function Login() {
 
                     <div className="login-input-field">
                       <label>Password*</label>
-                      <input type="password" placeholder="Example123" required />
+                      <div className="password-input-container">
+                        <input
+                          type={passwordVisible ? "text" : "password"}
+                          placeholder="Example123"
+                          required
+                        />
+                        {/* Toggle visibility button */}
+                        <div className="password-visibility-toggle" onClick={togglePasswordVisibility}>
+                          {passwordVisible ? ( <VisibilityOffIcon /> ) : ( <VisibilityIcon /> )}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="login-forgotpass">
@@ -47,7 +67,5 @@ function Login() {
       </div>  
     </div>
   );
-}
-
+} 
 export default Login;
-
