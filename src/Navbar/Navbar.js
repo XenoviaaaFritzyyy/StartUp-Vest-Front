@@ -16,39 +16,40 @@ const drawerWidth = 240;
 
 export default function Navbar() {
   const menuItems = [
-    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/> },
+    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/userdashboard' },
+    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, path: '/captable' },
+    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies' },
+    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground' },
+    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people' },
+    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
   ];
 
   // Add state variables for the user's first and last name.
-const [firstName, setFirstName] = useState('');
-const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
-// Fetch user data when the component mounts.
-useEffect(() => {
-    fetchUserData();
-}, []);
+  // Fetch user data when the component mounts.
+  useEffect(() => {
+      fetchUserData();
+  }, []);
 
-const fetchUserData = async () => {
-    try {
-        // Replace '/api/user' with the path to your API endpoint.
-        const response = await axios.get('http://localhost:3000/users/profile', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
-            },
-        });
+  const fetchUserData = async () => {
+      try {
+          // Replace '/api/user' with the path to your API endpoint.
+          const response = await axios.get('http://localhost:3000/users/profile', {
+              headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+              },
+          });
 
-        // Update the first and last name state variables.
-        setFirstName(response.data.firstName);
-        setLastName(response.data.lastName);
-    } catch (error) {
-        console.error('Failed to fetch user data:', error);
-    }
-};
+          // Update the first and last name state variables.
+          setFirstName(response.data.firstName);
+          setLastName(response.data.lastName);
+      } catch (error) {
+          console.error('Failed to fetch user data:', error);
+      }
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -79,7 +80,7 @@ const fetchUserData = async () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem disablePadding>
-              <ListItemButton>
+            <ListItemButton component={Link} to="/profile">
                 <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   {firstName} {lastName}
@@ -89,7 +90,7 @@ const fetchUserData = async () => {
             <Divider />
             {menuItems.map((item) => (
               <ListItem key={item.text} disablePadding sx={{marginTop: 1}}>
-                <ListItemButton>
+                <ListItemButton component={Link} to={item.path}>
                   <ListItemText primary={item.text} />
                   <ListItemIcon>
                     {item.icon}
@@ -99,7 +100,7 @@ const fetchUserData = async () => {
             ))}
             <Divider sx={{marginTop: 20.7}} />
             <ListItem disablePadding>
-              <ListItemButton>
+            <ListItemButton component={Link} to="/">
                 <ListItemText primary="Logout" />
               <ListItemIcon>
                 <LogoutIcon sx={{color: '#F2F2F2'}}/>
