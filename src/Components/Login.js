@@ -11,6 +11,12 @@ function Login() {
   const [emailExists, setEmailExists] = useState(false); 
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+  
+  const [passwordVisible, setPasswordVisible] = useState(false); 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,14 +46,6 @@ function Login() {
     }
   };
 
-  // State variables to track password visibility
-  const [passwordVisible, setPasswordVisible] = useState(false);
-
-  // Function to toggle password visibility
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-
   return (
     <div className="login-logo-container">
       <div className="login-container">
@@ -69,7 +67,7 @@ function Login() {
               <div className="login-details">
                 <div className="details">
                   <div className="fields">
-                    <div className="login-input-field">
+                  <div className="login-input-field email-input">
                       <label>Email*</label>
                       <input
                         type="text"
@@ -90,21 +88,15 @@ function Login() {
 
                     <div className="login-input-field">
                       <label>Password*</label>
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Example123"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
                       <div className="password-input-container">
                         <input
                           type={passwordVisible ? "text" : "password"}
+                          name="password"
                           placeholder="Example123"
                           required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
-                        {/* Toggle visibility button */}
                         <div className="password-visibility-toggle" onClick={togglePasswordVisibility}>
                           {passwordVisible ? ( <VisibilityOffIcon /> ) : ( <VisibilityIcon /> )}
                         </div>

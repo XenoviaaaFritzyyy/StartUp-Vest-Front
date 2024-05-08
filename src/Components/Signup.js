@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {useState} from 'react';
 import axios from 'axios'; // Import Axios
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import '../Css/Signup.css';
 
 function Signup() {
@@ -31,6 +33,12 @@ function Signup() {
         }
     };
 
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    };
+    
     return (
         <div className="signup-container">
             <div className="signup-left-container">
@@ -77,9 +85,19 @@ function Signup() {
                                 </div>
 
                                 <div className="signup-input-field address">
-                                    <label>Password*</label>
-                                    <input type="password" name="password" placeholder="Example123" required />
+                                <label>Password*</label>
+                                <div className="password-input-container-field">
+                                    <input
+                                        type={passwordVisible ? "text" : "password"}
+                                        name="password"
+                                        placeholder="Example123"
+                                        required
+                                    />
+                                    <div className="password-signup-visibility-toggle" onClick={togglePasswordVisibility}>
+                                        {passwordVisible ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                    </div>
                                 </div>
+                            </div>
                             </div>
 
                             <button type="submit" className="signup-button">Sign Up</button>
