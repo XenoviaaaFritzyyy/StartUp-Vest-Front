@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navbar from "../Navbar/Navbar";
 import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 import CreateFundingRound from '../Form/CreateFundingRound';
@@ -24,7 +24,13 @@ function UserDashboard() {
             <Navbar />
             <Toolbar />
 
-            <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+            <style>{`
+                body {
+                    background-color: #D3D3D3;
+                }
+            `}</style>
+
+            <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
                 {/* Left Box */}
                 <Box sx={{ flex: 1, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, p: 5 }}>
                     <Typography variant="h5">Followed Companies/People</Typography>
@@ -64,7 +70,7 @@ function UserDashboard() {
                 {/* Right Boxes */}
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 2 }}>
                     {/* Box for Create Funding Round Button */}
-                    <Box sx={{ borderRadius: 4, mb: 2 }}>
+                    <Box sx={{ borderRadius: 4, mb: 2}}>
                         <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth onClick={handleOpenFundingRound}>
                             Create Funding Round
                         </Button>
@@ -155,8 +161,8 @@ function UserDashboard() {
                     </DialogActions>
                 </Box>
             </Box>
-        )}
-    </>
+            )}
+        </>
     );
 }
 

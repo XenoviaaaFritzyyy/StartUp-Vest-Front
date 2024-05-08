@@ -9,7 +9,6 @@ import TableChartIcon from '@mui/icons-material/TableChartRounded';
 import StoreIcon from '@mui/icons-material/Store';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOnRounded';
 import PeopleIcon from '@mui/icons-material/PeopleRounded';
-import MarkUnreadChatAltRoundedIcon from '@mui/icons-material/MarkUnreadChatAltRounded';
 import LogoutIcon from '@mui/icons-material/LogoutRounded';
 
 const drawerWidth = 240;
@@ -21,7 +20,6 @@ export default function Navbar() {
     { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies' },
     { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground' },
     { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people' },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
   ];
 
   // Add state variables for the user's first and last name.
@@ -100,7 +98,7 @@ export default function Navbar() {
                 </ListItemButton>
               </ListItem>
             ))}
-            <Divider sx={{marginTop: 20.7}} />
+            <Divider/>
             <ListItem disablePadding>
             <ListItemButton component={Link} to="/">
                 <ListItemText primary="Logout" />
