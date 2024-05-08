@@ -85,7 +85,7 @@ function Signup() {
                             <button type="submit" className="signup-button">Sign Up</button>
 
                         <div className="login">
-                            <label>Already have an account? <Link to="/login" className="clickable">Sign In</Link></label>
+                            <label>Already have an account? <Link to="/" className="clickable">Sign In</Link></label>
                         </div>
                     </div>
                 </div>
