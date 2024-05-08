@@ -52,6 +52,14 @@ export default function Navbar() {
       }
   };
 
+  const handleLogout = () => {
+    // Remove JWT token and user ID from storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    // Redirect to signin page
+    window.location = '/';
+};
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -102,7 +110,7 @@ export default function Navbar() {
             ))}
             <Divider sx={{marginTop: 20.7}} />
             <ListItem disablePadding>
-            <ListItemButton component={Link} to="/">
+            <ListItemButton component={Link} to="/" onClick={handleLogout}>
                 <ListItemText primary="Logout" />
                 <ListItemIcon>
                   <LogoutIcon sx={{color: '#F2F2F2'}}/>
