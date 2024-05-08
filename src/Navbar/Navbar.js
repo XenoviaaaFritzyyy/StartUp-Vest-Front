@@ -16,39 +16,42 @@ const drawerWidth = 240;
 
 export default function Navbar() {
   const menuItems = [
-    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/dashboard' },
-    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, path: '/captable' },
-    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies' },
-    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground' },
-    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people' },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
+    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/dashboard', path: '/userdashboard' },
+    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, path: '/captable', path: '/captable' },
+    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies', path: '/companies' },
+    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground', path: '/fundinground' },
+    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people', path: '/people' },
+    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat', path: '/chat' },
   ];
 
   // Add state variables for the user's first and last name.
-const [firstName, setFirstName] = useState('');
-const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  // Add a state variable for the user's photo.
+  const [userPhoto, setUserPhoto] = useState('');
 
-// Fetch user data when the component mounts.
-useEffect(() => {
-    fetchUserData();
-}, []);
+  // Fetch user data when the component mounts.
+  useEffect(() => {
+      fetchUserData();
+  }, []);
 
-const fetchUserData = async () => {
-    try {
-        // Replace '/api/user' with the path to your API endpoint.
-        const response = await axios.get('http://localhost:3000/users/profile', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
-            },
-        });
+  const fetchUserData = async () => {
+      try {
+          // Replace '/api/user' with the path to your API endpoint.
+          const response = await axios.get('http://localhost:3000/users/profile', {
+              headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+              },
+          });
 
-        // Update the first and last name state variables.
-        setFirstName(response.data.firstName);
-        setLastName(response.data.lastName);
-    } catch (error) {
-        console.error('Failed to fetch user data:', error);
-    }
-};
+          // Update the first and last name state variables.
+          setFirstName(response.data.firstName);
+          setLastName(response.data.lastName);
+      } catch (error) {
+          console.error('Failed to fetch user data:', error);
+      }
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -59,7 +62,7 @@ const fetchUserData = async () => {
               STARTUP VEST
             </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>H</Avatar>
+          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
           <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
             Hazelyn Balingcasag
@@ -81,8 +84,8 @@ const fetchUserData = async () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem disablePadding>
-              <ListItemButton component={Link} to="/profile">
-                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
+            <ListItemButton component={Link} to="/profile">
+                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   {firstName} {lastName}
                 </Typography>
@@ -101,7 +104,7 @@ const fetchUserData = async () => {
             ))}
             <Divider sx={{marginTop: 20.7}} />
             <ListItem disablePadding>
-              <ListItemButton>
+            <ListItemButton component={Link} to="/">
                 <ListItemText primary="Logout" />
                 <ListItemIcon>
                   <LogoutIcon sx={{color: '#F2F2F2'}}/>
