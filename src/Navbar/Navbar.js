@@ -16,17 +16,22 @@ const drawerWidth = 240;
 
 export default function Navbar() {
   const menuItems = [
-    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/> },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/> },
+    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, link: "/profile" },
+    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, link: "/captable" },
+    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, link: "/companies" },
+    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, link: "/fundinground" },
+    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, link: "/people" },
+    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, link: "/chat" },
   ];
 
   // Add state variables for the user's first and last name.
 const [firstName, setFirstName] = useState('');
 const [lastName, setLastName] = useState('');
+// Add a state variable for the user's photo.
+const [userPhoto, setUserPhoto] = useState('');
+
+// Update the userPhoto state variable along with firstName and lastName.
+// setUserPhoto(response.data.photo);
 
 // Fetch user data when the component mounts.
 useEffect(() => {
@@ -59,8 +64,8 @@ const fetchUserData = async () => {
             STARTUP VEST
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>H</Avatar>
-            <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
+          <Avatar sx={{ marginRight: 2, width: 40, height: 40}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
+            <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}} >
               {firstName} {lastName}
             </Typography>
             <IconButton size="medium" aria-label="show 17 new notifications" color="inherit" sx={{marginRight: 5}}>
@@ -79,8 +84,10 @@ const fetchUserData = async () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem disablePadding>
-              <ListItemButton>
-                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
+              <ListItemButton component={Link} to="/profile">
+                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 40, height: 40}}>
+                  {userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}
+                </Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   {firstName} {lastName}
                 </Typography>
@@ -89,7 +96,7 @@ const fetchUserData = async () => {
             <Divider />
             {menuItems.map((item) => (
               <ListItem key={item.text} disablePadding sx={{marginTop: 1}}>
-                <ListItemButton>
+                <ListItemButton component={Link} to={item.link}>
                   <ListItemText primary={item.text} />
                   <ListItemIcon>
                     {item.icon}
@@ -99,7 +106,7 @@ const fetchUserData = async () => {
             ))}
             <Divider sx={{marginTop: 20.7}} />
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton to={"/login"}>
                 <ListItemText primary="Logout" />
               <ListItemIcon>
                 <LogoutIcon sx={{color: '#F2F2F2'}}/>

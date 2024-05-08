@@ -21,10 +21,10 @@ function createData(id, transactionName, startupName, fundingType, moneyRaised, 
 
 const rows = [
   createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
+  createData(2, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
+  createData(3, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
+  createData(4, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
+  createData(5, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
 
 ];
 
