@@ -27,6 +27,8 @@ export default function Navbar() {
   // Add state variables for the user's first and last name.
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  // Add a state variable for the user's photo.
+  const [userPhoto, setUserPhoto] = useState('');
 
   // Fetch user data when the component mounts.
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function Navbar() {
             STARTUP VEST
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>H</Avatar>
+          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
             <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
               {firstName} {lastName}
             </Typography>
@@ -81,7 +83,7 @@ export default function Navbar() {
           <List>
             <ListItem disablePadding>
             <ListItemButton component={Link} to="/profile">
-                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>H</Avatar>
+                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   {firstName} {lastName}
                 </Typography>

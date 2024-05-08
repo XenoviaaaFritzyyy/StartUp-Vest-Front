@@ -232,9 +232,9 @@ function Profile() {
                                 Cancel
                             </Button>
 
-                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
+                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
                                 Create Profile
-                            </Button>
+                        </Button>*/}
                         </Box>
                     </DialogActions>
                     </Box>
