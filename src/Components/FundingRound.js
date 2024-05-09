@@ -214,7 +214,7 @@ export default function FundingRound() {
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', pl: 5, pr: 5 }}>
+      <Paper sx={{ width: '100%', p: 3 }}>
         <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
@@ -233,7 +233,7 @@ export default function FundingRound() {
                   hover
                   tabIndex={-1}
                   key={row.id}
-                  sx={{ cursor: 'pointer' }}>
+                  sx={{ cursor: 'pointer', height: '75px' }}>
 
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
