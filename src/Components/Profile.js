@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from "../Navbar/Navbar";
 import CreateBusinessProfile from '../Form/CreateBusinessProfile';
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContentText, DialogContent, } from '@mui/material';
 import axios from 'axios';
 
 const drawerWidth = 240;
@@ -17,9 +17,13 @@ function Profile() {
     const [isEditable, setIsEditable] = useState(false);
     const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
 
+    const [businessProfiles, setBusinessProfiles] = useState([]);
+    const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+
     // Fetch user data when the component mounts.
     useEffect(() => {
         fetchUserData();
+        fetchBusinessProfiles();
     }, []);
 
     const fetchUserData = async () => {
@@ -43,6 +47,32 @@ function Profile() {
         }
     };
 
+    const fetchBusinessProfiles = async () => {
+        try {
+            const userId = localStorage.getItem('id'); // Assuming the user's ID is stored in localStorage
+
+            const responseStartups = await axios.get(`http://localhost:3000/startups?userId=${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            const responseInvestors = await axios.get(`http://localhost:3000/investors?userId=${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+    
+            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
+            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+    
+            setBusinessProfiles([...startups, ...investors]);
+        } catch (error) {
+            console.error('Failed to fetch business profiles:', error);
+        }
+    };
+    
     const handleEditClick = () => {
         setIsEditable(!isEditable);
     };
@@ -186,20 +216,41 @@ function Profile() {
                         </TableHead>
                         
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Investor</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
-                                </TableCell>
-                            </TableRow>
+                            {businessProfiles.map((profile) => (
+                                <TableRow key={`${profile.type}-${profile.id}`}>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => setSelectedBusinessProfile(profile)}>
+                                            View
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
+
                     </Table>
                     </TableContainer>
                 </Box>
                 </Box>
             </Box>
+
+            {selectedBusinessProfile && (
+                <Dialog open={Boolean(selectedBusinessProfile)} onClose={() => setSelectedBusinessProfile(null)}>
+                    <DialogTitle>{selectedBusinessProfile.companyName}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Type: {selectedBusinessProfile.type}</DialogContentText>
+                        <DialogContentText>Industry: {selectedBusinessProfile.industry}</DialogContentText>
+                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription}</DialogContentText>
+                        {/* Add more fields as needed */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setSelectedBusinessProfile(null)}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+
                 
             {/* Custom Full Page Dialog for Creating Business Profile */}
                 {openCreateBusinessProfile && (
