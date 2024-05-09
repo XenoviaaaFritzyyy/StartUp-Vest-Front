@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Grid, Typography, TextField, Button, Link, Paper } from '@mui/material';
+import { Container, Grid, Typography, TextField, Button, Link, Paper, IconButton, InputAdornment } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailExists, setEmailExists] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -20,7 +23,7 @@ function Login() {
       localStorage.setItem('token', response.data.jwt);
       console.log('Login successful:', response.data);
       setLoggedIn(true);
-      navigate('/companies');
+      navigate('/userdashboard');
     } catch (error) {
       console.error('Login failed:', error);
     }
@@ -35,6 +38,10 @@ function Login() {
     } catch (error) {
       console.error('Error checking email:', error);
     }
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -67,8 +74,26 @@ function Login() {
                 }} onBlur={isEmailRegistered} fullWidth margin="normal" />
 
               <Typography variant="h8" sx={{ color: 'rgba(0, 116, 144, 1)' }}>Password</Typography>
-              {emailExists && <Typography variant="body2" color="error">Email is already in use.</Typography>}
-              <TextField type="password" placeholder="Example123" required value={password} onChange={(e) => setPassword(e.target.value)} fullWidth margin="normal" />
+              <TextField
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Example123"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end">
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}/>
 
               <Typography variant="body2" sx={{ textAlign: 'right', cursor: 'pointer', color: 'rgba(0, 116, 144, 1)' }}>
                 Forgot password?
