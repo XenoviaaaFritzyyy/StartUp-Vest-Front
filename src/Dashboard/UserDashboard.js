@@ -14,6 +14,8 @@ function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
     const [openCapTable, setOpenCapTable] = useState(false);
 
+    const [filter, setFilter] = useState('All'); // Add this line
+
     const [userData, setUserData] = useState({
         firstName: '',
         lastName: '',
@@ -46,6 +48,10 @@ function UserDashboard() {
     const handleCloseCapTable = () => {
         setOpenCapTable(false);
     }
+
+    const handleFilterChange = (event) => {
+        setFilter(event.target.value);
+    };
 
     // const fetchUserData = async () => {
     //     try {
@@ -106,7 +112,7 @@ function UserDashboard() {
                             <Typography variant="h6">Filter By:</Typography>
                         </Grid>
                         <Grid item>
-                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                            <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 <MenuItem value="Startup">Startup</MenuItem>
                                 <MenuItem value="Investor">Investor</MenuItem>
@@ -123,16 +129,11 @@ function UserDashboard() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {businessProfiles.map((profile) => (
+                                {businessProfiles.filter(profile => filter === 'All' || profile.type === filter).map((profile) => (
                                     <TableRow key={`${profile.type}-${profile.id}`}>
                                         <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
                                         <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
                                         <TableCell sx={{ textAlign: 'center' }}>{profile.companyDescription || profile.biography}</TableCell>
-                                        {/* <TableCell sx={{ textAlign: 'center' }}>
-                                            <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => setSelectedBusinessProfile(profile)}>
-                                                View
-                                            </Button>
-                                        </TableCell> */}
                                     </TableRow>
                                 ))}
                             </TableBody>
