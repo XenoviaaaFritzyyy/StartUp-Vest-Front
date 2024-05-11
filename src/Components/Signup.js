@@ -38,7 +38,7 @@ function Signup() {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-            <Grid container style={{ display: 'flex', minHeight: '85vh' }}>
+            <Grid container>
                 <Grid item xs={12} sm={.5} sx={{ background: 'rgba(0, 116, 144, 1)', borderRadius: '0 10px 10px 0' }}>
                 </Grid>
 
