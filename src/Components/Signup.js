@@ -104,7 +104,7 @@ function Signup() {
 
                         <Grid item xs={12}>
                             <Button type="submit" variant="contained" color="primary" sx={{ mt: 1, width: '100%', height: '50px', color: 'rgba(0, 116, 144, 1)', background: '#F2F2F2', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#F2F2F2' } }}>
-                                Sign In
+                                Sign Up
                             </Button>
                         </Grid>
 

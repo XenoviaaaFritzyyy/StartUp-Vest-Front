@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 
 
 import CreateFundingRound from '../Form/CreateFundingRound';
+import CreateCapTable from '../Form/CreateCapTable';
 
 const drawerWidth = 240;
 
 function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
+    const [openCapTable, setOpenCapTable] = useState(false);
 
     const handleOpenFundingRound = () => {
         setOpenCreateFundingRound(true);
@@ -18,6 +20,14 @@ function UserDashboard() {
     const handleCloseFundingRound = () => {
         setOpenCreateFundingRound(false);
     };
+
+    const handleOpenCapTable = () => {
+        setOpenCapTable(true);
+    }
+    
+    const handleCloseCapTable = () => {
+        setOpenCapTable(false);
+    }
 
     return (
         <>
@@ -76,7 +86,7 @@ function UserDashboard() {
                             Create Funding Round
                         </Button>
 
-                        <Button variant="outlined" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth>
+                        <Button variant="outlined" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth onClick={handleOpenCapTable}>
                             Create Cap Table
                         </Button>
                     </Box>
@@ -131,7 +141,7 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>100,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>500,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenFundingRound}>View</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -139,12 +149,13 @@ function UserDashboard() {
                 </TableContainer>
             </Box>
 
-                        {/* Table */}
-                        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
-                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                        My Cap Table
-                    </Typography>
+                    {/* Table */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+                    
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
+                        <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                            My Cap Table
+                        </Typography>
 
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
@@ -162,7 +173,8 @@ function UserDashboard() {
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Investor Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Shareholder's Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Title</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Total Share</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Percentage</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
@@ -171,10 +183,11 @@ function UserDashboard() {
                         <TableBody>
                             <TableRow>
                                 <TableCell sx={{ textAlign: 'center' }}>Hazelyn Balingcasag</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>CEO</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenCapTable}>View</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -210,6 +223,46 @@ function UserDashboard() {
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5}}>
                             <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseFundingRound}>
+                                Cancel
+                            </Button>
+
+                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
+                                Create
+                            </Button>
+                        </Box>
+                    </DialogActions>
+                </Box>
+            </Box>
+            )}
+
+            {/* Custom Full Page Dialog for Creating Funding Round */}
+            {openCapTable && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1300,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'}}>
+            
+                <Box
+                    sx={{
+                        background: '#F2F2F2',
+                        maxWidth: '100%',
+                        maxHeight: '90%',
+                        overflowY: 'auto',
+                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
+
+                    <CreateCapTable />
+
+                    <DialogActions>
+                        <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5}}>
+                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseCapTable}>
                                 Cancel
                             </Button>
 

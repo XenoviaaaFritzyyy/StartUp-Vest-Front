@@ -207,7 +207,7 @@ function Profile() {
                                 <TableCell sx={{ textAlign: 'center' }}>Hazelyn</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenBusinessProfile}>View</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
