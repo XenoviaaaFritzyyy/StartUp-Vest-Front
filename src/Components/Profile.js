@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
-import Navbar from "../Navbar/Navbar";
-import CreateBusinessProfile from '../Form/CreateBusinessProfile';
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContentText, DialogContent, } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from '../Navbar/Navbar';
+import CreateBusinessProfile from '../Form/CreateBusinessProfile';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid,
+        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
 
 const drawerWidth = 240;
 
 function Profile() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [gender, setGender] = useState('');
-    const [avatar, setAvatar] = useState('');
-
+    const [userData, setUserData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        contactNumber: '',
+        gender: '',
+        avatar: '',
+    });
     const [isEditable, setIsEditable] = useState(false);
     const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
 
@@ -79,19 +81,41 @@ function Profile() {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatar(reader.result);
+            reader.onloadend = () => { setUserData((prevData) => ({...prevData, avatar: reader.result, }));
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleOpenBusinessProfile = () => {
-        setCreateBusinessProfile(true);
+        setOpenCreateBusinessProfile(true);
     };
 
     const handleCloseBusinessProfile = () => {
-        setCreateBusinessProfile(false);
+        setOpenCreateBusinessProfile(false);
+    };
+
+    const handleSaveChanges = async () => {
+        try {
+            await updateUser(userData);
+            await fetchUserData();
+            setIsEditable(false);
+        } catch (error) {
+        console.error('Failed to update user data:', error);
+        }
+    };
+
+    const updateUser = async (userData) => {
+        try {
+        const response = await axios.put(`http://localhost:3000/users/${userData.id}`, userData, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`, },
+        });
+
+        console.log('User data updated successfully:', response.data);
+            } catch (error) {
+        console.error('Failed to update user data:', error);
+            throw error;
+        }
     };
 
     return (
@@ -111,66 +135,68 @@ function Profile() {
                     <Grid container spacing={2} sx={{ ml: 6 }}>
                         <Grid item xs={12} sm={3}>
                             <label htmlFor="avatar-upload">
-                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={avatar}></Avatar>
+                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', 
+                                border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
                             </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="avatar-upload"
-                                style={{ display: 'none' }}
-                                onChange={handleAvatarChange}
-                                disabled={!isEditable}/>
-
-                            <Typography sx={{mt: 1, ml: 6.5, color: '#414a4c'}}>Upload Photo</Typography>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            id="avatar-upload"
+                            style={{ display: 'none' }}
+                            onChange={handleAvatarChange}
+                            disabled={!isEditable} 
+                        />
+                            <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
                         </Grid>
 
                         <Grid item xs={12} sm={7.8}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <label>First Name</label>
-                                    <TextField fullWidth variant="filled" value={firstName} onChange={(e) => setFirstName(e.target.value)} InputProps={{ readOnly: !isEditable }} />
-                                </Grid>
+                            <Grid item xs={6}>
+                                <label>First Name</label>
+                                <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <label>Last Name</label>
-                                    <TextField fullWidth variant="filled" value={lastName} onChange={(e) => setLastName(e.target.value)} InputProps={{ readOnly: !isEditable }} />
-                                </Grid>
+                        <Grid item xs={6}>
+                            <label>Last Name</label>
+                                <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                        </Grid>
 
-                                <Grid item xs={12}>
-                                    <label>Email Address</label>
-                                    <TextField fullWidth variant="filled" value={email} onChange={(e) => setEmail(e.target.value)} InputProps={{ readOnly: !isEditable }} />
-                                </Grid>
+                        <Grid item xs={12}>
+                            <label>Email Address</label>
+                            <TextField fullWidth variant="filled" value={userData.email} onChange={(e) => setUserData((prevData) => ({ ...prevData, email: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <label>Phone Number</label>
-                                    <TextField fullWidth variant="filled" value={phone} onChange={(e) => setPhone(e.target.value)} InputProps={{ readOnly: !isEditable }} />
-                                </Grid>
+                        <Grid item xs={6}>
+                            <label>Phone Number</label>
+                            <TextField fullWidth variant="filled" value={userData.contactNumber} onChange={(e) => setUserData((prevData) => ({ ...prevData, contactNumber: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                        </Grid>
 
-                                <Grid item xs={6}>
-                                    <label>Gender</label>
-                                    <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable}>
-                                        <MenuItem value={'Male'}>Male</MenuItem>
-                                        <MenuItem value={'Female'}>Female</MenuItem>
-                                        <MenuItem value={'Neutral'}>Neutral</MenuItem>
-                                        <MenuItem value={'Other'}>Other</MenuItem>
-                                    </Select>
-                                </Grid>
+                        <Grid item xs={6}>
+                            <label>Gender</label>
+                            <Select fullWidth variant="filled" value={userData.gender} onChange={(e) => setUserData((prevData) => ({ ...prevData, gender: e.target.value }))} disabled={!isEditable}>
+                                <MenuItem value={'Male'}>Male</MenuItem>
+                                <MenuItem value={'Female'}>Female</MenuItem>
+                                <MenuItem value={'Neutral'}>Neutral</MenuItem>
+                                <MenuItem value={'Other'}>Other</MenuItem>
+                            </Select>
+                        </Grid>
 
-                                <Grid container justifyContent="flex-end">
-                                    <Grid item>
-                                        <Button 
-                                            variant="contained"
-                                            sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} 
-                                            onClick={handleEditClick}>
-                                            {isEditable ? 'Save Changes' : 'Edit Profile'}
-                                        </Button>
-                                    </Grid>
-                                </Grid>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
+                                    onClick={isEditable ? handleSaveChanges : handleEditClick}
+                                >
+                                    {isEditable ? 'Save Changes' : 'Edit Profile'}
+                                </Button>
+                            </Grid>
+                        </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Box>
-                
+
                 <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
                     <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
                         Create Business Profile
@@ -264,7 +290,7 @@ function Profile() {
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',}}>
-                
+
                     <Box
                         sx={{
                             background: '#F2F2F2',
