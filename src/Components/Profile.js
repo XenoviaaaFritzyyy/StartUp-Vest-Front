@@ -254,9 +254,9 @@ function Profile() {
 
             {selectedBusinessProfile && (
                 <Dialog open={Boolean(selectedBusinessProfile)} onClose={() => setSelectedBusinessProfile(null)}>
-                    <DialogTitle>{selectedBusinessProfile.companyName}</DialogTitle>
+                    <DialogTitle>{selectedBusinessProfile.type}</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>Type: {selectedBusinessProfile.type}</DialogContentText>
+                        <DialogContentText>Name: {selectedBusinessProfile.companyName || selectedBusinessProfile.lastName}</DialogContentText>
                         <DialogContentText>Information: {selectedBusinessProfile.industry || selectedBusinessProfile.emailAddress}</DialogContentText>
                         <DialogContentText>Description: {selectedBusinessProfile.companyDescription || selectedBusinessProfile.biography}</DialogContentText>
                         {/* Add more fields as needed */}

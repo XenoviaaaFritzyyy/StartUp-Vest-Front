@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from "../Navbar/Navbar";
 import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, InputLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -6,12 +6,30 @@ import { Link } from 'react-router-dom';
 
 import CreateFundingRound from '../Form/CreateFundingRound';
 import CreateCapTable from '../Form/CreateCapTable';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
 function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
     const [openCapTable, setOpenCapTable] = useState(false);
+
+    const [userData, setUserData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        contactNumber: '',
+        gender: '',
+        avatar: '',
+    });
+
+    const [businessProfiles, setBusinessProfiles] = useState([]);
+    // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+
+    useEffect(() => {
+        // fetchUserData();
+        fetchBusinessProfiles();
+    }, []);
 
     const handleOpenFundingRound = () => {
         setOpenCreateFundingRound(true);
@@ -28,6 +46,43 @@ function UserDashboard() {
     const handleCloseCapTable = () => {
         setOpenCapTable(false);
     }
+
+    // const fetchUserData = async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:3000/users/profile', {
+    //             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    //             },
+    //         });
+    
+    //     setUserData(response.data);
+    //         } catch (error) {
+    //             console.error('Failed to fetch user data:', error);
+    //         }
+    //     };
+
+    const fetchBusinessProfiles = async () => {
+        try {
+            const responseStartups = await axios.get(`http://localhost:3000/startups`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            const responseInvestors = await axios.get(`http://localhost:3000/investors`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+    
+            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
+            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+    
+            setBusinessProfiles([...startups, ...investors]);
+        } catch (error) {
+            console.error('Failed to fetch business profiles:', error);
+        }
+    };
 
     return (
         <>
@@ -62,17 +117,24 @@ function UserDashboard() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Industry</TableCell>
-                                    <TableCell>Description</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>Name</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>Information</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>Description</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>Facebook</TableCell>
-                                    <TableCell>Technology</TableCell>
-                                    <TableCell>Description</TableCell>
-                                </TableRow>
+                                {businessProfiles.map((profile) => (
+                                    <TableRow key={`${profile.type}-${profile.id}`}>
+                                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
+                                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyDescription || profile.biography}</TableCell>
+                                        {/* <TableCell sx={{ textAlign: 'center' }}>
+                                            <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => setSelectedBusinessProfile(profile)}>
+                                                View
+                                            </Button>
+                                        </TableCell> */}
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
