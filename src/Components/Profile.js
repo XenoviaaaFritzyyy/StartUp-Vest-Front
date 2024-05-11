@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import CreateBusinessProfile from '../Form/CreateBusinessProfile';
 import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid,
-        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContentText, DialogContent } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -30,24 +30,16 @@ function Profile() {
 
     const fetchUserData = async () => {
         try {
-            // Replace '/api/user' with the path to your API endpoint.
             const response = await axios.get('http://localhost:3000/users/profile', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-
-            // Update the state variables with the fetched data.
-            setFirstName(response.data.firstName);
-            setLastName(response.data.lastName);
-            setEmail(response.data.email);
-            setPhone(response.data.contactNumber);
-            setGender(response.data.gender);
-            setAvatar(response.data.avatar);
-        } catch (error) {
-            console.error('Failed to fetch user data:', error);
-        }
-    };
+    
+        setUserData(response.data);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
 
     const fetchBusinessProfiles = async () => {
         try {
@@ -88,11 +80,11 @@ function Profile() {
     };
 
     const handleOpenBusinessProfile = () => {
-        setOpenCreateBusinessProfile(true);
+        setCreateBusinessProfile(true);
     };
 
     const handleCloseBusinessProfile = () => {
-        setOpenCreateBusinessProfile(false);
+        setCreateBusinessProfile(false);
     };
 
     const handleSaveChanges = async () => {
@@ -231,7 +223,7 @@ function Profile() {
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Name</Typography>
                                 </TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Industry</Typography>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Information</Typography>
                                 </TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
@@ -243,8 +235,8 @@ function Profile() {
                             {businessProfiles.map((profile) => (
                                 <TableRow key={`${profile.type}-${profile.id}`}>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
                                         <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => setSelectedBusinessProfile(profile)}>
                                             View
@@ -265,8 +257,8 @@ function Profile() {
                     <DialogTitle>{selectedBusinessProfile.companyName}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>Type: {selectedBusinessProfile.type}</DialogContentText>
-                        <DialogContentText>Industry: {selectedBusinessProfile.industry}</DialogContentText>
-                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription}</DialogContentText>
+                        <DialogContentText>Information: {selectedBusinessProfile.industry || selectedBusinessProfile.emailAddress}</DialogContentText>
+                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription || selectedBusinessProfile.biography}</DialogContentText>
                         {/* Add more fields as needed */}
                     </DialogContent>
                     <DialogActions>
