@@ -223,8 +223,8 @@ function ViewInvestorProfile() {
                         </Grid>
                     </Grid>
 
-                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} style={{marginLeft: '75%'}} onClick={handleCreateProfile}>
-                        Create Business Profile
+                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} style={{marginLeft: '85%'}} onClick={handleCreateProfile}>
+                        Edit Profile
                     </Button>
                 </Box>
             </Box>
