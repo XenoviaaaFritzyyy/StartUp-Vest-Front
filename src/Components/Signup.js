@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {useState} from 'react';
 import axios from 'axios'; // Import Axios
-import '../Css/Signup.css';
+import { Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, InputAdornment, IconButton } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Signup() {
-    
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const userData = {
             firstName: e.target.elements.firstName.value,
@@ -24,75 +25,99 @@ function Signup() {
         try {
             const response = await axios.post('http://localhost:3000/users/register', userData);
             console.log('Signup successful:', response.data);
-            setSuccess(true); 
+            setSuccess(true);
         } catch (error) {
             console.error('Signup failed:', error);
-            setErrMsg('Signup failed. Please try again.'); 
+            setErrMsg('Signup failed. Please try again.');
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
-        <div className="signup-container">
-            <div className="signup-left-container">
-            </div>
+        <Grid container style={{ minHeight: '85vh', marginTop: '2%' }}>
+            <Grid item xs={12} sm={.5} sx={{ background: 'rgba(0, 116, 144, 1)', borderRadius: '0 10px 10px 0' }}>
+            </Grid>
 
-            <div className="signup-middle-container">
-                <p className='Signup-Motto'>Empowering <br /> Startups,  <br /> Tracking  <br /> Investments</p>
-            </div>
+            <Grid item xs={12} sm={6.5} sx={{ textAlign: 'center', color: 'rgba(0, 116, 144, 1)', mt: 10 }}>
+                <Typography sx={{ fontSize: '5em', fontWeight: 'bold' }}>Empowering <br /> Startups,  <br /> Tracking  <br /> Investments</Typography>
+            </Grid>
 
-            <div className="signup-right-container">
-                <header>Create Account</header>
+            <Grid item xs={12} sm={4.5} sx={{ p: 6, background: 'rgba(0, 116, 144, 1)', borderRadius: 2 }}>
+                <Typography variant="h5" component="header" sx={{ fontWeight: 'bold', color: '#F2F2F2', pb: 3 }}>Create Account</Typography>
                 <form onSubmit={handleSubmit} className='signup-form'>
-                    <div className="signup-details">
-                        <div className="details-personal">
-                            <div className="fields">
-                                <div className="signup-input-field">
-                                    <label>First Name*</label>
-                                    <input type="text" name="firstName" placeholder="John" required />
-                                </div>
+                    <Grid container spacing={2} className="signup-details">
+                        <Grid item xs={6}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>First Name</Typography>
+                            <TextField fullWidth name="firstName" placeholder="John" required sx={{ background: '#F2F2F2', borderRadius: 1 }} />
+                        </Grid>
 
-                                <div className="signup-input-field">
-                                    <label>Last Name*</label>
-                                    <input type="text" name="lastName" placeholder="Doe" required />
-                                </div>
+                        <Grid item xs={6}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>Last Name</Typography>
+                            <TextField fullWidth name="lastName" placeholder="Doe" required sx={{ background: '#F2F2F2', borderRadius: 1 }} />
+                        </Grid>
 
-                                <div className="signup-input-field address">
-                                    <label>Email Address*</label>
-                                    <input type="email" name="email" placeholder="johndoe@gmail.com" required />
-                                </div>
+                        <Grid item xs={12}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>Email</Typography>
+                            <TextField fullWidth name="email" placeholder="johndoe@gmail.com" type="email" required sx={{ background: '#F2F2F2', borderRadius: 1 }} />
+                        </Grid>
 
-                                <div className="signup-input-field">
-                                    <label>Contact Number*</label>
-                                    <input type="tel" name="contactNumber" placeholder="09362677352" required />
-                                </div>
+                        <Grid item xs={6}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>Phone Number</Typography>
+                            <TextField fullWidth name="contactNumber" placeholder="09362677352" type="tel" required sx={{ background: '#F2F2F2', borderRadius: 1 }} />
+                        </Grid>
 
-                                <div className="signup-input-field-select">
-                                    <label>Gender*</label>
-                                    <select id="gender" name="gender">
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Neutral">Neutral</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
+                        <Grid item xs={6}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>Gender</Typography>
+                            <FormControl fullWidth>
+                                <Select labelId="gender-label" id="gender" name="gender" sx={{ background: '#F2F2F2', borderRadius: 1 }}>
+                                    <MenuItem value="Male">Male</MenuItem>
+                                    <MenuItem value="Female">Female</MenuItem>
+                                    <MenuItem value="Neutral">Neutral</MenuItem>
+                                    <MenuItem value="Other">Other</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
 
-                                <div className="signup-input-field address">
-                                    <label>Password*</label>
-                                    <input type="password" name="password" placeholder="Example123" required />
-                                </div>
-                            </div>
+                        <Grid item xs={12}>
+                            <Typography variant="h8" sx={{ color: '#F2F2F2' }}>Password</Typography>
+                            <TextField
+                                fullWidth
+                                name="password"
+                                placeholder="Example123"
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                sx={{ background: '#F2F2F2', borderRadius: 1 }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </Grid>
 
-                            <button type="submit" className="signup-button">Sign Up</button>
+                        <Grid item xs={12}>
+                            <Button type="submit" variant="contained" color="primary" sx={{ mt: 1, width: '100%', height: '50px', color: 'rgba(0, 116, 144, 1)', background: '#F2F2F2', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: '#F2F2F2' } }}>
+                                Sign In
+                            </Button>
+                        </Grid>
 
-                        <div className="login">
-                            <label>Already have an account? <Link to="/" className="clickable">Sign In</Link></label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-  );
+                        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                            <Typography variant="h7" sx={{ color: '#F2F2F2' }}>
+                                Already have an account? <Link to="/" style={{ color: '#FFFFFF' }}>Sign In</Link>
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Grid>
+        </Grid>
+    );
 }
 
 export default Signup;

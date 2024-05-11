@@ -49,15 +49,13 @@ function Profile() {
 
     const fetchBusinessProfiles = async () => {
         try {
-            const userId = localStorage.getItem('id'); // Assuming the user's ID is stored in localStorage
-
-            const responseStartups = await axios.get(`http://localhost:3000/startups?userId=${userId}`, {
+            const responseStartups = await axios.get(`http://localhost:3000/startups`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
 
-            const responseInvestors = await axios.get(`http://localhost:3000/investors?userId=${userId}`, {
+            const responseInvestors = await axios.get(`http://localhost:3000/investors`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },

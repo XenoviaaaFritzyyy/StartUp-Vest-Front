@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navbar from "../Navbar/Navbar";
-import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, InputLabel } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 
 import CreateFundingRound from '../Form/CreateFundingRound';
@@ -24,9 +24,16 @@ function UserDashboard() {
             <Navbar />
             <Toolbar />
 
-            <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+            <style>{`
+                body {
+                background-color: #D3D3D3; /* Set your desired background color */
+                }
+            `}</style>
+
+            <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
+
                 {/* Left Box */}
-                <Box sx={{ flex: 1, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, p: 5 }}>
+                <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, p: 5 }}>
                     <Typography variant="h5">Followed Companies/People</Typography>
 
                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
@@ -34,7 +41,7 @@ function UserDashboard() {
                             <Typography variant="h6">Filter By:</Typography>
                         </Grid>
                         <Grid item>
-                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 120 }}> {/* Adjust the minWidth to your desired width */}
+                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 <MenuItem value="Startup">Startup</MenuItem>
                                 <MenuItem value="Investor">Investor</MenuItem>
@@ -64,9 +71,13 @@ function UserDashboard() {
                 {/* Right Boxes */}
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 2 }}>
                     {/* Box for Create Funding Round Button */}
-                    <Box sx={{ borderRadius: 4, mb: 2 }}>
-                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth onClick={handleOpenFundingRound}>
+                    <Box sx={{ borderRadius: 4, mb: 2}}>
+                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff', mb: 1 }} fullWidth onClick={handleOpenFundingRound}>
                             Create Funding Round
+                        </Button>
+
+                        <Button variant="outlined" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth>
+                            Create Cap Table
                         </Button>
                     </Box>
 
@@ -87,27 +98,81 @@ function UserDashboard() {
 
             {/* Table */}
             <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
-                <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                    My Companies
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
+                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                        My Founding Round
+                    </Typography>
+
+                    <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
+                        <FormControl sx={{ minWidth: 120 }}>
+                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                                <MenuItem value="All">All</MenuItem>
+                                <MenuItem value="Startup">Startup</MenuItem>
+                                <MenuItem value="Investor">Investor</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
 
                 <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2}}>
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Name</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Industry</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Location</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Description</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Funding Round</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Funding Type</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Money Raised</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Target Funding</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Facebook</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Seed A</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>100,000</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>500,000</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+                        {/* Table */}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
+                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                        My Cap Table
+                    </Typography>
+
+                    <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
+                        <FormControl sx={{ minWidth: 120 }}>
+                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                                <MenuItem value="All">All</MenuItem>
+                                <MenuItem value="Startup">Startup</MenuItem>
+                                <MenuItem value="Investor">Investor</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
+
+                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2}}>
+                    <Table>
+                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
+                            <TableRow>
+                                <TableCell sx={{ textAlign: 'center' }}>Investor Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Total Share</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Percentage</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn Balingcasag</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
                                 </TableCell>
@@ -155,8 +220,8 @@ function UserDashboard() {
                     </DialogActions>
                 </Box>
             </Box>
-        )}
-    </>
+            )}
+        </>
     );
 }
 

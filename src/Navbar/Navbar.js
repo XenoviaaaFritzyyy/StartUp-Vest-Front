@@ -5,23 +5,19 @@ import axios from 'axios';
 import { Box, Drawer, AppBar, List, Typography, CssBaseline, Toolbar, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, IconButton } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
-import TableChartIcon from '@mui/icons-material/TableChartRounded';
 import StoreIcon from '@mui/icons-material/Store';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOnRounded';
 import PeopleIcon from '@mui/icons-material/PeopleRounded';
-import MarkUnreadChatAltRoundedIcon from '@mui/icons-material/MarkUnreadChatAltRounded';
 import LogoutIcon from '@mui/icons-material/LogoutRounded';
 
 const drawerWidth = 240;
 
 export default function Navbar() {
   const menuItems = [
-    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/userdashboard' },
-    { text: 'Cap Table', icon: <TableChartIcon sx={{color: '#F2F2F2'}}/>, path: '/captable' },
-    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies' },
-    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground' },
-    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people' },
-    { text: 'Chat', icon: <MarkUnreadChatAltRoundedIcon sx={{color: '#F2F2F2'}}/>, path: '/chat' },
+    { text: 'Dashboard', icon: <SpaceDashboardIcon sx={{color: '#F2F2F2'}}/>, path: '/userdashboard'},
+    { text: 'Companies', icon: <StoreIcon sx={{color: '#F2F2F2'}}/>, path: '/companies'},
+    { text: 'Funding Round', icon: <MonetizationOnIcon sx={{color: '#F2F2F2'}}/>, path: '/fundinground'},
+    { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people'},
   ];
 
   // Add state variables for the user's first and last name.
@@ -51,6 +47,14 @@ export default function Navbar() {
           console.error('Failed to fetch user data:', error);
       }
   };
+
+  const handleLogout = () => {
+    // Remove JWT token and user ID from storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    // Redirect to signin page
+    window.location = '/';
+};
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -100,12 +104,12 @@ export default function Navbar() {
                 </ListItemButton>
               </ListItem>
             ))}
-            <Divider sx={{marginTop: 20.7}} />
+            <Divider />
             <ListItem disablePadding>
-            <ListItemButton component={Link} to="/">
+            <ListItemButton component={Link} to="/" onClick={handleLogout}>
                 <ListItemText primary="Logout" />
-              <ListItemIcon>
-                <LogoutIcon sx={{color: '#F2F2F2'}}/>
+                <ListItemIcon>
+                  <LogoutIcon sx={{color: '#F2F2F2'}}/>
                 </ListItemIcon>
               </ListItemButton>
             </ListItem>

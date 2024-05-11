@@ -73,7 +73,7 @@
 
 .signup-button {
     height: 45px;
-    width: 73.5%;
+    width: calc(100% - 159px); /* Match the width of other input fields */    
     border: none;
     outline: none;
     color: rgba(0, 116, 144, 1);
@@ -100,4 +100,25 @@
  .login u {
     cursor: pointer;
     color: #F2F2F2;
+}
+
+
+.password-input-container-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 105%;
+}
+
+.password-input-container-field input {
+    flex: 1; 
+    padding-right: 40px; /* Adjust to leave space for the toggle button */
+}
+
+.password-signup-visibility-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
 }

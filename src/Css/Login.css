@@ -81,12 +81,17 @@
 
   .login-input-field input {
     outline: none;
-    width: 91%;
+    width: 100%; /* Set width to 100% */
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
   }
-  
+
+  .login-input-field input[name="email"] {
+    padding-right: 15px; /* Adjust padding as needed */
+  }
+
   .login-button {
     width: 100%;
     background: rgba(0, 116, 144, 1);
@@ -97,6 +102,7 @@
     border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
   }
   
   .login-button:hover {
@@ -121,3 +127,23 @@
       cursor: pointer;
       color: rgba(0, 116, 144, 1);
   }
+
+  .password-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .login-input-field input {
+    flex: 1; 
+    padding-right: 40px; /* Adjust to leave space for the toggle button */
+  }
+  
+  .password-visibility-toggle {
+    position: absolute;
+    right: 10px; /* Adjust the position as needed */
+    top: 50%; 
+    transform: translateY(-50%); /* Center the button vertically */
+    cursor: pointer; 
+  }
+  
