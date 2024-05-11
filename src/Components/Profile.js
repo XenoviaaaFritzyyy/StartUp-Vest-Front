@@ -239,6 +239,22 @@ function Profile() {
                 </Box>
             </Box>
 
+            {selectedBusinessProfile && (
+                <Dialog open={Boolean(selectedBusinessProfile)} onClose={() => setSelectedBusinessProfile(null)}>
+                    <DialogTitle>{selectedBusinessProfile.type}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Name: {selectedBusinessProfile.companyName || selectedBusinessProfile.lastName}</DialogContentText>
+                        <DialogContentText>Information: {selectedBusinessProfile.industry || selectedBusinessProfile.emailAddress}</DialogContentText>
+                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription || selectedBusinessProfile.biography}</DialogContentText>
+                        {/* Add more fields as needed */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setSelectedBusinessProfile(null)}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+
+                
             {/* Custom Full Page Dialog for Creating Business Profile */}
                 {openCreateBusinessProfile && (
                     <Box
