@@ -23,7 +23,13 @@ function Profile() {
         gender: '',
         avatar: '',
     });
+    const [isEditable, setIsEditable] = useState(false);
+    const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
 
+    const [businessProfiles, setBusinessProfiles] = useState([]);
+    const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+
+    // Fetch user data when the component mounts.
     useEffect(() => {
         fetchUserData();
         fetchBusinessProfiles();
@@ -82,10 +88,11 @@ function Profile() {
 
     const handleOpenBusinessProfile = () => {
         setCreateBusinessProfile(true);
+        setCreateBusinessProfile(true);
     };
 
     const handleCloseBusinessProfile = () => {
-        setOpenCreateBusinessProfile(false);
+        setCreateBusinessProfile(false);
     };
 
     const handleOpenStartUp = () => {
@@ -249,14 +256,18 @@ function Profile() {
                         </TableHead>
                         
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Investor</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenInvestor}>View</Button>
-                                </TableCell>
-                            </TableRow>
+                            {businessProfiles.map((profile) => (
+                                <TableRow key={`${profile.type}-${profile.id}`}>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => setSelectedBusinessProfile(profile)}>
+                                            View
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
 
                     </Table>

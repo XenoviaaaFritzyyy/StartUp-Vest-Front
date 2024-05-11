@@ -1,0 +1,149 @@
+/* Login.css */
+
+  .login-container {
+    display: flex;
+    margin: 25px 0 0 150px;
+    height: 640px;
+  }
+  
+  .login-left-container {
+    width: 55%;
+    background: rgba(0, 116, 144, 1);
+    box-shadow: 0 5px 10px rgba(0,0,0,.5);
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    color: white;
+    margin-right: 50px;
+    border-radius: 10px;
+  }
+  
+  .login-introduction {
+    font-size: 2.5em;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+  
+  .login-motto {
+    font-size: 1.5em;
+    margin-top: -25px;
+  }
+  
+  .login-right-container {
+    width: 30%;
+    height: 70%;
+    margin-top: 50px;
+  }
+
+  .login-picture {
+    width: 565px;
+    height: 300px;
+    border-radius: 10px;
+    margin: 0 0 10px 100px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  }
+
+  .login-logo {
+    width: 320px;
+    height: auto;
+    margin: 0 0 10px 50px;
+  }
+  
+  .login-right-container-form {
+    box-shadow: 0 5px 10px rgba(0,0,0,.5);
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px 50px 50px 50px;
+  }
+
+  .login-header {
+    font-size: 2em;
+    font-weight: 500;
+    text-align: center;
+    color: rgba(0, 116, 144, 1);
+    margin-bottom: 20px;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-input-field label {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(0, 116, 144, 1);
+  }
+  
+  .login-input-field {
+    margin-bottom: 25px;
+  }
+
+  .login-input-field input {
+    outline: none;
+    width: 100%; /* Set width to 100% */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+  }
+
+  .login-input-field input[name="email"] {
+    padding-right: 15px; /* Adjust padding as needed */
+  }
+
+  .login-button {
+    width: 100%;
+    background: rgba(0, 116, 144, 1);
+    color: white;
+    margin-top: 25px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+  }
+  
+  .login-button:hover {
+    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+  }
+
+ .login-forgotpass {
+    margin: -10px 0 10px 0;
+    text-align: end;
+}
+
+  .signup {
+      margin-top: 10px;
+      text-align: center;
+  }
+
+  .signup label {
+      color: #B9B9B9;
+  }
+
+  .login-forgotpass label, .signup u {
+      cursor: pointer;
+      color: rgba(0, 116, 144, 1);
+  }
+
+  .password-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .login-input-field input {
+    flex: 1; 
+    padding-right: 40px; /* Adjust to leave space for the toggle button */
+  }
+  
+  .password-visibility-toggle {
+    position: absolute;
+    right: 10px; /* Adjust the position as needed */
+    top: 50%; 
+    transform: translateY(-50%); /* Center the button vertically */
+    cursor: pointer; 
+  }
+  
