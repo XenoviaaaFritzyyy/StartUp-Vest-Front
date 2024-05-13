@@ -196,6 +196,7 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>Money Raised</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Target Funding</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -205,6 +206,9 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>500,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenFundingRound}>View</Button>
+                                </TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -241,6 +245,7 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>Total Share</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Percentage</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -251,6 +256,9 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenCapTable}>View</Button>
+                                </TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>
+                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
