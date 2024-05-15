@@ -12,6 +12,7 @@ import People from './Components/People';
 import CapTable from './Components/CapTable';
 import CreateBusinessProfile from './Form/CreateBusinessProfile';
 import UserDashboard from './Dashboard/UserDashboard';
+import LandingPage from './Components/LandingPage';
 
 import ViewStartupProfile from './Form/ViewStartupProfile';
 import ViewInvestorProfile from './Form/ViewInvestorProfile';
@@ -20,9 +21,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
-        
+        {/* <Route path="/landingpage" element={<LandingPage />} /> */}
+
         <Route path="/profile" element={<Profile />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/startupview" element={<StartUpView />} />
