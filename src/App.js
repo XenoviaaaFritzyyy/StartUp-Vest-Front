@@ -23,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route path="/landingpage" element={<LandingPage />} /> */}
+        <Route path="/login" element={<Login />} />
 
         <Route path="/profile" element={<Profile />} />
         <Route path="/companies" element={<Companies />} />

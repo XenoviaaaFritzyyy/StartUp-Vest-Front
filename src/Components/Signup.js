@@ -111,7 +111,7 @@ function Signup() {
 
                             <Grid item xs={12} sx={{ textAlign: 'center' }}>
                                 <Typography variant="h7" sx={{ color: '#F2F2F2' }}>
-                                    Already have an account? <Link to="/" style={{ color: '#FFFFFF' }}>Sign In</Link>
+                                    Already have an account? <Link to="/login" style={{ color: '#FFFFFF' }}>Sign In</Link>
                                 </Typography>
                             </Grid>
                         </Grid>
