@@ -13,6 +13,9 @@ import CapTable from './Components/CapTable';
 import CreateBusinessProfile from './Form/CreateBusinessProfile';
 import UserDashboard from './Dashboard/UserDashboard';
 
+import ViewStartupProfile from './Form/ViewStartupProfile';
+import ViewInvestorProfile from './Form/ViewInvestorProfile';
+
 function App() {
   return (
     <Router>
@@ -30,6 +33,8 @@ function App() {
         <Route path="/captable" element={<CapTable />} />
         <Route path="/userdashboard" element={<UserDashboard />} />
 
+        <Route path="/startupprofile" element={<ViewStartupProfile />} />
+        <Route path="/investorprofile" element={<ViewInvestorProfile />} />
       </Routes>
     </Router>
   );
