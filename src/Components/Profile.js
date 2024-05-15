@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import CreateBusinessProfile from '../Form/CreateBusinessProfile';
+import ViewStartupProfile from '../Form/ViewStartupProfile';
+import ViewInvestorProfile from '../Form/ViewInvestorProfile';
+
 import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid,
-        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContentText, DialogContent } from '@mui/material';
 
 const drawerWidth = 240;
 
 function Profile() {
+    const [isEditable, setIsEditable] = useState(false);
+    const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
+    const [businessProfiles, setBusinessProfiles] = useState([]);
+    const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+    const [openViewStartup, setOpenViewStartup] = useState(false);
+    const [openViewInvestor, setOpenViewInvestor] = useState(false);
+
     const [userData, setUserData] = useState({
         firstName: '',
         lastName: '',
@@ -16,25 +26,50 @@ function Profile() {
         gender: '',
         avatar: '',
     });
-    const [isEditable, setIsEditable] = useState(false);
-    const [openCreateBusinessProfile, setOpenCreateBusinessProfile] = useState(false);
+
+    // Fetch user data when the component mounts.
     useEffect(() => {
         fetchUserData();
+        fetchBusinessProfiles();
     }, []);
 
     const fetchUserData = async () => {
-    try {
-        const response = await axios.get('http://localhost:3000/users/profile', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
+        try {
+            const response = await axios.get('http://localhost:3000/users/profile', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+    
+        setUserData(response.data);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
 
-    setUserData(response.data);
+    const fetchBusinessProfiles = async () => {
+        try {
+            const responseStartups = await axios.get(`http://localhost:3000/startups`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            const responseInvestors = await axios.get(`http://localhost:3000/investors`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+    
+            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
+            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+    
+            setBusinessProfiles([...startups, ...investors]);
         } catch (error) {
-            console.error('Failed to fetch user data:', error);
+            console.error('Failed to fetch business profiles:', error);
         }
     };
-
+    
     const handleEditClick = () => {
         setIsEditable(!isEditable);
     };
@@ -50,11 +85,27 @@ function Profile() {
     };
 
     const handleOpenBusinessProfile = () => {
-        setOpenCreateBusinessProfile(true);
+        setCreateBusinessProfile(true);
     };
 
     const handleCloseBusinessProfile = () => {
-        setOpenCreateBusinessProfile(false);
+        setCreateBusinessProfile(false);
+    };
+
+    const handleOpenStartUp = () => {
+        setOpenViewStartup(true);
+    };
+
+    const handleCloseStartUp = () => {
+        setOpenViewStartup(false);
+    };
+
+    const handleOpenInvestor = () => {
+        setOpenViewInvestor(true);
+    };
+
+    const handleCloseInvestor = () => {
+        setOpenViewInvestor(false);
     };
 
     const handleSaveChanges = async () => {
@@ -193,30 +244,59 @@ function Profile() {
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Name</Typography>
                                 </TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Industry</Typography>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Information</Typography>
+                                </TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
                                 </TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
-
+                        
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Investor</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Technology</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>View</Button>
-                                </TableCell>
-                            </TableRow>
+                            {businessProfiles.map((profile) => (
+                                <TableRow key={`${profile.type}-${profile.id}`}>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenInvestor}>
+                                            View
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
+
                     </Table>
                     </TableContainer>
                 </Box>
                 </Box>
             </Box>
 
+            {selectedBusinessProfile && (
+                <Dialog open={Boolean(selectedBusinessProfile)} onClose={() => setSelectedBusinessProfile(null)}>
+                    <DialogTitle>{selectedBusinessProfile.type}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Name: {selectedBusinessProfile.companyName || selectedBusinessProfile.lastName}</DialogContentText>
+                        <DialogContentText>Information: {selectedBusinessProfile.industry || selectedBusinessProfile.emailAddress}</DialogContentText>
+                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription || selectedBusinessProfile.biography}</DialogContentText>
+                        {/* Add more fields as needed */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setSelectedBusinessProfile(null)}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+
+                
             {/* Custom Full Page Dialog for Creating Business Profile */}
                 {openCreateBusinessProfile && (
                     <Box
@@ -245,6 +325,86 @@ function Profile() {
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
                             <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseBusinessProfile}>
+                                Cancel
+                            </Button>
+
+                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
+                                Create Profile
+                        </Button>*/}
+                        </Box>
+                    </DialogActions>
+                    </Box>
+                </Box>
+            )}
+
+            {/* Custom Full Page Dialog for Creating Business Profile */}
+            {openViewStartup && (
+                    <Box
+                        sx={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 1300,
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',}}>
+
+                    <Box
+                        sx={{
+                            background: '#F2F2F2',
+                            maxidth: '100%',
+                            maxHeight: '90%',
+                            overflowY: 'auto',
+                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
+
+                        <ViewStartupProfile />
+
+                    <DialogActions>
+                        <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
+                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseStartUp}>
+                                Cancel
+                            </Button>
+
+                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
+                                Create Profile
+                        </Button>*/}
+                        </Box>
+                    </DialogActions>
+                    </Box>
+                </Box>
+            )}
+
+            {/* Custom Full Page Dialog for Creating Business Profile */}
+             {openViewInvestor && (
+                    <Box
+                        sx={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 1300,
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',}}>
+
+                    <Box
+                        sx={{
+                            background: '#F2F2F2',
+                            maxidth: '100%',
+                            maxHeight: '90%',
+                            overflowY: 'auto',
+                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
+
+                        <ViewInvestorProfile />
+
+                    <DialogActions>
+                        <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
+                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseInvestor}>
                                 Cancel
                             </Button>
 
