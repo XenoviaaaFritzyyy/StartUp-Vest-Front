@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Box, Typography, Button, Grid} from '@mui/material';
+import { Container, Box, Typography, Button, Grid } from '@mui/material';
 
 const LandingPage = () => {
   return (
@@ -22,45 +22,76 @@ const LandingPage = () => {
           />
         </Box>
         <Box>
-          <Button variant="outlined" color="primary" sx={{ mr: 2 }}>
-            Login
-          </Button>
-          <Button 
-            variant="contained" 
+          {/* Link to Signup */}
+          <Button
+            variant="contained"
+            component={Link}
+            to="/signup"
             sx={{
               backgroundImage: 'linear-gradient(45deg, #F1CC0A, #EDA61C)',
-              color: '#FFFFFF'
+              color: '#FFFFFF',
+              mr: 2,
             }}
           >
             Signup
           </Button>
+          {/* Link to Login */}
+          <Button
+            variant="outlined"
+            component={Link}
+            to="/login"
+            color="primary"
+          >
+            Login
+          </Button>
         </Box>
       </Box>
-      
+
       <Grid container spacing={4} sx={{ mt: 5 }}>
         <Grid item xs={12} md={6}>
-            <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', color: '#008A90', textAlign: 'left', fontSize: '4rem' }}>
-                <span style={{ display: 'block' }}>STARTUP</span>
-                <span style={{ display: 'block' }}>VEST</span>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{
+                fontWeight: 'bold',
+                color: '#008A90',
+                textAlign: 'left',
+                fontSize: '4rem',
+              }}
+            >
+              <span style={{ display: 'block' }}>STARTUP</span>
+              <span style={{ display: 'block' }}>VEST</span>
             </Typography>
-            <Typography variant="body1" align="left" paragraph sx={{ fontWeight: 'bold', color: '#000000' }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <Typography
+              variant="body1"
+              align="left"
+              paragraph
+              sx={{ fontWeight: 'bold', color: '#000000' }}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem
+              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua.
             </Typography>
-            </Box>
+          </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-            <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ textAlign: 'center' }}>
             <Box
-                component="img"
-                src="/images/startup_illustration.png"
-                alt="Startup Illustration"
-                sx={{ width: '132%', height: 'auto', maxWidth: '120%', maxHeight: 700 }}
+              component="img"
+              src="/images/startup_illustration.png"
+              alt="Startup Illustration"
+              sx={{
+                width: '132%',
+                height: 'auto',
+                maxWidth: '120%',
+                maxHeight: 700,
+              }}
             />
-            </Box>
+          </Box>
         </Grid>
-        </Grid>
+      </Grid>
     </Container>
   );
 };
