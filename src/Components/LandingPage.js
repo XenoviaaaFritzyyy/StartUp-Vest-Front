@@ -40,7 +40,7 @@ const LandingPage = () => {
       <Grid container spacing={4} sx={{ mt: 5 }}>
         <Grid item xs={12} md={6}>
             <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', color: '#008A90', textAlign: 'left' }}>
+            <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', color: '#008A90', textAlign: 'left', fontSize: '4rem' }}>
                 <span style={{ display: 'block' }}>STARTUP</span>
                 <span style={{ display: 'block' }}>VEST</span>
             </Typography>
