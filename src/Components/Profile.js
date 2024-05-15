@@ -92,7 +92,9 @@ function Profile() {
         setCreateBusinessProfile(false);
     };
 
-    const handleOpenStartUp = () => {
+    const handleOpenStartUp = (profile) => {
+        console.log('Opening startup profile:', profile);
+        setSelectedBusinessProfile(profile);
         setOpenViewStartup(true);
     };
 
@@ -100,7 +102,9 @@ function Profile() {
         setOpenViewStartup(false);
     };
 
-    const handleOpenInvestor = () => {
+    const handleOpenInvestor = (profile) => {
+        console.log('Opening investor profile:', profile);
+        setSelectedBusinessProfile(profile);
         setOpenViewInvestor(true);
     };
 
@@ -128,6 +132,28 @@ function Profile() {
             } catch (error) {
         console.error('Failed to update user data:', error);
             throw error;
+        }
+    };
+
+    const handleSoftDelete = async (profile) => {
+        if (!profile) {
+            console.error('No profile selected');
+            return;
+        }
+    
+        try {
+            const endpoint = `http://localhost:3000/startups/${profile.id}/delete`;
+    
+            await axios.put(endpoint, {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+    
+            // Refresh the page or fetch the data again to reflect the changes
+            fetchBusinessProfiles();
+        } catch (error) {
+            console.error('Failed to delete profile:', error);
         }
     };
 
@@ -249,9 +275,9 @@ function Profile() {
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
                                 </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
+                                {/* <TableCell sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         </TableHead>
                         
@@ -262,15 +288,16 @@ function Profile() {
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenInvestor}>
+                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
                                             View
                                         </Button>
-                                    </TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                        <Button variant="contained" sx={{ marginLeft: '20px', background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={() => handleSoftDelete(profile)}>
                                             Delete
                                         </Button>
                                     </TableCell>
+                                    {/* <TableCell sx={{ textAlign: 'center' }}>
+                                    
+                                    </TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -281,20 +308,8 @@ function Profile() {
                 </Box>
             </Box>
 
-            {selectedBusinessProfile && (
-                <Dialog open={Boolean(selectedBusinessProfile)} onClose={() => setSelectedBusinessProfile(null)}>
-                    <DialogTitle>{selectedBusinessProfile.type}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>Name: {selectedBusinessProfile.companyName || selectedBusinessProfile.lastName}</DialogContentText>
-                        <DialogContentText>Information: {selectedBusinessProfile.industry || selectedBusinessProfile.emailAddress}</DialogContentText>
-                        <DialogContentText>Description: {selectedBusinessProfile.companyDescription || selectedBusinessProfile.biography}</DialogContentText>
-                        {/* Add more fields as needed */}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setSelectedBusinessProfile(null)}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-            )}
+            {openViewStartup && <ViewStartupProfile profile={selectedBusinessProfile} />}
+            {openViewInvestor && <ViewInvestorProfile profile={selectedBusinessProfile} />}
 
                 
             {/* Custom Full Page Dialog for Creating Business Profile */}
@@ -360,7 +375,7 @@ function Profile() {
                             overflowY: 'auto',
                             boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
 
-                        <ViewStartupProfile />
+                        <ViewStartupProfile profile={selectedBusinessProfile}/>
 
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
@@ -400,7 +415,7 @@ function Profile() {
                             overflowY: 'auto',
                             boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
 
-                        <ViewInvestorProfile />
+                        <ViewInvestorProfile profile={selectedBusinessProfile}/>
 
                     <DialogActions>
                         <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
