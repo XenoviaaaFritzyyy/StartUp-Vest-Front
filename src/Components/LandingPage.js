@@ -21,21 +21,18 @@ const LandingPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ position: 'relative', mt: 5 }}>
-      <Box
-        sx={{
+      <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           pt: 5,
-        }}
-      >
+        }}>
+
         <Box>
-          <Box
-            component="img"
+          <Box component="img"
             src="/images/logoStartUp.png"
             alt="Startup Vest Logo"
-            sx={{ height: 69 }}
-          />
+            sx={{ height: 69 }}/>
         </Box>
 
         <Box>
@@ -43,15 +40,13 @@ const LandingPage = () => {
             Login
           </Button>
 
-          <Button
-            component={Link}
+          <Button component={Link}
             to="/signup"
             variant="contained"
             sx={{
               backgroundImage: 'linear-gradient(45deg, #F1CC0A, #EDA61C)',
               color: '#FFFFFF', mr: 3
-            }}
-          >
+            }}>
             Signup
           </Button>
         </Box>
@@ -70,10 +65,9 @@ const LandingPage = () => {
               backgroundColor: 'rgba(0, 116, 144, 1)',
               borderRadius: '0 0 0 10px',
               zIndex: 10,
-            }}
-          />
-          <Box
-            sx={{
+            }}/>
+
+          <Box sx={{
               position: 'fixed',
               top: 0,
               right: 0,
@@ -82,12 +76,10 @@ const LandingPage = () => {
               backgroundColor: 'rgba(0, 116, 144, 1)',
               borderRadius: '0 0 0 10px',
               zIndex: 10,
-            }}
-          />
+            }}/>
 
           {/* Bottom Left Border Design */}
-          <Box
-            sx={{
+          <Box sx={{
               position: 'fixed',
               bottom: 0,
               left: 0,
@@ -96,11 +88,9 @@ const LandingPage = () => {
               backgroundColor: 'rgba(0, 116, 144, 1)',
               borderRadius: ' 0 10px 0 0',
               zIndex: 10,
-            }}
-          />
+            }}/>
 
-          <Box
-            sx={{
+          <Box sx={{
               position: 'fixed',
               bottom: 0,
               left: 0,
@@ -109,24 +99,21 @@ const LandingPage = () => {
               backgroundColor: 'rgba(0, 116, 144, 1)',
               borderRadius: ' 0 10px 0 0',
               zIndex: 10,
-            }}
-          />
+            }}/>
         </>
       )}
 
       <Grid container spacing={4} sx={{ mt: 5 }}>
         <Grid item xs={12} md={6}>
-          <Box
-            sx={{
+          <Box sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
               textAlign: { xs: 'center', md: 'left' },
-            }}
-          >
-            <Typography variant="h2" gutterBottom sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)' }}>
+            }}>
+            <Typography variant="h2" gutterBottom sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', ml: 3 }}>
               Empower Your Startup Journey
             </Typography>
             <Typography variant="h6" align="justify" paragraph sx={{ml: 3, mr: 3}}>
