@@ -288,16 +288,13 @@ function Profile() {
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
                                             View
                                         </Button>
-                                        <Button variant="contained" sx={{ marginLeft: '20px', background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={() => handleSoftDelete(profile)}>
+                                        <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleSoftDelete(profile)}>
                                             Delete
                                         </Button>
                                     </TableCell>
-                                    {/* <TableCell sx={{ textAlign: 'center' }}>
-                                    
-                                    </TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>

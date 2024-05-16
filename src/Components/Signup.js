@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'; // Import Axios
-import { Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, InputAdornment, IconButton } from '@mui/material';
+import { Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputAdornment, IconButton } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
@@ -109,15 +109,15 @@ function Signup() {
                                 </Button>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                                <Typography variant="h7" sx={{ color: '#F2F2F2' }}>
-                                    Already have an account? <Link to="/login" style={{ color: '#FFFFFF' }}>Sign In</Link>
-                                </Typography>
+                                <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                                    <Typography variant="h7" sx={{ color: '#F2F2F2' }}>
+                                        Already have an account? <Link to="/login" style={{ color: '#FFFFFF' }}>Sign In</Link>
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </form>
+                        </form>
+                    </Grid>
                 </Grid>
-            </Grid>
         </div>
     );
 }

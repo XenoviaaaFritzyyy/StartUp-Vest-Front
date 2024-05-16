@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Navbar from "../Navbar/Navbar";
-import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 
@@ -13,8 +13,9 @@ const drawerWidth = 240;
 function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
     const [openCapTable, setOpenCapTable] = useState(false);
-
-    const [filter, setFilter] = useState('All'); // Add this line
+    const [businessProfiles, setBusinessProfiles] = useState([]);
+    // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+    const [filter, setFilter] = useState('All');
 
     const [userData, setUserData] = useState({
         firstName: '',
@@ -25,8 +26,10 @@ function UserDashboard() {
         avatar: '',
     });
 
-    const [businessProfiles, setBusinessProfiles] = useState([]);
-    // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+    useEffect(() => {
+        // fetchUserData();
+        fetchBusinessProfiles();
+    }, []);
 
     useEffect(() => {
         // fetchUserData();
@@ -155,7 +158,7 @@ function UserDashboard() {
                     </Box>
 
                     {/* Box for Find New Companies Button */}
-                    <Box sx={{ background: 'white', p: 9, borderRadius: 2 }}>
+                    <Box sx={{ background: 'white', p: 6, borderRadius: 2 }}>
                         <Typography variant="h5">Find New Companies</Typography>
                         <Typography variant="h6">Connect with the right people at qualified companies.</Typography>
 
@@ -196,7 +199,6 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>Money Raised</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Target Funding</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -205,10 +207,12 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>100,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>500,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenFundingRound}>View</Button>
-                                </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>Delete</Button>
+                                    <Button variant="contained"sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenFundingRound}>
+                                        View
+                                    </Button>
+                                    <Button variant="outlined"  sx={{ marginLeft: '20px',  color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                        Delete
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -245,7 +249,6 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>Total Share</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Percentage</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -255,10 +258,12 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={handleOpenCapTable}>View</Button>
-                                </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>Delete</Button>
+                                <Button variant="contained"sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenCapTable}>
+                                        View
+                                    </Button>
+                                    <Button variant="outlined"  sx={{ marginLeft: '20px',  color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                        Delete
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         </TableBody>

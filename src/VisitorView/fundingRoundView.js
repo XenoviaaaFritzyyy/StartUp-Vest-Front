@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import StoreIcon from '@mui/icons-material/Store';
+import StarsIcon from '@mui/icons-material/Stars';
 
 import Navbar from '../Navbar/Navbar';
 
@@ -8,11 +9,16 @@ const drawerWidth = 240;
 
 function FundingRoundView() {
   const [selectedPage, setSelectedPage] = useState('summary');
+  const [isFollowed, setIsFollowed] = useState(false); 
 
   const handlePageChange = (page) => {
     setSelectedPage(page);
   };
 
+  const handleFollowToggle = () => {
+    setIsFollowed(!isFollowed);
+  };
+  
   return (
     <Box sx={{ width: '100%', paddingLeft: `${drawerWidth}px`, mt: 5 }}>
       <Navbar />
@@ -23,7 +29,7 @@ function FundingRoundView() {
           <Avatar variant="rounded" sx={{ width: 180, height: 180, border: '5px solid rgba(0, 116, 144, 1)', borderRadius: 3, ml: 5 }}></Avatar>
         </Box>
         <Typography variant="h4" gutterBottom>Seed Round - Facebook</Typography>
-
+        <StarsIcon sx={{ cursor: 'pointer', ml: 1, mt: -1, color: isFollowed ? 'green' : 'inherit' }} onClick={handleFollowToggle} />
       </Box>
 
       <Box display="flex" alignItems="center" justifyContent="flex-end">

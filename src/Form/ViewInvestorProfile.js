@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button} from '@mui/material';
+import countries from '../static/countries';
+import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete} from '@mui/material';
 import axios from 'axios';
 
 function ViewInvestorProfile({ profile }) {
@@ -24,17 +25,6 @@ function ViewInvestorProfile({ profile }) {
     const [twitter, setTwitter] = useState(profile ? profile.twitter : '');
     const [instagram, setInstagram] = useState(profile ? profile.instagram : '');
     const [linkedIn, setLinkedIn] = useState(profile ? profile.linkedIn : '');
-    
-    const industries = [
-        "Technology", "Healthcare", "Finance", "Education", "Hospitality",
-        "Retail", "Automotive", "Entertainment", "Manufacturing", "Real Estate",
-        "Food and Beverage", "Travel", "Fashion", "Telecommunications", "Energy",
-        "Media", "Construction", "Agriculture", "Transportation", "Pharmaceuticals",
-        "Environmental", "Fitness", "Consulting", "Government", "Non-profit",
-        "Insurance", "Legal", "Marketing", "E-commerce", "Sports", "Beauty",
-        "Design", "Software", "Hardware", "Biotechnology", "Artificial Intelligence",
-        "Space", "Renewable Energy", "Cybersecurity", "Blockchain", "Gaming"
-    ];
 
     const handleAvatarClick = () => {
         fileInputRef.current.click();
@@ -121,27 +111,27 @@ function ViewInvestorProfile({ profile }) {
                         <Grid item xs={12} sm={11.4}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <label>First Name</label>
+                                    <label>First Name *</label>
                                     <TextField fullWidth variant="filled" value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <label>Last Name</label>
+                                    <label>Last Name *</label>
                                     <TextField fullWidth variant="filled" value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <label>Email Address</label>
+                                    <label>Email Address *</label>
                                     <TextField fullWidth variant="filled" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <label>Contact Information</label>
+                                    <label>Contact Information *</label>
                                     <TextField fullWidth variant="filled" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <label>Gender</label>
+                                    <label>Gender *</label>
                                     <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable}>
                                         <MenuItem value={'male'}>Male</MenuItem>
                                         <MenuItem value={'female'}>Female</MenuItem>
@@ -151,7 +141,7 @@ function ViewInvestorProfile({ profile }) {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <label>Biography</label>
+                                    <label>Biography *</label>
                                     <TextField fullWidth variant="filled" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
                             </Grid>
@@ -166,27 +156,59 @@ function ViewInvestorProfile({ profile }) {
                         <Grid item xs={12} sm={11.4}>
                             <Grid container spacing={2}>
                                 <Grid item xs={8}>
-                                    <label>Street Address</label>
+                                    <label>Street Address *</label>
                                     <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <label>Country</label>
-                                    <TextField fullWidth variant="filled" value={country} onChange={(e) => setCountry(e.target.value)} disabled={!isEditable}/>
+                                    <label>Country *</label>
+                                    <Autocomplete
+                                        options={countries}
+                                        getOptionLabel={(option) => option.label}
+                                        value={countries.find(c => c.label === country) || null}
+                                        onChange={(event, newValue) => {
+                                            setCountry(newValue ? newValue.label : '');
+                                        }}
+                                        renderOption={(props, option) => (
+                                            <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                                <img
+                                                    loading="lazy"
+                                                    width="20"
+                                                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                                    alt=""
+                                                />
+                                                {option.label} ({option.code}) +{option.phone}
+                                            </Box>
+                                        )}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                variant="filled"
+                                                label="Choose a country"
+                                                inputProps={{
+                                                    ...params.inputProps,
+                                                    autoComplete: 'new-password',
+                                                }}
+                                                disabled={!isEditable}
+                                            />
+                                        )}
+                                    />
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <label>City</label>
+                                    <label>City *</label>
                                     <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <label>State</label>
+                                    <label>State *</label>
                                     <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <label>Postal/Zip Code</label>
+                                    <label>Postal/Zip Code *</label>
                                     <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
                             </Grid>

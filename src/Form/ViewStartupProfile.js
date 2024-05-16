@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button} from '@mui/material';
+import countries from '../static/countries';
+import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Button, Autocomplete} from '@mui/material';
 import axios from 'axios';
 
 function ViewStartupProfile({ profile }) {
@@ -139,7 +140,7 @@ function ViewStartupProfile({ profile }) {
                 <Grid item xs={12} sm={11.4}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <label>Company Name</label>
+                            <label>Company Name *</label>
                             <TextField 
                                 fullWidth 
                                 variant="filled"
@@ -148,7 +149,7 @@ function ViewStartupProfile({ profile }) {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <label>Company Description</label>
+                            <label>Company Description *</label>
                             <TextField
                                 fullWidth
                                 variant="filled"
@@ -159,7 +160,7 @@ function ViewStartupProfile({ profile }) {
                         </Grid>
 
                     <Grid item xs={4}>
-                        <label><b>Founded Date</b><br/>Month</label>
+                        <label><b>Founded Date *</b><br/>Month</label>
                         <FormControl fullWidth variant="filled">
                             <Select
                                 labelId="month-label"
@@ -203,7 +204,7 @@ function ViewStartupProfile({ profile }) {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <label>Type of Company</label>
+                    <label>Type of Company *</label>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>  
                             <Select 
@@ -220,7 +221,7 @@ function ViewStartupProfile({ profile }) {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <label>No. of Employees</label>
+                    <label>No. of Employees *</label>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>  
                             <Select 
@@ -239,12 +240,12 @@ function ViewStartupProfile({ profile }) {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <label>Phone Number</label>
+                    <label>Phone Number *</label>
                         <TextField fullWidth variant="filled" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} disabled={!isEditable}/>
                 </Grid>
 
                 <Grid item xs={12}>
-                    <label>Contact Email</label>
+                    <label>Contact Email *</label>
                         <TextField fullWidth variant="filled" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} disabled={!isEditable}/>
                     </Grid>
                 </Grid>
@@ -259,27 +260,59 @@ function ViewStartupProfile({ profile }) {
             <Grid item xs={12} sm={11.4}>
                 <Grid container spacing={2}>
                     <Grid item xs={8}>
-                        <label>Street Address</label>
+                        <label>Street Address *</label>
                         <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable}/>
                     </Grid>
 
                     <Grid item xs={4}>
-                        <label>Country</label>
-                        <TextField fullWidth variant="filled" value={country} onChange={(e) => setCountry(e.target.value)} disabled={!isEditable}/>
+                        <label>Country *</label>
+                        <Autocomplete
+                            options={countries}
+                            getOptionLabel={(option) => option.label}
+                            value={countries.find(c => c.label === country) || null}
+                            onChange={(event, newValue) => {
+                                setCountry(newValue ? newValue.label : '');
+                            }}
+                            renderOption={(props, option) => (
+                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                    <img
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                        alt=""
+                                    />
+                                    {option.label} ({option.code}) +{option.phone}
+                                </Box>
+                            )}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    fullWidth
+                                    variant="filled"
+                                    label="Choose a country"
+                                    inputProps={{
+                                        ...params.inputProps,
+                                        autoComplete: 'new-password',
+                                    }}
+                                    disabled={!isEditable}
+                                />
+                            )}
+                        />
                     </Grid>
 
                     <Grid item xs={4}>
-                        <label>City</label>
+                        <label>City *</label>
                         <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable}/>
                     </Grid>
 
                     <Grid item xs={4}>
-                        <label>State</label>
+                        <label>State *</label>
                         <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable}/>
                     </Grid>
 
                     <Grid item xs={4}>
-                        <label>Postal/Zip Code</label>
+                        <label>Postal/Zip Code *</label>
                         <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable}/>
                     </Grid>
                 </Grid>
