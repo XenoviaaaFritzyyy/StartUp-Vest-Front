@@ -1,22 +1,23 @@
 import { useState, useRef } from 'react';
 import countries from '../static/countries';
+import industries from '../static/industries';
+
 import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Button, Autocomplete} from '@mui/material';
 import axios from 'axios';
 
 function ViewStartupProfile({ profile }) {
     const [avatar, setAvatar] = useState('');
     const fileInputRef = useRef(null);
-
     const [isEditable, setIsEditable] = useState(false);
 
-    // const [foundedDay, setFoundedDay] = useState('');
-    // const [foundedMonth, setFoundedMonth] = useState('');
-    // const [foundedYear, setFoundedYear] = useState(''); 
-    // Split the date string into its components
     let month = '', day = '', year = '';
     if (profile && profile.foundedDate) {
         [month, day, year] = profile.foundedDate.split(/[\s,]+/);
     }
+    // const [foundedDay, setFoundedDay] = useState('');
+    // const [foundedMonth, setFoundedMonth] = useState('');
+    // const [foundedYear, setFoundedYear] = useState(''); 
+    // Split the date string into its components
     // Use these components to set the initial state
     const [foundedMonth, setFoundedMonth] = useState(month);
     const [foundedDay, setFoundedDay] = useState(day);
@@ -44,17 +45,6 @@ function ViewStartupProfile({ profile }) {
         return new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(2000, i, 1));
     });
     const years = [...Array(51).keys()].map(i => new Date().getFullYear() - i);
-    
-    const industries = [
-        "Technology", "Healthcare", "Finance", "Education", "Hospitality",
-        "Retail", "Automotive", "Entertainment", "Manufacturing", "Real Estate",
-        "Food and Beverage", "Travel", "Fashion", "Telecommunications", "Energy",
-        "Media", "Construction", "Agriculture", "Transportation", "Pharmaceuticals",
-        "Environmental", "Fitness", "Consulting", "Government", "Non-profit",
-        "Insurance", "Legal", "Marketing", "E-commerce", "Sports", "Beauty",
-        "Design", "Software", "Hardware", "Biotechnology", "Artificial Intelligence",
-        "Space", "Renewable Energy", "Cybersecurity", "Blockchain", "Gaming"
-    ];
 
     const handleAvatarClick = () => {
         fileInputRef.current.click();

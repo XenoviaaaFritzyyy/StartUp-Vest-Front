@@ -5,8 +5,7 @@ import CreateBusinessProfile from '../Form/CreateBusinessProfile';
 import ViewStartupProfile from '../Form/ViewStartupProfile';
 import ViewInvestorProfile from '../Form/ViewInvestorProfile';
 
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid,
-        DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContentText, DialogContent } from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -339,10 +338,6 @@ function Profile() {
                             <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseBusinessProfile}>
                                 Cancel
                             </Button>
-
-                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
-                                Create Profile
-                        </Button>*/}
                         </Box>
                     </DialogActions>
                     </Box>
@@ -379,10 +374,6 @@ function Profile() {
                             <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseStartUp}>
                                 Cancel
                             </Button>
-
-                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
-                                Create Profile
-                        </Button>*/}
                         </Box>
                     </DialogActions>
                     </Box>
@@ -419,10 +410,6 @@ function Profile() {
                             <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseInvestor}>
                                 Cancel
                             </Button>
-
-                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}>
-                                Create Profile
-                        </Button>*/}
                         </Box>
                     </DialogActions>
                     </Box>
