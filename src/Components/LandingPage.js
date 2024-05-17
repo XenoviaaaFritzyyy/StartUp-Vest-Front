@@ -7,7 +7,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsLargeScreen(window.innerWidth > 768); 
+      setIsLargeScreen(window.innerWidth > 1024); 
     };
 
     handleResize();
@@ -27,13 +27,11 @@ const LandingPage = () => {
           alignItems: 'center',
           pt: 5,
         }}>
-
-        <Box>
-          <Box component="img"
-            src="/images/logoStartUp.png"
-            alt="Startup Vest Logo"
-            sx={{ height: 69 }}/>
-        </Box>
+        <Box component="img"
+          src="/images/logoStartUp.png"
+          alt="Startup Vest Logo"
+          sx={{ width: '25%', height: 'auto', ml: 3 }}
+        />
 
         <Box>
           <Button component={Link} to="/login" variant="outlined" color="primary" sx={{ mr: 2 }}>
@@ -45,7 +43,7 @@ const LandingPage = () => {
             variant="contained"
             sx={{
               backgroundImage: 'linear-gradient(45deg, #F1CC0A, #EDA61C)',
-              color: '#FFFFFF', mr: 3
+              color: '#FFFFFF'
             }}>
             Signup
           </Button>
@@ -86,7 +84,7 @@ const LandingPage = () => {
               width: '50%',
               height: '15px',
               backgroundColor: 'rgba(0, 116, 144, 1)',
-              borderRadius: ' 0 10px 0 0',
+              borderRadius: '0 10px 0 0',
               zIndex: 10,
             }}/>
 
@@ -97,13 +95,13 @@ const LandingPage = () => {
               width: '25px',
               height: '50%',
               backgroundColor: 'rgba(0, 116, 144, 1)',
-              borderRadius: ' 0 10px 0 0',
+              borderRadius: '0 10px 0 0',
               zIndex: 10,
             }}/>
         </>
       )}
 
-      <Grid container spacing={4} sx={{ mt: 5 }}>
+      <Grid container spacing={4} sx={{ mt: 3 }}>
         <Grid item xs={12} md={6}>
           <Box sx={{
               display: 'flex',
@@ -124,7 +122,7 @@ const LandingPage = () => {
 
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Box component="img" src="/images/startup_illustration.png" alt="Startup Illustration" sx={{ width: '100%', maxWidth: '800px' }} />
+            <Box component="img" src="/images/startup_illustration.png" alt="Startup Illustration" sx={{ width: '110%', maxWidth: '800px' }} />
           </Box>
         </Grid>
       </Grid>
