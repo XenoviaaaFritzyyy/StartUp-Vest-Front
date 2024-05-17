@@ -1,13 +1,14 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper, TextField, Avatar } from '@mui/material';
 import PropTypes from 'prop-types';
 import SearchIcon from '@mui/icons-material/Search';
 import { visuallyHidden } from '@mui/utils';
+import axios from 'axios';
 
 import Navbar from '../Navbar/Navbar';
 const drawerWidth = 240;
 
-function createData(id, transactionName, startupName, fundingType, moneyRaised, announcedDate, avatar) {
+function createData(id, transactionName, startupName, fundingType, moneyRaised, announcedDate,closedDate, avatar) {
   return {
     id,
     transactionName,
@@ -15,18 +16,10 @@ function createData(id, transactionName, startupName, fundingType, moneyRaised, 
     fundingType,
     moneyRaised,
     announcedDate,
+    closedDate,
     avatar
   };
 }
-
-const rows = [
-  createData(1, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(2, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(3, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(4, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-  createData(5, 'Seed Round - Facebook', 'Facebook', 'Seed', '---', 'April 20, 2024'),
-
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -57,13 +50,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  {
-    id: 'transactionName',
-    numeric: false,
-    disablePadding: true,
-    label: 'Transaction Name',
-    width: '20%',
-  },
+
   {
     id: 'startupName',
     numeric: false,
@@ -90,6 +77,13 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: 'Announced Date',
+    width: '20%',
+  },
+  {
+    id: 'closedDate',
+    numeric: false,
+    disablePadding: true,
+    label: 'Closed Date',
     width: '20%',
   },
 ];
@@ -156,20 +150,45 @@ function EnhancedTableToolbar({ onRequestSearch }) {
         placeholder="Search…"
         onChange={handleSearch}
         value={searchText}
-        sx={{width: 350 }}
+        sx={{ width: 350 }}
         InputProps={{
           startAdornment: <SearchIcon />,
-        }}/>
+        }} />
     </Toolbar>
   );
 }
 
 export default function FundingRound() {
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [orderBy, setOrderBy] = useState('transactionName');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filteredRows, setFilteredRows] = useState(rows);
+  const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  useEffect(() => {
+    const fetchFundingRounds = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/funding-rounds/all');
+        const fetchedRows = response.data.map(fundingRound => createData(
+          fundingRound.id,
+          fundingRound.transactionName,
+          fundingRound.startup?.companyName ?? 'N/A',
+          fundingRound.fundingType,
+          fundingRound.moneyRaised || '---',
+          new Date(fundingRound.announcedDate).toLocaleDateString(),
+          new Date(fundingRound.closedDate).toLocaleDateString(),
+          fundingRound.avatar || ''
+        ));
+        setRows(fetchedRows);
+        setFilteredRows(fetchedRows);
+      } catch (error) {
+        console.error('Error fetching funding rounds:', error);
+      }
+    };
+
+    fetchFundingRounds();
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -188,11 +207,11 @@ export default function FundingRound() {
 
   const handleSearch = (searchText) => {
     const filtered = rows.filter(row =>
-      row.transactionName.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.startupName.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.fundingType.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.moneyRaised.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.announcedDate.toLowerCase().includes(searchText.toLowerCase())
+      (row.startupName.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.fundingType?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.moneyRaised?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.announcedDate?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.closedDate?.toLowerCase() || '').includes(searchText.toLowerCase())
     );
     setFilteredRows(filtered);
   };
@@ -225,8 +244,8 @@ export default function FundingRound() {
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
-              onRequestSort={handleRequestSort}/>
-              
+              onRequestSort={handleRequestSort} />
+
             <TableBody>
               {visibleRows.map((row, index) => (
                 <TableRow
@@ -237,23 +256,18 @@ export default function FundingRound() {
 
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)'}}>{row.avatar}</Avatar>
-                      {row.transactionName}
-                    </Box>
-                  </TableCell>
-                  <TableCell component="th" scope="row" padding="none">
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)'}}>{row.avatar}</Avatar>
-                      {row.transactionName}
+                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.avatar}</Avatar>
+                      {row.startupName}
                     </Box>
                   </TableCell>
                   <TableCell align="left">{row.fundingType}</TableCell>
                   <TableCell align="left">{row.moneyRaised}</TableCell>
                   <TableCell align="left">{row.announcedDate}</TableCell>
+                  <TableCell align="left">{row.closedDate}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
-                <TableRow style={{height: 53 * emptyRows,}}>
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -268,8 +282,10 @@ export default function FundingRound() {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}/>
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </Box>
   );
 }
+

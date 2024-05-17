@@ -297,9 +297,9 @@ function UserDashboard() {
                                 Cancel
                             </Button>
 
-                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
+                            {/* <Button onClick="" variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
                                 Create
-                            </Button>
+                            </Button> */}
                         </Box>
                     </DialogActions>
                 </Box>
@@ -337,9 +337,9 @@ function UserDashboard() {
                                 Cancel
                             </Button>
 
-                            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
+                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
                                 Create
-                            </Button>
+                            </Button> */}
                         </Box>
                     </DialogActions>
                 </Box>
