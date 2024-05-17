@@ -284,7 +284,7 @@ function Profile() {
                             {businessProfiles.map((profile) => (
                                 <TableRow key={`${profile.type}-${profile.id}`}>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || `${profile.firstName} ${profile.lastName}`}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
                                         <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>

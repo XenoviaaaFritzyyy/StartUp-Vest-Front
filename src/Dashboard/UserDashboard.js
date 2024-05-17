@@ -3,7 +3,6 @@ import Navbar from "../Navbar/Navbar";
 import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-
 import CreateFundingRound from '../Form/CreateFundingRound';
 import CreateCapTable from '../Form/CreateCapTable';
 import axios from 'axios';
@@ -27,8 +26,10 @@ function UserDashboard() {
     });
 
     useEffect(() => {
-        // fetchUserData();
-        fetchBusinessProfiles();
+        document.body.style.backgroundColor = '#D3D3D3'; 
+        return () => {
+            document.body.style.backgroundColor = ''; 
+        };
     }, []);
 
     useEffect(() => {
@@ -97,12 +98,6 @@ function UserDashboard() {
         <>
             <Navbar />
             <Toolbar />
-
-            <style>{`
-                body {
-                background-color: #D3D3D3; /* Set your desired background color */
-                }
-            `}</style>
 
             <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
 

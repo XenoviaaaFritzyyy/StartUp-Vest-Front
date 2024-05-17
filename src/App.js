@@ -10,7 +10,6 @@ import UserView from './VisitorView/userProfileView';
 import FundingRound from './Components/FundingRound';
 import People from './Components/People';
 import CapTable from './Components/CapTable';
-import CreateBusinessProfile from './Form/CreateBusinessProfile';
 import UserDashboard from './Dashboard/UserDashboard';
 import LandingPage from './Components/LandingPage';
 import ViewStartupProfile from './Form/ViewStartupProfile';

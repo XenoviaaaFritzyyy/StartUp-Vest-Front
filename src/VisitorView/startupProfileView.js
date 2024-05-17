@@ -31,7 +31,7 @@ function StartUpView() {
           <Avatar variant="rounded" sx={{ width: 180, height: 180, border: '5px solid rgba(0, 116, 144, 1)', borderRadius: 3, ml: 5 }}></Avatar>
         </Box>
         <Typography variant="h4" gutterBottom>Facebook</Typography>
-        <StarsIcon sx={{ cursor: 'pointer', ml: 1, mt: -1, color: isFollowed ? 'green' : 'inherit' }} onClick={handleFollowToggle} />
+        <StarsIcon sx={{ cursor: 'pointer', ml: 1, mt: -1, color: isFollowed ? 'rgba(0, 116, 144, 1)' : 'inherit' }} onClick={handleFollowToggle} />
       </Box>
 
       <Box display="flex" alignItems="center" justifyContent="flex-end">
