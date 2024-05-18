@@ -17,7 +17,10 @@ function UserDashboard() {
     const [filter, setFilter] = useState('All');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(3);
-    
+        const [selectedStartup, setSelectedStartup] = useState('All');
+    const [fundingRounds, setFundingRounds] = useState([]);
+    const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
+
     const [userData, setUserData] = useState({
         firstName: '',
         lastName: '',
@@ -28,15 +31,16 @@ function UserDashboard() {
     });
 
     useEffect(() => {
-        document.body.style.backgroundColor = '#D3D3D3'; 
+        document.body.style.backgroundColor = '#D3D3D3';
         return () => {
-            document.body.style.backgroundColor = ''; 
+            document.body.style.backgroundColor = '';
         };
     }, []);
 
     useEffect(() => {
         // fetchUserData();
         fetchBusinessProfiles();
+        fetchFundingRounds();
     }, []);
 
     const handleOpenFundingRound = () => {
@@ -50,7 +54,7 @@ function UserDashboard() {
     const handleOpenCapTable = () => {
         setOpenCapTable(true);
     }
-    
+
     const handleCloseCapTable = () => {
         setOpenCapTable(false);
     }
@@ -68,13 +72,18 @@ function UserDashboard() {
         setPage(0);
     };
 
+
+    const handleStartupChange = (event) => {
+        setSelectedStartup(event.target.value);
+        filterFundingRounds(event.target.value);
+    };
     // const fetchUserData = async () => {
     //     try {
     //         const response = await axios.get('http://localhost:3000/users/profile', {
     //             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
     //             },
     //         });
-    
+
     //     setUserData(response.data);
     //         } catch (error) {
     //             console.error('Failed to fetch user data:', error);
@@ -95,13 +104,36 @@ function UserDashboard() {
                 },
             });
 
-    
+
             const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
             const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
-    
+
             setBusinessProfiles([...startups, ...investors]);
         } catch (error) {
             console.error('Failed to fetch business profiles:', error);
+        }
+    };
+
+    const filterFundingRounds = (selectedStartup) => {
+        if (selectedStartup === 'All') {
+            setFilteredFundingRounds(fundingRounds);
+        } else {
+            const filteredRounds = fundingRounds.filter(round => round.startup && round.startup.id === selectedStartup);
+            setFilteredFundingRounds(filteredRounds);
+        }
+    };
+
+    const fetchFundingRounds = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/funding-rounds/all', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setFundingRounds(response.data);
+            setFilteredFundingRounds(response.data);
+        } catch (error) {
+            console.error('Error fetching funding rounds:', error);
         }
     };
 
@@ -172,7 +204,7 @@ function UserDashboard() {
                 {/* Right Boxes */}
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 2 }}>
                     {/* Box for Create Funding Round Button */}
-                    <Box sx={{ borderRadius: 4, mb: 2}}>
+                    <Box sx={{ borderRadius: 4, mb: 2 }}>
                         <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff', mb: 1 }} fullWidth onClick={handleOpenFundingRound}>
                             Create Funding Round
                         </Button>
@@ -207,18 +239,19 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                        <Select value={selectedStartup} onChange={handleStartupChange} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Startup">Startup</MenuItem>
-                                <MenuItem value="Investor">Investor</MenuItem>
+                                {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
+                                    <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Box>
                 </Box>
 
-                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2}}>
+                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2 }}>
                     <Table>
-                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
+                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Funding Type</TableCell>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Money Raised</TableCell>
@@ -227,31 +260,33 @@ function UserDashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Seed A</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>100,000</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>500,000</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="contained"sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenFundingRound}>
-                                        View
-                                    </Button>
-                                    <Button variant="outlined"  sx={{ marginLeft: '20px',  color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                        {filteredFundingRounds.map((round) => (
+                                <TableRow key={round.id}>
+                                    <TableCell sx={{ textAlign: 'center' }}>{round.fundingType}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingRound}>
+                                            View
+                                        </Button>
+                                        <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Box>
 
-                    {/* Table */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
-                        <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                            My Cap Table
-                        </Typography>
+            {/* Table */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
+                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                        My Cap Table
+                    </Typography>
 
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
@@ -265,9 +300,9 @@ function UserDashboard() {
                     </Box>
                 </Box>
 
-                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2}}>
+                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2 }}>
                     <Table>
-                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
+                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Shareholder's Name</TableCell>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Title</TableCell>
@@ -283,10 +318,10 @@ function UserDashboard() {
                                 <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
-                                <Button variant="contained"sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenCapTable}>
+                                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
                                         View
                                     </Button>
-                                    <Button variant="outlined"  sx={{ marginLeft: '20px',  color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                    <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
                                         Delete
                                     </Button>
                                 </TableCell>
@@ -309,31 +344,33 @@ function UserDashboard() {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center'}}>
-            
-                <Box
-                    sx={{
-                        background: '#F2F2F2',
-                        maxWidth: '100%',
-                        maxHeight: '90%',
-                        overflowY: 'auto',
-                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
+                        alignItems: 'center'
+                    }}>
 
-                    <CreateFundingRound />
+                    <Box
+                        sx={{
+                            background: '#F2F2F2',
+                            maxWidth: '100%',
+                            maxHeight: '90%',
+                            overflowY: 'auto',
+                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
+                        }}>
 
-                    <DialogActions>
-                        <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseFundingRound}>
-                                Cancel
-                            </Button>
+                        <CreateFundingRound />
 
-                            {/* <Button onClick="" variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
+                        <DialogActions>
+                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
+                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingRound}>
+                                    Cancel
+                                </Button>
+
+                                {/* <Button onClick="" variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
                                 Create
                             </Button> */}
-                        </Box>
-                    </DialogActions>
+                            </Box>
+                        </DialogActions>
+                    </Box>
                 </Box>
-            </Box>
             )}
 
             {/* Custom Full Page Dialog for Creating Funding Round */}
@@ -349,31 +386,33 @@ function UserDashboard() {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center'}}>
-            
-                <Box
-                    sx={{
-                        background: '#F2F2F2',
-                        maxWidth: '100%',
-                        maxHeight: '90%',
-                        overflowY: 'auto',
-                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
+                        alignItems: 'center'
+                    }}>
 
-                    <CreateCapTable />
+                    <Box
+                        sx={{
+                            background: '#F2F2F2',
+                            maxWidth: '100%',
+                            maxHeight: '90%',
+                            overflowY: 'auto',
+                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
+                        }}>
 
-                    <DialogActions>
-                        <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseCapTable}>
-                                Cancel
-                            </Button>
+                        <CreateCapTable />
 
-                            {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
+                        <DialogActions>
+                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
+                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseCapTable}>
+                                    Cancel
+                                </Button>
+
+                                {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
                                 Create
                             </Button> */}
-                        </Box>
-                    </DialogActions>
+                            </Box>
+                        </DialogActions>
+                    </Box>
                 </Box>
-            </Box>
             )}
         </>
     );
