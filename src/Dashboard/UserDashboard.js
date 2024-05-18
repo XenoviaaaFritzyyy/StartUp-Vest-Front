@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Navbar from "../Navbar/Navbar";
-import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl } from '@mui/material';
+import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, TablePagination } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CreateFundingRound from '../Form/CreateFundingRound';
@@ -15,7 +15,9 @@ function UserDashboard() {
     const [businessProfiles, setBusinessProfiles] = useState([]);
     // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
     const [filter, setFilter] = useState('All');
-    const [selectedStartup, setSelectedStartup] = useState('All');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(3);
+        const [selectedStartup, setSelectedStartup] = useState('All');
     const [fundingRounds, setFundingRounds] = useState([]);
     const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
 
@@ -60,6 +62,16 @@ function UserDashboard() {
     const handleFilterChange = (event) => {
         setFilter(event.target.value);
     };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
 
     const handleStartupChange = (event) => {
         setSelectedStartup(event.target.value);
@@ -132,42 +144,61 @@ function UserDashboard() {
 
             <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
 
-                {/* Left Box */}
-                <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, p: 5 }}>
-                    <Typography variant="h5">Followed Companies/People</Typography>
+            {/* Left Box */}
+            <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, pt: 5, pl: 5, pr: 5 }}>
+                <Typography variant="h5">Invested Companies</Typography>
 
                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
-                        <Grid item>
-                            <Typography variant="h6">Filter By:</Typography>
-                        </Grid>
-                        <Grid item>
-                            <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
-                                <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Startup">Startup</MenuItem>
-                                <MenuItem value="Investor">Investor</MenuItem>
-                            </Select>
-                        </Grid>
+                    <Grid item>
+                        <Typography variant="h6">Filter By:</Typography>
                     </Grid>
-                    <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white', borderRadius: 4 }}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ textAlign: 'center' }}>Name</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>Information</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>Description</TableCell>
+                        
+                    <Grid item>
+                        <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
+                            <MenuItem value="All">All</MenuItem>
+                            <MenuItem value="Startup">Startup</MenuItem>
+                            <MenuItem value="Investor">Investor</MenuItem>
+                        </Select>
+                    </Grid>
+                </Grid>
+                    
+                <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white', borderRadius: 4 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Company Type</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Startup Name</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Industry</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Contact Email</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Phone Number</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        
+                        <TableBody>
+                            {businessProfiles
+                                .filter(profile => filter === 'All' || profile.type === filter)
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((profile) => (
+                                <TableRow key={`${profile.type}-${profile.id}`}>
+                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.type}</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.companyName || profile.lastName}</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.industry}</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.emailAddress}</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.phoneNumber}</TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {businessProfiles.filter(profile => filter === 'All' || profile.type === filter).map((profile) => (
-                                    <TableRow key={`${profile.type}-${profile.id}`}>
-                                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || profile.lastName}</TableCell>
-                                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
-                                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyDescription || profile.biography}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                    
+                <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    count={businessProfiles.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}/>
                 </Box>
 
                 {/* Right Boxes */}
@@ -184,8 +215,8 @@ function UserDashboard() {
                     </Box>
 
                     {/* Box for Find New Companies Button */}
-                    <Box sx={{ background: 'white', p: 6, borderRadius: 2 }}>
-                        <Typography variant="h5">Find New Companies</Typography>
+                    <Box sx={{ background: 'white', p: 6, borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'center'}}>
+                        <Typography variant="h5" sx={{fontWeight: 'bold'}}>Find New Companies</Typography>
                         <Typography variant="h6">Connect with the right people at qualified companies.</Typography>
 
                         <Box sx={{ mt: 2 }}>
@@ -222,10 +253,10 @@ function UserDashboard() {
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Funding Type</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Money Raised</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Target Funding</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Funding Type</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Money Raised</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Target Funding</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -273,11 +304,11 @@ function UserDashboard() {
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Shareholder's Name</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Title</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Total Share</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Percentage</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>Action</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Shareholder's Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Title</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Total Share</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Percentage</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

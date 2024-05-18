@@ -5,7 +5,7 @@ import CreateBusinessProfile from '../Form/CreateBusinessProfile';
 import ViewStartupProfile from '../Form/ViewStartupProfile';
 import ViewInvestorProfile from '../Form/ViewInvestorProfile';
 
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination} from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -16,6 +16,9 @@ function Profile() {
     const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
     const [openViewStartup, setOpenViewStartup] = useState(false);
     const [openViewInvestor, setOpenViewInvestor] = useState(false);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(3);
 
     const [userData, setUserData] = useState({
         firstName: '',
@@ -31,6 +34,16 @@ function Profile() {
         fetchUserData();
         fetchBusinessProfiles();
     }, []);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
 
     const fetchUserData = async () => {
         try {
@@ -274,14 +287,13 @@ function Profile() {
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
                                 </TableCell>
-                                {/* <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
-                                </TableCell> */}
                             </TableRow>
                         </TableHead>
                         
                         <TableBody>
-                            {businessProfiles.map((profile) => (
+                            {businessProfiles
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((profile) => (
                                 <TableRow key={`${profile.type}-${profile.id}`}>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || `${profile.firstName} ${profile.lastName}`}</TableCell>
@@ -297,12 +309,20 @@ function Profile() {
                                 </TableRow>
                             ))}
                         </TableBody>
-
                     </Table>
                     </TableContainer>
-                </Box>
+
+                    <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    count={businessProfiles.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}/>
                 </Box>
             </Box>
+        </Box>
 
             {openViewStartup && <ViewStartupProfile profile={selectedBusinessProfile} />}
             {openViewInvestor && <ViewInvestorProfile profile={selectedBusinessProfile} />}
