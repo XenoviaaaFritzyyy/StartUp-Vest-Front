@@ -363,10 +363,6 @@ function UserDashboard() {
                                 <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingRound}>
                                     Cancel
                                 </Button>
-
-                                {/* <Button onClick="" variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
-                                Create
-                            </Button> */}
                             </Box>
                         </DialogActions>
                     </Box>
@@ -405,10 +401,6 @@ function UserDashboard() {
                                 <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseCapTable}>
                                     Cancel
                                 </Button>
-
-                                {/* <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }}>
-                                Create
-                            </Button> */}
                             </Box>
                         </DialogActions>
                     </Box>

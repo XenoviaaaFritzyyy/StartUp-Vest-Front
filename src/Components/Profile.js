@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
-import CreateBusinessProfile from '../Form/CreateBusinessProfile';
-import ViewStartupProfile from '../Form/ViewStartupProfile';
-import ViewInvestorProfile from '../Form/ViewInvestorProfile';
+import CreateBusinessProfileDialog from '../Dialogs/CreateBusinessProfileDialog';
+import ViewStartupProfileDialog from '../Dialogs/ViewStartupProfileDialog';
+import ViewInvestorProfileDialog from '../Dialogs/ViewInvestorProfileDialog';
 
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, 
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination} from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -45,7 +44,6 @@ function Profile() {
         setPage(0);
     };
 
-
     const fetchUserData = async () => {
         try {
             const response = await axios.get('http://localhost:3000/users/profile', {
@@ -73,7 +71,6 @@ function Profile() {
                 },
             });
 
-    
             const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
             const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
     
@@ -184,33 +181,32 @@ function Profile() {
                         Personal Information
                     </Typography>
 
-                    <Grid container spacing={2} sx={{ ml: 6 }}>
-                        <Grid item xs={12} sm={3}>
-                            <label htmlFor="avatar-upload">
-                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', 
-                                border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
-                            </label>
-                        <input
-                            type="file"
+                <Grid container spacing={2} sx={{ ml: 6 }}>
+                    <Grid item xs={12} sm={3}>
+                        <label htmlFor="avatar-upload">
+                            <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', 
+                            border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
+                        </label>
+
+                        <input type="file"
                             accept="image/*"
                             id="avatar-upload"
                             style={{ display: 'none' }}
                             onChange={handleAvatarChange}
-                            disabled={!isEditable} 
-                        />
-                            <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
-                        </Grid>
+                            disabled={!isEditable} />
+                        <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
+                    </Grid>
 
-                        <Grid item xs={12} sm={7.8}>
-                            <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <label>First Name</label>
-                                <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                    <Grid item xs={12} sm={7.8}>
+                        <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <label>First Name</label>
+                            <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
                         </Grid>
 
                         <Grid item xs={6}>
                             <label>Last Name</label>
-                                <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                            <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
                         </Grid>
 
                         <Grid item xs={12}>
@@ -235,44 +231,42 @@ function Profile() {
 
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Button
-                                    variant="contained"
+                                <Button variant="contained"
                                     sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
-                                    onClick={isEditable ? handleSaveChanges : handleEditClick}
-                                >
+                                    onClick={isEditable ? handleSaveChanges : handleEditClick}>
                                     {isEditable ? 'Save Changes' : 'Edit Profile'}
                                 </Button>
                             </Grid>
                         </Grid>
-                            </Grid>
-                        </Grid>
                     </Grid>
-                </Box>
+                </Grid>
+            </Grid>
+        </Box>
 
-                <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-                    <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                        Create Business Profile
-                    </Typography>
+        <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
+            <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                Create Business Profile
+            </Typography>
 
-                    <Box sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 3, pb: 3, pt: 3, pl: 6.5, pr: 6.5, display: 'flex', alignItems: 'center' }}>
-                        <Avatar src="/images/business.png" sx={{ mr: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
-                        <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500', marginRight: 2 }}>
-                            Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
-                        </Typography>
+            <Box sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 3, pb: 3, pt: 3, pl: 6.5, pr: 6.5, display: 'flex', alignItems: 'center' }}>
+                <Avatar src="/images/business.png" sx={{ mr: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
+                <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500', marginRight: 2 }}>
+                    Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
+                </Typography>
 
-                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenBusinessProfile}>
-                            Create
-                        </Button>
-                    </Box>
-                </Box>
+                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenBusinessProfile}>
+                    Create
+                </Button>
+            </Box>
+        </Box>
 
-                <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-                    <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                        Business Profile Information
-                        </Typography>
+        <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
+            <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                Business Profile Information
+            </Typography>
 
-                    <Box sx={{ mr: 5, borderRadius: 2, ml: 8, mt: 3}}>
-                    <TableContainer>
+            <Box sx={{ mr: 5, borderRadius: 2, ml: 8, mt: 3}}>
+                <TableContainer>
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
                             <TableRow>
@@ -311,133 +305,25 @@ function Profile() {
                             ))}
                         </TableBody>
                     </Table>
-                    </TableContainer>
+                </TableContainer>
 
-                    <TablePagination
-                    rowsPerPageOptions={[3]}
+                <TablePagination rowsPerPageOptions={[3]}
                     component="div"
                     count={businessProfiles.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}/>
+
+                    <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
+                    <ViewStartupProfileDialog open={openViewStartup} profile={selectedBusinessProfile} onClose={handleCloseStartUp} />
+                    <ViewInvestorProfileDialog open={openViewInvestor} profile={selectedBusinessProfile} onClose={handleCloseInvestor} />
+
+                    </Box>
                 </Box>
             </Box>
-        </Box>
-
-            {openViewStartup && <ViewStartupProfile profile={selectedBusinessProfile} />}
-            {openViewInvestor && <ViewInvestorProfile profile={selectedBusinessProfile} />}
-
-                
-            {/* Custom Full Page Dialog for Creating Business Profile */}
-                {openCreateBusinessProfile && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1300,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',}}>
-
-                    <Box
-                        sx={{
-                            background: '#F2F2F2',
-                            maxidth: '100%',
-                            maxHeight: '90%',
-                            overflowY: 'auto',
-                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
-
-                        <CreateBusinessProfile />
-
-                    <DialogActions>
-                        <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseBusinessProfile}>
-                                Cancel
-                            </Button>
-                        </Box>
-                    </DialogActions>
-                    </Box>
-                </Box>
-            )}
-
-            {/* Custom Full Page Dialog for Creating Business Profile */}
-            {openViewStartup && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1300,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',}}>
-
-                    <Box
-                        sx={{
-                            background: '#F2F2F2',
-                            maxidth: '100%',
-                            maxHeight: '90%',
-                            overflowY: 'auto',
-                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
-
-                        <ViewStartupProfile profile={selectedBusinessProfile}/>
-
-                    <DialogActions>
-                        <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseStartUp}>
-                                Cancel
-                            </Button>
-                        </Box>
-                    </DialogActions>
-                    </Box>
-                </Box>
-            )}
-
-            {/* Custom Full Page Dialog for Creating Business Profile */}
-                {openViewInvestor && (
-                    <Box
-                        sx={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1300,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',}}>
-
-                    <Box
-                        sx={{
-                            background: '#F2F2F2',
-                            maxidth: '100%',
-                            maxHeight: '90%',
-                            overflowY: 'auto',
-                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'}}>
-
-                        <ViewInvestorProfile profile={selectedBusinessProfile}/>
-
-                    <DialogActions>
-                        <Box sx={{ display: 'flex', mt: 1, mb: 1,mr: 5}}>
-                            <Button variant="text" sx={{ mr: 2 , color: 'rgba(0, 116, 144, 1)'}} onClick={handleCloseInvestor}>
-                                Cancel
-                            </Button>
-                        </Box>
-                    </DialogActions>
-                    </Box>
-                </Box>
-            )}
         </>
-    )
+    );
 }
 
 export default Profile;
