@@ -5,7 +5,8 @@ import CreateBusinessProfile from '../Form/CreateBusinessProfile';
 import ViewStartupProfile from '../Form/ViewStartupProfile';
 import ViewInvestorProfile from '../Form/ViewInvestorProfile';
 
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination} from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, DialogActions, 
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination} from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -401,7 +402,7 @@ function Profile() {
             )}
 
             {/* Custom Full Page Dialog for Creating Business Profile */}
-             {openViewInvestor && (
+                {openViewInvestor && (
                     <Box
                         sx={{
                             position: 'fixed',
