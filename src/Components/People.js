@@ -1,38 +1,26 @@
-import { useState, useMemo } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper, TextField, Avatar } from '@mui/material';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Typography, Paper, TextField, Avatar
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import SearchIcon from '@mui/icons-material/Search';
 import { visuallyHidden } from '@mui/utils';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+
 const drawerWidth = 240;
 
-function createData(id, name, location, organization, email, avatar) {
-  return {
-    id,
-    name,
-    location,
-    organization,
-    email,
-    avatar,
-  };
-}
-
-const rows = [
-  createData(1, 'Hazelyn Balingcasag', 'Ucma Village Apas Cebu City', 'Facebook', 'hazelynbalingcasag@gmail.com'),
-  createData(2, 'Rob Borinaga', 'Talamban', '---', 'robborinaga@gmail.com'),
-  createData(3, 'Fritz Abrea', 'Luyo CIT', 'Twitter', 'fritzabrea@gmail.com'),
-  createData(4, 'Roxanne Alcordo', 'Sa SM Dapit guro', '---', 'roxannealcordo@gmail.com'),
-  createData(5, 'Joshua Biong', 'Naug sa emall daw', '---', 'joshuabiong@gmail.com'),
+const headCells = [
+  { id: 'name', numeric: false, disablePadding: true, label: 'Full Name' },
+  { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
+  { id: 'organization', numeric: false, disablePadding: false, label: 'Organization' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email Address' },
 ];
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
+  if (b[orderBy] < a[orderBy]) return -1;
+  if (b[orderBy] > a[orderBy]) return 1;
   return 0;
 }
 
@@ -46,41 +34,11 @@ function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
+    if (order !== 0) return order;
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
 }
-
-const headCells = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Full Name',
-  },
-  {
-    id: 'location',
-    numeric: false,
-    disablePadding: false,
-    label: 'Location',
-  },
-  {
-    id: 'organization',
-    numeric: false,
-    disablePadding: false,
-    label: 'Organization',
-  },
-  {
-    id: 'email',
-    numeric: false,
-    disablePadding: false,
-    label: 'Email Address',
-  },
-
-];
 
 function EnhancedTableHead(props) {
   const { order, orderBy, onRequestSort } = props;
@@ -144,20 +102,42 @@ function EnhancedTableToolbar({ onRequestSearch }) {
         placeholder="Search…"
         onChange={handleSearch}
         value={searchText}
-        sx={{width: 350 }}
+        sx={{ width: 350 }}
         InputProps={{
           startAdornment: <SearchIcon />,
-        }}/>
+        }} />
     </Toolbar>
   );
 }
 
 export default function Companies() {
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [orderBy, setOrderBy] = useState('name'); // Ensure this matches a valid column
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filteredRows, setFilteredRows] = useState(rows);
+  const [investors, setInvestors] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchInvestors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/investors/all');
+        setInvestors(response.data);
+      } catch (error) {
+        console.error('Error fetching investors:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInvestors();
+  }, []);
+
+  useEffect(() => {
+    setFilteredRows(investors);
+  }, [investors]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -175,13 +155,17 @@ export default function Companies() {
   };
 
   const handleSearch = (searchText) => {
-    const filtered = rows.filter(row =>
-      row.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.location.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.organization.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.email.toLowerCase().includes(searchText.toLowerCase())
+    const filtered = investors.filter(row =>
+      row.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.emailAddress.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.contactInformation.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredRows(filtered);
+  };
+
+  const handleRowClick = (investor) => {
+    navigate(`/userview`, { state: { profile: investor } });
   };
 
   const emptyRows =
@@ -196,46 +180,48 @@ export default function Companies() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Box sx={{ width: '100%', paddingLeft: `${drawerWidth}px` }}>
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', p: 3}}>
+      <Paper sx={{ width: '100%', p: 3 }}>
         <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size="medium">
-
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
-              onRequestSort={handleRequestSort}/>
-              
+              onRequestSort={handleRequestSort}
+            />
             <TableBody>
               {visibleRows.map((row, index) => (
                 <TableRow
                   hover
                   tabIndex={-1}
                   key={row.id}
-                  sx={{ cursor: 'pointer', height: '75px' }}>
-
+                  sx={{ cursor: 'pointer', height: '75px' }}
+                  onClick={() => handleRowClick(row)}>
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar variant='rounded'sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)'}}>{row.avatar}</Avatar>
-                      {row.name}
+                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.firstName.charAt(0)}</Avatar>
+                      {row.firstName} {row.lastName}
                     </Box>
                   </TableCell>
-                  <TableCell align="left">{row.location}</TableCell>
+                  <TableCell align="left">{row.streetAddress}, {row.city}, {row.country}</TableCell>
                   <TableCell align="left">{row.organization}</TableCell>
-                  <TableCell align="left">{row.email}</TableCell>
-
+                  <TableCell align="left">{row.emailAddress}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
-                <TableRow style={{height: 53 * emptyRows,}}>
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -250,7 +236,8 @@ export default function Companies() {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}/>
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Paper>
     </Box>
   );
