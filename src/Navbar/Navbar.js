@@ -43,6 +43,18 @@ export default function Navbar() {
           // Update the first and last name state variables.
           setFirstName(response.data.firstName);
           setLastName(response.data.lastName);
+
+          // Fetch the profile picture
+          const profilePicResponse = await axios.get(`http://localhost:3000/profile-picture/${response.data.id}`, {
+            responseType: 'blob',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+
+          // Create a URL for the blob
+          const profilePicUrl = URL.createObjectURL(profilePicResponse.data);
+          setUserPhoto(profilePicUrl); // Update the user photo state variable
       } catch (error) {
           console.error('Failed to fetch user data:', error);
       }
@@ -66,7 +78,22 @@ export default function Navbar() {
             STARTUP VEST
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar sx={{ marginRight: 2, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
+          <Avatar sx={{ marginRight: 2, width: 32, height: 32 }}>
+            {userPhoto ? (
+              <img
+                src={userPhoto}
+                alt="User"
+                style={{
+                  width: '100%', // Ensure the image covers the full width of the Avatar
+                  height: '100%', // Ensure the image covers the full height of the Avatar
+                  objectFit: 'contain', // Contain the image within the frame without cropping
+                  objectPosition: 'center' // Center the image within the Avatar frame
+                }}
+              />
+            ) : (
+              `${firstName[0]}${lastName[0]}`
+            )}
+          </Avatar>
             <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
               {firstName} {lastName}
             </Typography>
@@ -87,7 +114,22 @@ export default function Navbar() {
           <List>
             <ListItem disablePadding>
             <ListItemButton component={Link} to="/profile">
-                <Avatar sx={{ marginTop: 1, marginRight: 2, marginBottom: 1, width: 32, height: 32}}>{userPhoto ? <img src={userPhoto} alt="User" /> : `${firstName[0]}${lastName[0]}`}</Avatar>
+            <Avatar sx={{ marginRight: 2, width: 32, height: 32 }}>
+              {userPhoto ? (
+                <img
+                  src={userPhoto}
+                  alt="User"
+                  style={{
+                    width: '100%', // Ensure the image covers the full width of the Avatar
+                    height: '100%', // Ensure the image covers the full height of the Avatar
+                    objectFit: 'contain', // Contain the image within the frame without cropping
+                    objectPosition: 'center' // Center the image within the Avatar frame
+                  }}
+                />
+              ) : (
+                `${firstName[0]}${lastName[0]}`
+              )}
+            </Avatar>
                 <Typography noWrap component="div" sx={{fontSize: 15}}>
                   {firstName} {lastName}
                 </Typography>

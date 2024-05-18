@@ -143,10 +143,10 @@ function ViewInvestorProfile({ profile }) {
                                 <Grid item xs={6}>
                                     <label>Gender</label>
                                     <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable}>
-                                        <MenuItem value={'male'}>Male</MenuItem>
-                                        <MenuItem value={'female'}>Female</MenuItem>
-                                        <MenuItem value={'neutral'}>Neutral</MenuItem>
-                                        <MenuItem value={'other'}>Other</MenuItem>
+                                        <MenuItem value={'Male'}>Male</MenuItem>
+                                        <MenuItem value={'Female'}>Female</MenuItem>
+                                        <MenuItem value={'Neutral'}>Neutral</MenuItem>
+                                        <MenuItem value={'Other'}>Other</MenuItem>
                                     </Select>
                                 </Grid>
 

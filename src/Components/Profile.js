@@ -27,11 +27,27 @@ function Profile() {
         avatar: '',
     });
 
+    // New state for the profile picture URL
+    const [profilePicUrl, setProfilePicUrl] = useState('');
+
     // Fetch user data when the component mounts.
     useEffect(() => {
         fetchUserData();
         fetchBusinessProfiles();
-    }, []);
+    // Call fetchProfilePicture here using the user ID from userData
+        if (userData.id) {
+            fetchProfilePicture(userData.id);
+        }
+    }, [userData.id]);
+
+    // useEffect(() => {
+    //     // Revoke the old blob URL when the component unmounts or before setting a new one
+    //     return () => {
+    //       if (userData.avatar) {
+    //         URL.revokeObjectURL(userData.avatar);
+    //       }
+    //     };
+    //   }, [userData.avatar]);
 
     const fetchUserData = async () => {
         try {
@@ -61,8 +77,11 @@ function Profile() {
             });
 
     
-            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
-            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+            // const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
+            // const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+
+            const startups = responseStartups.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Startup' }));
+            const investors = responseInvestors.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Investor' }));
     
             setBusinessProfiles([...startups, ...investors]);
         } catch (error) {
@@ -74,15 +93,74 @@ function Profile() {
         setIsEditable(!isEditable);
     };
 
-    const handleAvatarChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => { setUserData((prevData) => ({...prevData, avatar: reader.result, }));
-            };
-            reader.readAsDataURL(file);
+    // const handleAvatarChange = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => { setUserData((prevData) => ({...prevData, avatar: reader.result, }));
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
+
+    // console.log(userData.id)
+
+    // Function to handle file upload
+    const handleAvatarUpload = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        try {
+        // const userId = /* logic to get the user's ID */;
+        await axios.post(`http://localhost:3000/profile-picture/${userData.id}/upload`, formData, {
+            headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data',
+            },
+        });
+        // After uploading, fetch the profile picture to update the avatar
+        fetchProfilePicture(userData.id);
+        } catch (error) {
+        console.error('Error uploading profile picture:', error);
         }
     };
+
+    // Function to fetch and display the profile picture
+    const fetchProfilePicture = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3000/profile-picture/${userData.id}`, {
+            responseType: 'blob',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+          const url = URL.createObjectURL(response.data);
+            setProfilePicUrl(url); // Update the profile picture URL state
+                } catch (error) {
+                console.error('Error fetching profile picture:', error);
+                }
+    };
+
+    // Function to handle profile picture update
+    const updateProfilePicture = async (userId, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        try {
+        const response = await axios.put(`http://localhost:3000/profile-picture/${userData.id}`, formData, {
+            headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data',
+            },
+        });
+        // After updating, fetch the new profile picture to update the avatar
+        fetchProfilePicture(userData.id);
+        console.log(response.data); // Log the response from the server
+        } catch (error) {
+        console.error('Error updating profile picture:', error);
+        }
+    };
+      
 
     const handleOpenBusinessProfile = () => {
         setCreateBusinessProfile(true);
@@ -142,7 +220,8 @@ function Profile() {
         }
     
         try {
-            const endpoint = `http://localhost:3000/startups/${profile.id}/delete`;
+            // Determine the endpoint based on the type of the profile
+            const endpoint = `http://localhost:3000/${profile.type.toLowerCase()}s/${profile.id}/delete`;
     
             await axios.put(endpoint, {}, {
                 headers: {
@@ -156,6 +235,7 @@ function Profile() {
             console.error('Failed to delete profile:', error);
         }
     };
+    
 
     return (
         <>
@@ -174,17 +254,25 @@ function Profile() {
                     <Grid container spacing={2} sx={{ ml: 6 }}>
                         <Grid item xs={12} sm={3}>
                             <label htmlFor="avatar-upload">
-                                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', 
-                                border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
+                            <Avatar
+                            sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }}
+                            src={profilePicUrl}
+                            // Add a key prop to force re-render when the avatar changes
+                            />
                             </label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            id="avatar-upload"
-                            style={{ display: 'none' }}
-                            onChange={handleAvatarChange}
-                            disabled={!isEditable} 
-                        />
+                            <   input
+                                type="file"
+                                accept="image/*"
+                                id="avatar-upload"
+                                style={{ display: 'none' }}
+                                onChange={(event) => {
+                                    const file = event.target.files[0];
+                                    if (file && userData.id) {
+                                    updateProfilePicture(userData.id, file);
+                                    }
+                                }}
+                                disabled={!isEditable}
+                                />
                             <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
                         </Grid>
 
