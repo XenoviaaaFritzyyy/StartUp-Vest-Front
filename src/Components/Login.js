@@ -11,13 +11,8 @@ function Login() {
   const [emailExists, setEmailExists] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  
-  const [passwordVisible, setPasswordVisible] = useState(false); 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,6 +27,7 @@ function Login() {
       navigate('/userdashboard');
     } catch (error) {
       console.error('Login failed:', error);
+      setError('Incorrect email or password');
     }
   };
 
@@ -70,13 +66,22 @@ function Login() {
           <img src="images/logo.png" alt="Logo" style={{ width: '80%', marginBottom: '10px', maxWidth: '100%' }} />
           <Paper elevation={3} style={{ padding: '50px', position: 'relative', width: '75%', maxWidth: '400px' }}>
             <form onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="h5" sx={{ textAlign: 'center', mb: 2, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>Sign In</Typography>
+              <Typography variant="h5" sx={{ textAlign: 'center', mb: 1, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                Sign In
+              </Typography>
+
+              {error && (
+                <Typography variant="body2" color="error" sx={{ textAlign: 'center', }}>
+                  {error}
+                </Typography>
+              )}
 
               <Typography variant="h8" sx={{ color: 'rgba(0, 116, 144, 1)' }}>Email</Typography>
               <TextField type="text" placeholder="johndoe@gmail.com" required value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setEmailExists(false);
+                  setError('');
                 }} onBlur={isEmailRegistered} fullWidth margin="normal" />
 
               <Typography variant="h8" sx={{ color: 'rgba(0, 116, 144, 1)' }}>Password</Typography>
@@ -85,7 +90,10 @@ function Login() {
                 placeholder="Example123"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError('');
+                }}
                 fullWidth
                 margin="normal"
                 InputProps={{
@@ -121,4 +129,5 @@ function Login() {
     </Container>
   );
 } 
+
 export default Login;

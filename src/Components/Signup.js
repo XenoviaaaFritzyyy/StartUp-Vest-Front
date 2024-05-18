@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import Axios
 import { Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputAdornment, IconButton } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -9,6 +9,7 @@ function Signup() {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +27,7 @@ function Signup() {
             const response = await axios.post('http://localhost:3000/users/register', userData);
             console.log('Signup successful:', response.data);
             setSuccess(true);
+            navigate('/login');
         } catch (error) {
             console.error('Signup failed:', error);
             setErrMsg('Signup failed. Please try again.');
