@@ -4,326 +4,329 @@ import Navbar from '../Navbar/Navbar';
 import CreateBusinessProfileDialog from '../Dialogs/CreateBusinessProfileDialog';
 import ViewStartupProfileDialog from '../Dialogs/ViewStartupProfileDialog';
 import ViewInvestorProfileDialog from '../Dialogs/ViewInvestorProfileDialog';
+import ConfirmDeleteDialog from '../Dialogs/ConfirmDeleteDialog';
 
 import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 
 const drawerWidth = 240;
 
 function Profile() {
-    const [isEditable, setIsEditable] = useState(false);
-    const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
-    const [businessProfiles, setBusinessProfiles] = useState([]);
-    const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
-    const [openViewStartup, setOpenViewStartup] = useState(false);
-    const [openViewInvestor, setOpenViewInvestor] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
+  const [businessProfiles, setBusinessProfiles] = useState([]);
+  const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+  const [openViewStartup, setOpenViewStartup] = useState(false);
+  const [openViewInvestor, setOpenViewInvestor] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [profileToDelete, setProfileToDelete] = useState(null);
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    contactNumber: '',
+    gender: '',
+    avatar: '',
+  });
 
-    const [userData, setUserData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        contactNumber: '',
-        gender: '',
-        avatar: '',
-    });
+  useEffect(() => {
+    fetchUserData();
+    fetchBusinessProfiles();
+  }, []);
 
-    // Fetch user data when the component mounts.
-    useEffect(() => {
-        fetchUserData();
-        fetchBusinessProfiles();
-    }, []);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users/profile', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      });
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+  };
 
-    const fetchUserData = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/users/profile', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-    
-        setUserData(response.data);
-            } catch (error) {
-                console.error('Failed to fetch user data:', error);
-            }
-        };
+  const fetchBusinessProfiles = async () => {
+    try {
+      const responseStartups = await axios.get('http://localhost:3000/startups', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      });
+      const responseInvestors = await axios.get('http://localhost:3000/investors', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      });
+      const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
+      const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
+      setBusinessProfiles([...startups, ...investors]);
+    } catch (error) {
+      console.error('Failed to fetch business profiles:', error);
+    }
+  };
 
-    const fetchBusinessProfiles = async () => {
-        try {
-            const responseStartups = await axios.get(`http://localhost:3000/startups`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+  const handleEditClick = () => {
+    setIsEditable(!isEditable);
+  };
 
-            const responseInvestors = await axios.get(`http://localhost:3000/investors`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUserData((prevData) => ({ ...prevData, avatar: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
-            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
-    
-            setBusinessProfiles([...startups, ...investors]);
-        } catch (error) {
-            console.error('Failed to fetch business profiles:', error);
-        }
-    };
-    
-    const handleEditClick = () => {
-        setIsEditable(!isEditable);
-    };
+  const handleOpenBusinessProfile = () => {
+    setCreateBusinessProfile(true);
+  };
 
-    const handleAvatarChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => { setUserData((prevData) => ({...prevData, avatar: reader.result, }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  const handleCloseBusinessProfile = () => {
+    setCreateBusinessProfile(false);
+  };
 
-    const handleOpenBusinessProfile = () => {
-        setCreateBusinessProfile(true);
-    };
+  const handleOpenStartUp = (profile) => {
+    setSelectedBusinessProfile(profile);
+    setOpenViewStartup(true);
+  };
 
-    const handleCloseBusinessProfile = () => {
-        setCreateBusinessProfile(false);
-    };
+  const handleCloseStartUp = () => {
+    setOpenViewStartup(false);
+  };
 
-    const handleOpenStartUp = (profile) => {
-        console.log('Opening startup profile:', profile);
-        setSelectedBusinessProfile(profile);
-        setOpenViewStartup(true);
-    };
+  const handleOpenInvestor = (profile) => {
+    setSelectedBusinessProfile(profile);
+    setOpenViewInvestor(true);
+  };
 
-    const handleCloseStartUp = () => {
-        setOpenViewStartup(false);
-    };
+  const handleCloseInvestor = () => {
+    setOpenViewInvestor(false);
+  };
 
-    const handleOpenInvestor = (profile) => {
-        console.log('Opening investor profile:', profile);
-        setSelectedBusinessProfile(profile);
-        setOpenViewInvestor(true);
-    };
+  const handleSaveChanges = async () => {
+    try {
+      await updateUser(userData);
+      await fetchUserData();
+      setIsEditable(false);
+    } catch (error) {
+      console.error('Failed to update user data:', error);
+    }
+  };
 
-    const handleCloseInvestor = () => {
-        setOpenViewInvestor(false);
-    };
+  const updateUser = async (userData) => {
+    try {
+      const response = await axios.put(`http://localhost:3000/users/${userData.id}`, userData, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      });
+      console.log('User data updated successfully:', response.data);
+    } catch (error) {
+      console.error('Failed to update user data:', error);
+      throw error;
+    }
+  };
 
-    const handleSaveChanges = async () => {
-        try {
-            await updateUser(userData);
-            await fetchUserData();
-            setIsEditable(false);
-        } catch (error) {
-        console.error('Failed to update user data:', error);
-        }
-    };
+  const handleSoftDelete = async () => {
+    if (!profileToDelete) {
+      console.error('No profile selected');
+      return;
+    }
 
-    const updateUser = async (userData) => {
-        try {
-        const response = await axios.put(`http://localhost:3000/users/${userData.id}`, userData, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`, },
-        });
+    try {
+      const endpoint = `http://localhost:3000/startups/${profileToDelete.id}/delete`;
 
-        console.log('User data updated successfully:', response.data);
-            } catch (error) {
-        console.error('Failed to update user data:', error);
-            throw error;
-        }
-    };
+      await axios.put(endpoint, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
-    const handleSoftDelete = async (profile) => {
-        if (!profile) {
-            console.error('No profile selected');
-            return;
-        }
-    
-        try {
-            const endpoint = `http://localhost:3000/startups/${profile.id}/delete`;
-    
-            await axios.put(endpoint, {}, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-    
-            // Refresh the page or fetch the data again to reflect the changes
-            fetchBusinessProfiles();
-        } catch (error) {
-            console.error('Failed to delete profile:', error);
-        }
-    };
+      fetchBusinessProfiles();
+      setOpenDeleteDialog(false);
+    } catch (error) {
+      console.error('Failed to delete profile:', error);
+    }
+  };
 
-    return (
-        <>
-            <Navbar />
-            <Toolbar />
-            <Box component="main" sx={{ flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
-                <Typography variant="h4" sx={{ paddingLeft: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                    Account Information
-                </Typography>
+  const handleOpenDeleteDialog = (profile) => {
+    setProfileToDelete(profile);
+    setOpenDeleteDialog(true);
+  };
 
-                <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, pb: 6, mt: 2 }}>
-                    <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 8, pt: 3, pb: 3 }}>
-                        Personal Information
-                    </Typography>
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
 
-                <Grid container spacing={2} sx={{ ml: 6 }}>
-                    <Grid item xs={12} sm={3}>
-                        <label htmlFor="avatar-upload">
-                            <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', 
-                            border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
-                        </label>
+  return (
+    <>
+      <Navbar />
+      <Toolbar />
+      <Box component="main" sx={{ flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
+        <Typography variant="h4" sx={{ paddingLeft: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+          Account Information
+        </Typography>
 
-                        <input type="file"
-                            accept="image/*"
-                            id="avatar-upload"
-                            style={{ display: 'none' }}
-                            onChange={handleAvatarChange}
-                            disabled={!isEditable} />
-                        <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
-                    </Grid>
+        <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, pb: 6, mt: 2 }}>
+          <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 8, pt: 3, pb: 3 }}>
+            Personal Information
+          </Typography>
 
-                    <Grid item xs={12} sm={7.8}>
-                        <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <label>First Name</label>
-                            <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
-                        </Grid>
+          <Grid container spacing={2} sx={{ ml: 6 }}>
+            <Grid item xs={12} sm={3}>
+              <label htmlFor="avatar-upload">
+                <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
+              </label>
 
-                        <Grid item xs={6}>
-                            <label>Last Name</label>
-                            <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <label>Email Address</label>
-                            <TextField fullWidth variant="filled" value={userData.email} onChange={(e) => setUserData((prevData) => ({ ...prevData, email: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <label>Phone Number</label>
-                            <TextField fullWidth variant="filled" value={userData.contactNumber} onChange={(e) => setUserData((prevData) => ({ ...prevData, contactNumber: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <label>Gender</label>
-                            <Select fullWidth variant="filled" value={userData.gender} onChange={(e) => setUserData((prevData) => ({ ...prevData, gender: e.target.value }))} disabled={!isEditable}>
-                                <MenuItem value={'Male'}>Male</MenuItem>
-                                <MenuItem value={'Female'}>Female</MenuItem>
-                                <MenuItem value={'Neutral'}>Neutral</MenuItem>
-                                <MenuItem value={'Other'}>Other</MenuItem>
-                            </Select>
-                        </Grid>
-
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Button variant="contained"
-                                    sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
-                                    onClick={isEditable ? handleSaveChanges : handleEditClick}>
-                                    {isEditable ? 'Save Changes' : 'Edit Profile'}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+              <input type="file"
+                accept="image/*"
+                id="avatar-upload"
+                style={{ display: 'none' }}
+                onChange={handleAvatarChange}
+                disabled={!isEditable} />
+              <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
             </Grid>
+
+            <Grid item xs={12} sm={7.8}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <label>First Name</label>
+                  <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <label>Last Name</label>
+                  <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <label>Email Address</label>
+                  <TextField fullWidth variant="filled" value={userData.email} onChange={(e) => setUserData((prevData) => ({ ...prevData, email: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <label>Phone Number</label>
+                  <TextField fullWidth variant="filled" value={userData.contactNumber} onChange={(e) => setUserData((prevData) => ({ ...prevData, contactNumber: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <label>Gender</label>
+                  <Select fullWidth variant="filled" value={userData.gender} onChange={(e) => setUserData((prevData) => ({ ...prevData, gender: e.target.value }))} disabled={!isEditable}>
+                    <MenuItem value={'Male'}>Male</MenuItem>
+                    <MenuItem value={'Female'}>Female</MenuItem>
+                    <MenuItem value={'Neutral'}>Neutral</MenuItem>
+                    <MenuItem value={'Other'}>Other</MenuItem>
+                  </Select>
+                </Grid>
+
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <Button variant="contained"
+                      sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
+                      onClick={isEditable ? handleSaveChanges : handleEditClick}>
+                      {isEditable ? 'Save Changes' : 'Edit Profile'}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </Box>
 
         <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-            <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                Create Business Profile
+          <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+            Create Business Profile
+          </Typography>
+
+          <Box sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 3, pb: 3, pt: 3, pl: 6.5, pr: 6.5, display: 'flex', alignItems: 'center' }}>
+            <Avatar src="/images/business.png" sx={{ mr: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
+            <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500'}}>
+              Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
             </Typography>
 
-            <Box sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 3, pb: 3, pt: 3, pl: 6.5, pr: 6.5, display: 'flex', alignItems: 'center' }}>
-                <Avatar src="/images/business.png" sx={{ mr: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
-                <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500', marginRight: 2 }}>
-                    Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
-                </Typography>
-
-                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={handleOpenBusinessProfile}>
-                    Create
-                </Button>
-            </Box>
+            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenBusinessProfile}>
+              Create
+            </Button>
+          </Box>
         </Box>
 
         <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-            <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                Business Profile Information
-            </Typography>
+          <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+            Business Profile Information
+          </Typography>
 
-            <Box sx={{ mr: 5, borderRadius: 2, ml: 8, mt: 3}}>
-                <TableContainer>
-                    <Table>
-                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)'}}>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Type</Typography>
-                                </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Name</Typography>
-                                </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Information</Typography>
-                                </TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        
-                        <TableBody>
-                            {businessProfiles
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((profile) => (
-                                <TableRow key={`${profile.type}-${profile.id}`}>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || `${profile.firstName} ${profile.lastName}`}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
-                                            View
-                                        </Button>
-                                        <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleSoftDelete(profile)}>
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+          <Box sx={{ mr: 5, borderRadius: 2, ml: 8, mt: 3 }}>
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
+                  <TableRow>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Type</Typography>
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Name</Typography>
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Information</Typography>
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
 
-                <TablePagination rowsPerPageOptions={[3]}
-                    component="div"
-                    count={businessProfiles.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}/>
+                <TableBody>
+                  {businessProfiles
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((profile) => (
+                      <TableRow key={`${profile.type}-${profile.id}`}>
+                        <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || `${profile.firstName} ${profile.lastName}`}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>
+                          <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
+                            View
+                          </Button>
+                          <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleOpenDeleteDialog(profile)}>
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-                    <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
-                    <ViewStartupProfileDialog open={openViewStartup} profile={selectedBusinessProfile} onClose={handleCloseStartUp} />
-                    <ViewInvestorProfileDialog open={openViewInvestor} profile={selectedBusinessProfile} onClose={handleCloseInvestor} />
+            <TablePagination rowsPerPageOptions={[3]}
+              component="div"
+              count={businessProfiles.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage} />
 
-                    </Box>
-                </Box>
-            </Box>
-        </>
-    );
+            <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
+            <ViewStartupProfileDialog open={openViewStartup} profile={selectedBusinessProfile} onClose={handleCloseStartUp} />
+            <ViewInvestorProfileDialog open={openViewInvestor} profile={selectedBusinessProfile} onClose={handleCloseInvestor} />
+
+            <ConfirmDeleteDialog
+              open={openDeleteDialog}
+              onClose={handleCloseDeleteDialog}
+              onConfirm={handleSoftDelete}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </>
+  );
 }
 
 export default Profile;
