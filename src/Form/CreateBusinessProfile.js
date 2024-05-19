@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import countries from '../static/countries';
 import industries from '../static/industries';
+import SuccessCreateBusinessProfileDialog from '../Dialogs/SuccessCreateBusinessProfileDialog';
 import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete, InputLabel} from '@mui/material';
 import axios from 'axios';
 
@@ -44,6 +45,7 @@ function CreateBusinessProfile() {
 
     // Add a new state variable for the profile type
     // const [profileType, setProfileType] = useState('');
+    const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
     const days = [...Array(31).keys()].map(i => i + 1);
     const months = Array.from({ length: 12 }, (_, i) => {
@@ -117,10 +119,12 @@ function CreateBusinessProfile() {
               'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
             },
           });
+          setSuccessDialogOpen(true);
         } catch (error) {
           console.error('Failed to create profile:', error);
         }
       };
+      
     return (
         <>
         <Box component="main" sx={{ flexGrow: 1, width: '100%', overflowX: 'hidden', maxWidth: '1000px',  background: '#F2F2F2'}}>
@@ -571,13 +575,19 @@ function CreateBusinessProfile() {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} style={{marginLeft: '74.5%'}} onClick={handleCreateProfile}>
+                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}} style={{marginLeft: '74.5%'}} onClick={handleCreateProfile} onClose={handleCreateProfile}>
                     Create Business Profile
                 </Button>
             </>
         )}
             </Box>
         </Box>
+
+        {/* Success Dialog */}
+        <SuccessCreateBusinessProfileDialog
+            open={successDialogOpen}
+            onClose={() => setSuccessDialogOpen(false)}
+            companyName={companyName}/>
         </>
     );
 }

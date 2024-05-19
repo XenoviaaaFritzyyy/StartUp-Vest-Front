@@ -66,7 +66,9 @@ function Profile() {
       });
       const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
       const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
-      setBusinessProfiles([...startups, ...investors]);
+
+      const sortedProfiles = [...investors, ...startups];
+      setBusinessProfiles(sortedProfiles);
     } catch (error) {
       console.error('Failed to fetch business profiles:', error);
     }
@@ -93,6 +95,7 @@ function Profile() {
 
   const handleCloseBusinessProfile = () => {
     setCreateBusinessProfile(false);
+    fetchBusinessProfiles();
   };
 
   const handleOpenStartUp = (profile) => {
@@ -116,24 +119,24 @@ function Profile() {
   const handleSaveChanges = async () => {
     try {
       await updateUser(userData);
-      await fetchUserData();
       setIsEditable(false);
     } catch (error) {
       console.error('Failed to update user data:', error);
     }
   };
-
+  
   const updateUser = async (userData) => {
     try {
       const response = await axios.put(`http://localhost:3000/users/${userData.id}`, userData, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
       });
       console.log('User data updated successfully:', response.data);
+      setUserData(userData); // Update local state with new user data
     } catch (error) {
       console.error('Failed to update user data:', error);
       throw error;
     }
-  };
+  };  
 
   const handleSoftDelete = async () => {
     if (!profileToDelete) {
@@ -186,12 +189,8 @@ function Profile() {
                 <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={userData.avatar}></Avatar>
               </label>
 
-              <input type="file"
-                accept="image/*"
-                id="avatar-upload"
-                style={{ display: 'none' }}
-                onChange={handleAvatarChange}
-                disabled={!isEditable} />
+              <input type="file" accept="image/*" id="avatar-upload"
+                style={{ display: 'none' }} onChange={handleAvatarChange} disabled={!isEditable} />
               <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
             </Grid>
 
@@ -272,10 +271,10 @@ function Profile() {
                       <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Type</Typography>
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Name</Typography>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Company Name</Typography>
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Information</Typography>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Industry</Typography>
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>
                       <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
@@ -289,16 +288,24 @@ function Profile() {
                     .map((profile) => (
                       <TableRow key={`${profile.type}-${profile.id}`}>
                         <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || `${profile.firstName} ${profile.lastName}`}</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || profile.emailAddress}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || '-----' }</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || '-----' }</TableCell>
                         <TableCell sx={{ textAlign: 'center' }}>
-                          <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => profile.type === 'Startup' ? handleOpenStartUp(profile) : handleOpenInvestor(profile)}>
-                            View
-                          </Button>
-                          <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleOpenDeleteDialog(profile)}>
-                            Delete
-                          </Button>
-                        </TableCell>
+                            {profile.type === 'Investor' ? (
+                                <Button variant="contained" sx={{ width: 'calc(60% - 35px)', background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleOpenInvestor(profile)}>
+                                View
+                                </Button>
+                            ) : (
+                                <>
+                                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleOpenStartUp(profile)}>
+                                    View
+                                </Button>
+                                <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleOpenDeleteDialog(profile)}>
+                                    Delete
+                                </Button>
+                                </>
+                            )}
+                            </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -321,7 +328,7 @@ function Profile() {
               open={openDeleteDialog}
               onClose={handleCloseDeleteDialog}
               onConfirm={handleSoftDelete}
-            />
+              companyName={profileToDelete ? profileToDelete.companyName : null}/>
           </Box>
         </Box>
       </Box>
