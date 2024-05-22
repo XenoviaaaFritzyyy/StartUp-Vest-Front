@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
-const ConfirmDeleteDialog = ({ open, onClose, onConfirm, companyName, profile }) => {
+const ConfirmDeleteDialog = ({ open, onClose, onConfirm, companyName }) => {
   const [deleteSuccessDialogOpen, setDeleteSuccessDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const ConfirmDeleteDialog = ({ open, onClose, onConfirm, companyName, profile })
   }, [deleteSuccessDialogOpen]);
 
   const handleConfirmDelete = async () => {
-    await onConfirm(profile);
+    await onConfirm();
     setDeleteSuccessDialogOpen(true);
     onClose(); 
   };

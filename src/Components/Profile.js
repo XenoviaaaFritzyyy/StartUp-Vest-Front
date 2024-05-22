@@ -230,15 +230,15 @@ function Profile() {
     }
   };  
 
-    const handleSoftDelete = async (profile) => {
-        if (!profile) {
+    const handleSoftDelete = async () => {
+        if (!profileToDelete) {
             console.error('No profile selected');
             return;
         }
     
         try {
             // Determine the endpoint based on the type of the profile
-            const endpoint = `http://localhost:3000/startups/${profile.id}/delete`;
+            const endpoint = `http://localhost:3000/startups/${profileToDelete.id}/delete`;
     
             await axios.put(endpoint, {}, {
                 headers: {
@@ -427,8 +427,7 @@ function Profile() {
               open={openDeleteDialog}
               onClose={handleCloseDeleteDialog}
               onConfirm={handleSoftDelete}
-              companyName={profileToDelete ? profileToDelete.companyName : null}
-              profile={profileToDelete}/>
+              companyName={profileToDelete ? profileToDelete.companyName : null}/>
           </Box>
         </Box>
       </Box>
