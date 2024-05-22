@@ -15,6 +15,7 @@ import AdminDashboard from './Dashboard/AdminDashboard';
 import LandingPage from './Components/LandingPage';
 import ViewStartupProfile from './Form/ViewStartupProfile';
 import ViewInvestorProfile from './Form/ViewInvestorProfile';
+import ViewFundingRound from './Form/ViewFundingRound';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/userview" element={<UserView />} />
         <Route path="/startupprofile" element={<ViewStartupProfile />} />
         <Route path="/investorprofile" element={<ViewInvestorProfile />} />
+        <Route path="/fundingprofile" element={<ViewFundingRound />} />
       </Routes>
     </Router>
   );

@@ -4,6 +4,7 @@ import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableB
 import { Link } from 'react-router-dom';
 
 import CreateFundingRound from '../Form/CreateFundingRound';
+import ViewFundingRound from '../Form/ViewFundingRound';
 import CreateCapTable from '../Form/CreateCapTable';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ const drawerWidth = 240;
 
 function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
+    const [openViewFundingRound, setOpenViewFundingRound] = useState(false);
     const [openCapTable, setOpenCapTable] = useState(false);
     const [businessProfiles, setBusinessProfiles] = useState([]);
     // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
@@ -57,6 +59,14 @@ function UserDashboard() {
         setOpenCreateFundingRound(false);
     };
 
+    const handleOpenFundingProfile = () => {
+        setOpenViewFundingRound(true);
+    }
+    
+    const handleCloseFundingProfile = () => {
+        setOpenViewFundingRound(false);
+    }
+    
     const handleOpenCapTable = () => {
         setOpenCapTable(true);
     }
@@ -291,7 +301,7 @@ function UserDashboard() {
                                     <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingRound}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingProfile}>
                                             View
                                         </Button>
                                         <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
@@ -411,6 +421,44 @@ function UserDashboard() {
                     </Box>
                 </Box>
             )}
+
+            {openViewFundingRound && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1300,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+
+                <Box
+                    sx={{
+                        background: '#F2F2F2',
+                        maxWidth: '100%',
+                        maxHeight: '90%',
+                        overflowY: 'auto',
+                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
+                    }}>
+
+                            <ViewFundingRound />
+
+                        <DialogActions>
+                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
+                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingProfile}>
+                                Close
+                                </Button>
+                            </Box>
+                        </DialogActions>
+                    </Box>
+                </Box>
+            )}
+
 
             {/* Custom Full Page Dialog for Cap Table */}
             {openCapTable && (
