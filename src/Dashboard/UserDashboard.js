@@ -20,6 +20,10 @@ function UserDashboard() {
     const [selectedStartup, setSelectedStartup] = useState('All');
     const [fundingRounds, setFundingRounds] = useState([]);
     const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
+    const [selectedStartupFunding, setSelectedStartupFunding] = useState('All');
+    const [selectedStartupCapTable, setSelectedStartupCapTable] = useState('All');
+    const [capTables, setCapTables] = useState([]);
+    const [filteredCapTables, setFilteredCapTables] = useState([]);
 
     // Pagination
     const [businessPage, setBusinessPage] = useState(0);
@@ -49,6 +53,7 @@ function UserDashboard() {
         // fetchUserData();
         fetchBusinessProfiles();
         fetchFundingRounds();
+        fetchCapTable();
     }, []);
 
     const handleOpenFundingRound = () => {
@@ -106,9 +111,14 @@ function UserDashboard() {
         setCapPage(0);
     };
 
-    const handleStartupChange = (event) => {
-        setSelectedStartup(event.target.value);
+    const handleStartupChangeFunding = (event) => {
+        setSelectedStartupFunding(event.target.value);
         filterFundingRounds(event.target.value);
+    };
+
+    const handleStartupChangeCapTable = (event) => {
+        setSelectedStartupCapTable(event.target.value);
+        filterCapTables(event.target.value);
     };
     // const fetchUserData = async () => {
     //     try {
@@ -156,6 +166,15 @@ function UserDashboard() {
         }
     };
 
+    const filterCapTables = (selectedStartup) => {
+        if (selectedStartup === 'All') {
+            setFilteredCapTables(capTables);
+        } else {
+            const filteredTables = capTables.filter(table => table.startup && table.startup.id === selectedStartup);
+            setFilteredCapTables(filteredTables);
+        }
+    };
+
     const fetchFundingRounds = async () => {
         try {
             const response = await axios.get('http://localhost:3000/funding-rounds/all', {
@@ -167,6 +186,21 @@ function UserDashboard() {
             setFilteredFundingRounds(response.data);
         } catch (error) {
             console.error('Error fetching funding rounds:', error);
+        }
+    };
+
+    const fetchCapTable = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/cap-table/all', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setCapTables(response.data);
+            setFilteredCapTables(response.data);
+            console.log(filteredCapTables);
+        } catch (error) {
+            console.error('Error fetching Cap Table:', error);
         }
     };
 
@@ -272,7 +306,7 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                        <Select value={selectedStartup} onChange={handleStartupChange} variant="outlined" sx={{ minWidth: 150 }}>
+                        <Select value={selectedStartupFunding} onChange={handleStartupChangeFunding} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 {businessProfiles.filter(profile => profile.type === 'Startup')
                                     .slice(fundingPage * fundingRowsPerPage, fundingPage * fundingRowsPerPage + fundingRowsPerPage)
@@ -335,10 +369,11 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                        <Select value={selectedStartupCapTable} onChange={handleStartupChangeCapTable} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Startup">Startup</MenuItem>
-                                <MenuItem value="Investor">Investor</MenuItem>
+                                {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
+                                    <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Box>
@@ -356,10 +391,11 @@ function UserDashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn Balingcasag</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>CEO</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
+                        {filteredCapTables.map((table) => (
+                            <TableRow key={table.id}>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.investorName}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.shares}</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
@@ -370,6 +406,7 @@ function UserDashboard() {
                                     </Button>
                                 </TableCell>
                             </TableRow>
+                        ))}
                         </TableBody>
                     </Table>
 
