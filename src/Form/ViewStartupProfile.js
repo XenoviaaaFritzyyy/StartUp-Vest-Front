@@ -361,7 +361,7 @@ function ViewStartupProfile({ profile }) {
                 </Grid>
             </Grid>
         </Grid>
-        <Button variant="contained" sx={{ mt: 3, width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} style={{marginLeft: '85%'}} onClick={handleUpdateProfile}>
+        <Button variant="contained" sx={{ width: 150, background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} style={{marginLeft: '83.5%'}} onClick={handleUpdateProfile}>
             {isEditable ? 'Save Changes' : 'Edit Profile'}
         </Button>
         </Box>

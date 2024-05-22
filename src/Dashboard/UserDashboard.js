@@ -15,11 +15,17 @@ function UserDashboard() {
     const [businessProfiles, setBusinessProfiles] = useState([]);
     // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
     const [filter, setFilter] = useState('All');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(3);
-        const [selectedStartup, setSelectedStartup] = useState('All');
+    const [selectedStartup, setSelectedStartup] = useState('All');
     const [fundingRounds, setFundingRounds] = useState([]);
     const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
+
+    // Pagination
+    const [businessPage, setBusinessPage] = useState(0);
+    const [businessRowsPerPage, setBusinessRowsPerPage] = useState(3);
+    const [fundingPage, setFundingPage] = useState(0);
+    const [fundingRowsPerPage, setFundingRowsPerPage] = useState(3);
+    const [capPage, setCapPage] = useState(0);
+    const [capRowsPerPage, setCapRowsPerPage] = useState(3);
 
     const [userData, setUserData] = useState({
         firstName: '',
@@ -63,15 +69,32 @@ function UserDashboard() {
         setFilter(event.target.value);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    const handleBusinessPageChange = (event, newPage) => {
+        setBusinessPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+    const handleBusinessRowsPerPageChange = (event) => {
+        setBusinessRowsPerPage(parseInt(event.target.value, 10));
+        setBusinessPage(0);
     };
 
+    const handleFundingPageChange = (event, newPage) => {
+        setFundingPage(newPage);
+    };
+
+    const handleFundingRowsPerPageChange = (event) => {
+        setFundingRowsPerPage(parseInt(event.target.value, 10));
+        setFundingPage(0);
+    };
+
+    const handleCapPageChange = (event, newPage) => {
+        setCapPage(newPage);
+    };
+
+    const handleCapRowsPerPageChange = (event) => {
+        setCapRowsPerPage(parseInt(event.target.value, 10));
+        setCapPage(0);
+    };
 
     const handleStartupChange = (event) => {
         setSelectedStartup(event.target.value);
@@ -177,7 +200,7 @@ function UserDashboard() {
                         <TableBody>
                             {businessProfiles
                                 .filter(profile => filter === 'All' || profile.type === filter)
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
                                 .map((profile) => (
                                 <TableRow key={`${profile.type}-${profile.id}`}>
                                     <TableCell sx={{ textAlign: 'justify' }}>{profile.type}</TableCell>
@@ -195,10 +218,10 @@ function UserDashboard() {
                     rowsPerPageOptions={[3]}
                     component="div"
                     count={businessProfiles.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}/>
+                    rowsPerPage={businessRowsPerPage}
+                    page={businessPage}
+                    onPageChange={handleBusinessPageChange}
+                    onRowsPerPageChange={handleBusinessRowsPerPageChange}/>
                 </Box>
 
                 {/* Right Boxes */}
@@ -241,7 +264,9 @@ function UserDashboard() {
                         <FormControl sx={{ minWidth: 120 }}>
                         <Select value={selectedStartup} onChange={handleStartupChange} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
-                                {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
+                                {businessProfiles.filter(profile => profile.type === 'Startup')
+                                    .slice(fundingPage * fundingRowsPerPage, fundingPage * fundingRowsPerPage + fundingRowsPerPage)
+                                    .map((startup) => (
                                     <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
                                 ))}
                             </Select>
@@ -277,6 +302,15 @@ function UserDashboard() {
                             ))}
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    count={fundingRounds.length}
+                    rowsPerPage={fundingRowsPerPage}
+                    page={fundingPage}
+                    onPageChange={handleFundingPageChange}
+                    onRowsPerPageChange={handleFundingRowsPerPageChange}/>
                 </TableContainer>
             </Box>
 
@@ -328,6 +362,15 @@ function UserDashboard() {
                             </TableRow>
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    // count={businessProfiles.length}
+                    rowsPerPage={capRowsPerPage}
+                    page={capPage}
+                    onPageChange={handleCapPageChange}
+                    onRowsPerPageChange={handleCapRowsPerPageChange}/>
                 </TableContainer>
             </Box>
 
@@ -369,7 +412,7 @@ function UserDashboard() {
                 </Box>
             )}
 
-            {/* Custom Full Page Dialog for Creating Funding Round */}
+            {/* Custom Full Page Dialog for Cap Table */}
             {openCapTable && (
                 <Box
                     sx={{

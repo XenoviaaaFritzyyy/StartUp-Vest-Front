@@ -38,31 +38,34 @@ function FoundingRoundView() {
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Grid container spacing={3}>
-                      <Grid item xs={12} sx={{ textAlign: 'justify' }}>
-                        <Typography variant="h6"><strong>Biography</strong></Typography>
-                        <Typography variant="h6">
-                          Shelli Morgan, a trailblazing entrepreneur and compassionate humanitarian, emerged from the vibrant streets of NYC. Graduating from Columbia University, she swiftly founded a groundbreaking startup at 25, pioneering sustainable urban innovation.
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={8}>
-                        <Typography variant="h6"><strong>Email Address</strong></Typography>
-                        <Typography variant="h6">hazleynbalingcasag123@gmail.com</Typography>
+                      <Grid item xs={4}>
+                        <Typography variant="h6"><strong>StartUp Name</strong></Typography>
+                        <Typography variant="h6">Facebook</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Contact Number</strong></Typography>
-                        <Typography variant="h6">09362677352</Typography>
-                      </Grid>
-
-                      <Grid item xs={8}>
-                        <Typography variant="h6"><strong>Location</strong></Typography>
-                        <Typography variant="h6">811 Ucma Village Apas Cebu City</Typography>
+                        <Typography variant="h6"><strong>Announced Date</strong></Typography>
+                        <Typography variant="h6">July 24, 2024</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Country</strong></Typography>
-                        <Typography variant="h6">Philippines</Typography>
+                        <Typography variant="h6"><strong>Closed on Date</strong></Typography>
+                        <Typography variant="h6">August 28, 2024</Typography>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Typography variant="h6"><strong>Funding Type</strong></Typography>
+                        <Typography variant="h6">Seed Round</Typography>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Typography variant="h6"><strong>Money Raised</strong></Typography>
+                        <Typography variant="h6">---</Typography>
+                      </Grid>
+
+                      <Grid item xs={4}>
+                        <Typography variant="h6"><strong>Pre-Money Valuation</strong></Typography>
+                        <Typography variant="h6">P1M</Typography>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -71,28 +74,18 @@ function FoundingRoundView() {
                 <Divider sx={{ mt: 5, mb: 3 }} />
 
                 <Box sx={{ mb: 5 }}>
-                  <Typography variant="h4" sx={{ pt: 2, pb: 2, fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)' }}>Links</Typography>
+                  <Typography variant="h4" sx={{ pt: 2, pb: 2, fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)' }}>Investors</Typography>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
-                          <Typography variant="h6">Discover More on My Official Website at <strong>https://www.facebook.com/</strong></Typography>
+                          <Typography variant="h6"><strong>Number of Investors</strong></Typography>
+                          <Typography variant="h6">2</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                          <Typography variant="h6"><strong>LinkedIn</strong></Typography>
-                          <Typography variant="h6">Hazelyn Balingcasag</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="h6"><strong>Facebook</strong></Typography>
-                          <Typography variant="h6">Hazelyn Balingcasag</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="h6"><strong>Twitter</strong></Typography>
-                          <Typography variant="h6">Hazelyn Balingcasag</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="h6"><strong>Instagram</strong></Typography>
-                          <Typography variant="h6">Hazelyn Balingcasag</Typography>
+                          <Typography variant="h6"><strong>Investor Names</strong></Typography>
+                          <Typography variant="h6">1. Hazelyn Balingcasag</Typography>
+                          <Typography variant="h6">2. Shelli Balingcasag</Typography>
                         </Grid>
                       </Grid>
                     </Grid>

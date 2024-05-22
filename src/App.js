@@ -11,6 +11,7 @@ import FundingRound from './Components/FundingRound';
 import People from './Components/People';
 import CapTable from './Components/CapTable';
 import UserDashboard from './Dashboard/UserDashboard';
+import AdminDashboard from './Dashboard/AdminDashboard';
 import LandingPage from './Components/LandingPage';
 import ViewStartupProfile from './Form/ViewStartupProfile';
 import ViewInvestorProfile from './Form/ViewInvestorProfile';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/people" element={<People />} />
         <Route path="/captable" element={<CapTable />} />
         <Route path="/userdashboard" element={<UserDashboard />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
 
         {/* Business Profile */}
         <Route path="/startupprofile" element={<ViewStartupProfile />} />
