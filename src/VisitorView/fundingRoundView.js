@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Box, Divider, Toolbar, Typography, Grid, Button } from '@mui/material';
+import { Avatar, Box, Divider, Toolbar, Typography, Grid, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, TablePagination } from '@mui/material';
 import StarsIcon from '@mui/icons-material/Stars';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
@@ -73,25 +73,41 @@ function FoundingRoundView() {
 
                 <Divider sx={{ mt: 5, mb: 3 }} />
 
-                <Box sx={{ mb: 5 }}>
-                  <Typography variant="h4" sx={{ pt: 2, pb: 2, fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)' }}>Investors</Typography>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                          <Typography variant="h6"><strong>Number of Investors</strong></Typography>
-                          <Typography variant="h6">2</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="h6"><strong>Investor Names</strong></Typography>
-                          <Typography variant="h6">1. Hazelyn Balingcasag</Typography>
-                          <Typography variant="h6">2. Shelli Balingcasag</Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', }}>Investors</Typography>
+                <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white'}}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Investor Name</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Title</TableCell>
+                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Share</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        
+                        <TableBody>
+                            {/* {businessProfiles
+                                .filter(profile => filter === 'All' || profile.type === filter)
+                                .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
+                                .map((profile) => ( */}
+                                <TableRow>
+                                    <TableCell sx={{ textAlign: 'center' }}>AA</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>AA</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify' }}>AA</TableCell>
+                                </TableRow>
+                            {/* ))} */}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                    
+                {/* <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    count={businessProfiles.length}
+                    rowsPerPage={businessRowsPerPage}
+                    page={businessPage}
+                    onPageChange={handleBusinessPageChange}
+                    onRowsPerPageChange={handleBusinessRowsPerPageChange}/> */}
                 </Box>
-              </Box>
             </Grid>
 
             {/* Right Box */}
