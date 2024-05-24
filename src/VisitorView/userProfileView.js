@@ -61,36 +61,34 @@ function UserProfileView() {
           <Grid container spacing={2}>
             {/* Left Box. Investor Information */}
             <Grid item xs={12} md={8}>
-              <Box sx={{ background: 'white', display: 'flex', flexDirection: 'column', borderRadius: 2, pb: 5, pl: 5, pr: 5 }}>
+              <Box sx={{ background: 'white', display: 'flex', flexDirection: 'column', borderRadius: 2, pb: 3, pl: 5, pr: 5 }}>
                 <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', mb: 2 }}>Overview</Typography>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Grid container spacing={3}>
-                      <Grid item xs={12} sx={{ textAlign: 'justify' }}>
+                      <Grid item xs={12} align='justify'>
                         <Typography variant="h6"><strong>Biography</strong></Typography>
-                        <Typography variant="h6">
-                          {profile.biography}
-                        </Typography>
+                        <Typography variant="body1">{profile.biography}</Typography>
                       </Grid>
 
-                      <Grid item xs={8}>
+                      <Grid item xs={4}>
                         <Typography variant="h6"><strong>Email Address</strong></Typography>
-                        <Typography variant="h6">{profile.emailAddress}</Typography>
+                        <Typography variant="body1">{profile.emailAddress}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Contact Number</strong></Typography>
-                        <Typography variant="h6">{profile.contactInformation}</Typography>
-                      </Grid>
-
-                      <Grid item xs={8}>
-                        <Typography variant="h6"><strong>Location</strong></Typography>
-                        <Typography variant="h6">{profile.streetAddress}, {profile.city}, {profile.country}</Typography>
+                        <Typography variant="body1">{profile.contactInformation}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Country</strong></Typography>
-                        <Typography variant="h6">{profile.country}</Typography>
+                        <Typography variant="h6"><strong>Gender</strong></Typography>
+                        <Typography variant="body1">{profile.gender}</Typography>
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <Typography variant="h6"><strong>Location</strong></Typography>
+                        <Typography variant="body1">{profile.streetAddress}, {profile.city}, {profile.country}</Typography>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -104,23 +102,24 @@ function UserProfileView() {
                     <Grid item xs={12}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
-                          <Typography variant="h6">Discover More on My Official Website at <strong>{profile.website}</strong></Typography>
+                          <Typography variant="h6"><strong>Website</strong></Typography>
+                          <Typography variant="body1">{profile.website || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>LinkedIn</strong></Typography>
-                          <Typography variant="h6">{profile.linkedIn}</Typography>
+                          <Typography variant="body1">{profile.linkedIn || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Facebook</strong></Typography>
-                          <Typography variant="h6">{profile.facebook}</Typography>
+                          <Typography variant="body1">{profile.facebook || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Twitter</strong></Typography>
-                          <Typography variant="h6">{profile.twitter}</Typography>
+                          <Typography variant="body1">{profile.twitter || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Instagram</strong></Typography>
-                          <Typography variant="h6">{profile.instagram}</Typography>
+                          <Typography variant="body1">{profile.instagram || '---' }</Typography>
                         </Grid>
                       </Grid>
                     </Grid>

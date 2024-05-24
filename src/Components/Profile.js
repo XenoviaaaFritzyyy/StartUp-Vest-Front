@@ -93,7 +93,7 @@ function Profile() {
             const startups = responseStartups.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Startup' }));
             const investors = responseInvestors.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Investor' }));
     
-            setBusinessProfiles([...startups, ...investors]);
+            setBusinessProfiles([...investors, ...startups]);
         } catch (error) {
             console.error('Failed to fetch business profiles:', error);
         }
@@ -277,7 +277,7 @@ function Profile() {
                             // Add a key prop to force re-render when the avatar changes
                             />
                             </label>
-                            <   input
+                            <input
                                 type="file"
                                 accept="image/*"
                                 id="avatar-upload"
