@@ -360,7 +360,7 @@ function ViewStartupProfile({ profile }) {
         </Grid>
 
         <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
-            Industries
+            Industry
         </Typography>
 
         <Grid container spacing={3} sx={{ ml: 2 }}>

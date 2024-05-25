@@ -129,31 +129,13 @@ function CreateBusinessProfile() {
         <>
         <Box component="main" sx={{ flexGrow: 1, width: '100%', overflowX: 'hidden', maxWidth: '1000px',  background: '#F2F2F2'}}>
 
-            <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
-                Upload Business Profile *
-            </Typography>
-
-            <Grid item xs={12} sm={3}>
-                <label htmlFor="avatar-upload" onClick={handleAvatarClick}>
-                    <Avatar sx={{ width: 200, height: 200, mb: 2, ml: 49.5,cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }} src={avatar}></Avatar>
-                </label>
-            
-                <input
-                type="file"
-                accept="image/*"
-                id="avatar-upload"
-                onChange={handleAvatarChange}
-                ref={fileInputRef}
-                style={{ display: 'none'}}/>                      
-            </Grid>
-
             <Box component="main" sx={{mr: 5, borderRadius: 2 }}>
                 <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
                     Profile Type *
                 </Typography>
 
-            <Box sx={{ display: 'flex', gap: 2, pl: 5, pb: 5, textAlign: 'center' }}>
-            <Card onClick={() => handleCardClick('Startup Company')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
+            <Box sx={{ display: 'flex', gap: 2, pl: 5, pb: 2, textAlign: 'center' }}>
+            <Card onClick={() => handleCardClick('Startup Company')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', height: '200px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
                             Startup Company
@@ -164,7 +146,7 @@ function CreateBusinessProfile() {
                 </CardContent>
             </Card>
 
-            <Card onClick={() => handleCardClick('Investor')} style={{ width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
+            <Card onClick={() => handleCardClick('Investor')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Investor

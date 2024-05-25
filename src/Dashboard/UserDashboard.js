@@ -4,6 +4,7 @@ import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableB
 import { Link } from 'react-router-dom';
 
 import CreateFundingRound from '../Form/CreateFundingRound';
+import ViewFundingRound from '../Form/ViewFundingRound';
 import CreateCapTable from '../Form/CreateCapTable';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ const drawerWidth = 240;
 
 function UserDashboard() {
     const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
+    const [openViewFundingRound, setOpenViewFundingRound] = useState(false);
     const [openCapTable, setOpenCapTable] = useState(false);
     const [businessProfiles, setBusinessProfiles] = useState([]);
     // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
@@ -18,6 +20,10 @@ function UserDashboard() {
     const [selectedStartup, setSelectedStartup] = useState('All');
     const [fundingRounds, setFundingRounds] = useState([]);
     const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
+    const [selectedStartupFunding, setSelectedStartupFunding] = useState('All');
+    const [selectedStartupCapTable, setSelectedStartupCapTable] = useState('All');
+    const [capTables, setCapTables] = useState([]);
+    const [filteredCapTables, setFilteredCapTables] = useState([]);
 
     // Pagination
     const [businessPage, setBusinessPage] = useState(0);
@@ -47,6 +53,7 @@ function UserDashboard() {
         // fetchUserData();
         fetchBusinessProfiles();
         fetchFundingRounds();
+        fetchCapTable();
     }, []);
 
     const handleOpenFundingRound = () => {
@@ -57,6 +64,14 @@ function UserDashboard() {
         setOpenCreateFundingRound(false);
     };
 
+    const handleOpenFundingProfile = () => {
+        setOpenViewFundingRound(true);
+    }
+    
+    const handleCloseFundingProfile = () => {
+        setOpenViewFundingRound(false);
+    }
+    
     const handleOpenCapTable = () => {
         setOpenCapTable(true);
     }
@@ -96,9 +111,14 @@ function UserDashboard() {
         setCapPage(0);
     };
 
-    const handleStartupChange = (event) => {
-        setSelectedStartup(event.target.value);
+    const handleStartupChangeFunding = (event) => {
+        setSelectedStartupFunding(event.target.value);
         filterFundingRounds(event.target.value);
+    };
+
+    const handleStartupChangeCapTable = (event) => {
+        setSelectedStartupCapTable(event.target.value);
+        filterCapTables(event.target.value);
     };
     // const fetchUserData = async () => {
     //     try {
@@ -146,6 +166,15 @@ function UserDashboard() {
         }
     };
 
+    const filterCapTables = (selectedStartup) => {
+        if (selectedStartup === 'All') {
+            setFilteredCapTables(capTables);
+        } else {
+            const filteredTables = capTables.filter(table => table.startup && table.startup.id === selectedStartup);
+            setFilteredCapTables(filteredTables);
+        }
+    };
+
     const fetchFundingRounds = async () => {
         try {
             const response = await axios.get('http://localhost:3000/funding-rounds/all', {
@@ -157,6 +186,21 @@ function UserDashboard() {
             setFilteredFundingRounds(response.data);
         } catch (error) {
             console.error('Error fetching funding rounds:', error);
+        }
+    };
+
+    const fetchCapTable = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/cap-table/all', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setCapTables(response.data);
+            setFilteredCapTables(response.data);
+            console.log(filteredCapTables);
+        } catch (error) {
+            console.error('Error fetching Cap Table:', error);
         }
     };
 
@@ -262,7 +306,7 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                        <Select value={selectedStartup} onChange={handleStartupChange} variant="outlined" sx={{ minWidth: 150 }}>
+                        <Select value={selectedStartupFunding} onChange={handleStartupChangeFunding} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 {businessProfiles.filter(profile => profile.type === 'Startup')
                                     .slice(fundingPage * fundingRowsPerPage, fundingPage * fundingRowsPerPage + fundingRowsPerPage)
@@ -291,7 +335,7 @@ function UserDashboard() {
                                     <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingRound}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingProfile}>
                                             View
                                         </Button>
                                         <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
@@ -325,10 +369,11 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                            <Select defaultValue="All" variant="outlined" sx={{ minWidth: 150 }}>
+                        <Select value={selectedStartupCapTable} onChange={handleStartupChangeCapTable} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Startup">Startup</MenuItem>
-                                <MenuItem value="Investor">Investor</MenuItem>
+                                {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
+                                    <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Box>
@@ -346,10 +391,11 @@ function UserDashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center' }}>Hazelyn Balingcasag</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>CEO</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>50,000</TableCell>
+                        {filteredCapTables.map((table) => (
+                            <TableRow key={table.id}>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.investorName}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.shares}</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
                                 <TableCell sx={{ textAlign: 'center' }}>
                                     <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
@@ -360,6 +406,7 @@ function UserDashboard() {
                                     </Button>
                                 </TableCell>
                             </TableRow>
+                        ))}
                         </TableBody>
                     </Table>
 
@@ -411,6 +458,44 @@ function UserDashboard() {
                     </Box>
                 </Box>
             )}
+
+            {openViewFundingRound && (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1300,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+
+                <Box
+                    sx={{
+                        background: '#F2F2F2',
+                        maxWidth: '100%',
+                        maxHeight: '90%',
+                        overflowY: 'auto',
+                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
+                    }}>
+
+                            <ViewFundingRound />
+
+                        <DialogActions>
+                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
+                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingProfile}>
+                                Close
+                                </Button>
+                            </Box>
+                        </DialogActions>
+                    </Box>
+                </Box>
+            )}
+
 
             {/* Custom Full Page Dialog for Cap Table */}
             {openCapTable && (

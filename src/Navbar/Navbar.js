@@ -20,10 +20,8 @@ export default function Navbar() {
     { text: 'People', icon: <PeopleIcon sx={{color: '#F2F2F2'}}/>, path: '/people'},
   ];
 
-  // Add state variables for the user's first and last name.
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  // Add a state variable for the user's photo.
   const [userPhoto, setUserPhoto] = useState('');
 
   // Fetch user data when the component mounts.
@@ -33,18 +31,15 @@ export default function Navbar() {
 
   const fetchUserData = async () => {
       try {
-          // Replace '/api/user' with the path to your API endpoint.
           const response = await axios.get('http://localhost:3000/users/profile', {
               headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
               },
           });
 
-          // Update the first and last name state variables.
           setFirstName(response.data.firstName);
           setLastName(response.data.lastName);
 
-          // Fetch the profile picture
           const profilePicResponse = await axios.get(`http://localhost:3000/profile-picture/${response.data.id}`, {
             responseType: 'blob',
             headers: {
@@ -52,19 +47,16 @@ export default function Navbar() {
             },
           });
 
-          // Create a URL for the blob
           const profilePicUrl = URL.createObjectURL(profilePicResponse.data);
-          setUserPhoto(profilePicUrl); // Update the user photo state variable
+          setUserPhoto(profilePicUrl); 
       } catch (error) {
           console.error('Failed to fetch user data:', error);
       }
   };
 
   const handleLogout = () => {
-    // Remove JWT token and user ID from storage
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
-    // Redirect to signin page
     window.location = '/';
 };
 
@@ -75,27 +67,27 @@ export default function Navbar() {
         <Toolbar>
         <Avatar sx={{ ml: -3, width: 70, height: 70}} src='images/logoonly.png'></Avatar>
           <Typography variant="h6" noWrap component="div" sx={{ml: -1}}>
-            STARTUP VEST
+            StartUp Vest
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar sx={{ marginRight: 2, width: 32, height: 32 }}>
+          <Avatar sx={{ mr: 1, width: 40, height: 40, border: '2px #F2F2F2 solid' }}>
             {userPhoto ? (
               <img
                 src={userPhoto}
                 alt="User"
                 style={{
-                  width: '100%', // Ensure the image covers the full width of the Avatar
-                  height: '100%', // Ensure the image covers the full height of the Avatar
-                  objectFit: 'contain', // Contain the image within the frame without cropping
-                  objectPosition: 'center' // Center the image within the Avatar frame
+                  width: '100%', 
+                  height: '100%',
+                  objectFit: 'cover', 
+                  objectPosition: 'center'
                 }}
               />
             ) : (
               `${firstName[0]}${lastName[0]}`
             )}
           </Avatar>
-            <Typography variant="h7" noWrap component="div" sx={{marginRight: 2}}>
-              {firstName} {lastName}
+            <Typography variant="h6" noWrap component="div" sx={{marginRight: 2}}>
+              {lastName}, {firstName}
             </Typography>
             <IconButton size="medium" aria-label="show 17 new notifications" color="inherit" sx={{marginRight: 5}}>
               <NotificationsIcon />
@@ -114,30 +106,31 @@ export default function Navbar() {
           <List>
             <ListItem disablePadding>
             <ListItemButton component={Link} to="/profile">
-            <Avatar sx={{ marginRight: 2, width: 32, height: 32 }}>
+            <Avatar sx={{ mr: 1, mt: 1, mb: 1, width: 40, height: 40, border: '2px #F2F2F2   solid' }}>
               {userPhoto ? (
                 <img
                   src={userPhoto}
                   alt="User"
                   style={{
-                    width: '100%', // Ensure the image covers the full width of the Avatar
-                    height: '100%', // Ensure the image covers the full height of the Avatar
-                    objectFit: 'contain', // Contain the image within the frame without cropping
-                    objectPosition: 'center' // Center the image within the Avatar frame
-                  }}
-                />
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover', 
+                    objectPosition: 'center',
+                  }}/>
               ) : (
                 `${firstName[0]}${lastName[0]}`
               )}
             </Avatar>
-                <Typography noWrap component="div" sx={{fontSize: 15}}>
+                <Typography variant="h6" noWrap component="div">
                   {firstName} {lastName}
                 </Typography>
               </ListItemButton>
             </ListItem>
+
             <Divider />
+
             {menuItems.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{marginTop: 1}}>
+              <ListItem key={item.text} disablePadding sx={{p: 1}}>
                 <ListItemButton component={Link} to={item.path}>
                   <ListItemText primary={item.text} />
                   <ListItemIcon>
@@ -147,7 +140,7 @@ export default function Navbar() {
               </ListItem>
             ))}
             <Divider />
-            <ListItem disablePadding>
+            <ListItem disablePadding sx={{p: 1}}>
             <ListItemButton component={Link} to="/" onClick={handleLogout}>
                 <ListItemText primary="Logout" />
                 <ListItemIcon>
