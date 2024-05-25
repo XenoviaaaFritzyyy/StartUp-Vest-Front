@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import countries from '../static/countries';
 import industries from '../static/industries';
 
@@ -92,12 +92,62 @@ function ViewStartupProfile({ profile }) {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
         });
+        // After updating the profile, check if there's a new profile picture to upload
+        await handleUploadProfilePicture();
         } catch (error) {
             console.error('Failed to update profile:', error);
         }
     }
     setIsEditable(!isEditable);
     };
+
+    const handleUploadProfilePicture = async () => {
+        if (fileInputRef.current.files[0]) {
+          try {
+            const pictureFormData = new FormData();
+            pictureFormData.append('file', fileInputRef.current.files[0]);
+      
+            // Use the PUT method to update the startup's profile picture
+            const pictureEndpoint = `http://localhost:3000/profile-picture/startup/${profile.id}/update`;
+      
+            await axios.put(pictureEndpoint, pictureFormData, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+      
+            // Fetch the updated profile picture and set it in the state
+            await fetchProfilePicture();
+          } catch (error) {
+            console.error('Failed to upload profile picture:', error);
+          }
+        }
+      };
+      
+
+      const fetchProfilePicture = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3000/profile-picture/startup/${profile.id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            responseType: 'blob', // Important for getting the image as a blob
+          });
+      
+          // Create a URL for the blob
+          const imageUrl = URL.createObjectURL(response.data);
+          setAvatar(imageUrl);
+        } catch (error) {
+          console.error('Failed to fetch profile picture:', error);
+        }
+      };
+
+      useEffect(() => {
+        if (profile.id) {
+          fetchProfilePicture();
+        }
+      }, [profile.id]); // Add profile.id as a dependency
 
     return (
         <>
