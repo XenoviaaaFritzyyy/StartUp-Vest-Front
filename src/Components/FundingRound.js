@@ -8,7 +8,7 @@ import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 const drawerWidth = 240;
 
-function createData(id, transactionName, startupName, fundingType, moneyRaised, announcedDate,closedDate, avatar) {
+function createData(id, transactionName, startupName, fundingType, moneyRaised, announcedDate, closedDate, avatar) {
   return {
     id,
     transactionName,

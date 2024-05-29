@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import CreateFundingRound from '../Form/CreateFundingRound';
 import ViewFundingRound from '../Form/ViewFundingRound';
-import CreateCapTable from '../Form/CreateCapTable';
 import axios from 'axios';
 
 const drawerWidth = 240;
@@ -67,11 +66,11 @@ function UserDashboard() {
     const handleOpenFundingProfile = () => {
         setOpenViewFundingRound(true);
     }
-    
+
     const handleCloseFundingProfile = () => {
         setOpenViewFundingRound(false);
     }
-    
+
     const handleOpenCapTable = () => {
         setOpenCapTable(true);
     }
@@ -117,8 +116,9 @@ function UserDashboard() {
     };
 
     const handleStartupChangeCapTable = (event) => {
-        setSelectedStartupCapTable(event.target.value);
-        filterCapTables(event.target.value);
+        const selectedCompanyId = event.target.value;
+        setSelectedStartupCapTable(selectedCompanyId);
+        fetchCapTable(selectedCompanyId);
     };
     // const fetchUserData = async () => {
     //     try {
@@ -184,25 +184,31 @@ function UserDashboard() {
             });
             setFundingRounds(response.data);
             setFilteredFundingRounds(response.data);
+
+
         } catch (error) {
             console.error('Error fetching funding rounds:', error);
         }
     };
 
-    const fetchCapTable = async () => {
+    const fetchCapTable = async (companyId) => {
         try {
-            const response = await axios.get('http://localhost:3000/cap-table/all', {
+            const response = await axios.get(`http://localhost:3000/funding-rounds/investors/${companyId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
             setCapTables(response.data);
             setFilteredCapTables(response.data);
-            console.log(filteredCapTables);
         } catch (error) {
-            console.error('Error fetching Cap Table:', error);
+            console.error('Error fetching funding rounds:', error);
         }
     };
+
+
+
+
+
 
     return (
         <>
@@ -211,79 +217,75 @@ function UserDashboard() {
 
             <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
 
-            {/* Left Box */}
-            <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, pt: 5, pl: 5, pr: 5 }}>
-                <Typography variant="h5">Invested Companies</Typography>
+                {/* Left Box */}
+                <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, pt: 5, pl: 5, pr: 5 }}>
+                    <Typography variant="h5">Invested Companies</Typography>
 
                     <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
-                    <Grid item>
-                        <Typography variant="h6">Filter By:</Typography>
+                        <Grid item>
+                            <Typography variant="h6">Filter By:</Typography>
+                        </Grid>
+
+                        <Grid item>
+                            <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
+                                <MenuItem value="All">All</MenuItem>
+                                <MenuItem value="Startup">Startup</MenuItem>
+                                <MenuItem value="Investor">Investor</MenuItem>
+                            </Select>
+                        </Grid>
                     </Grid>
-                        
-                    <Grid item>
-                        <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
-                            <MenuItem value="All">All</MenuItem>
-                            <MenuItem value="Startup">Startup</MenuItem>
-                            <MenuItem value="Investor">Investor</MenuItem>
-                        </Select>
-                    </Grid>
-                </Grid>
-                    
-                <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white', borderRadius: 4 }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Company Type</TableCell>
-                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Startup Name</TableCell>
-                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Industry</TableCell>
-                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Contact Email</TableCell>
-                                <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Phone Number</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        
-                        <TableBody>
-                            {businessProfiles
-                                .filter(profile => filter === 'All' || profile.type === filter)
-                                .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
-                                .map((profile) => (
-                                <TableRow key={`${profile.type}-${profile.id}`}>
-                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.type}</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.companyName || profile.lastName}</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.industry}</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.emailAddress}</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>{profile.phoneNumber}</TableCell>
+
+                    <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white', borderRadius: 4 }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Company Type</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Startup Name</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Industry</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Contact Email</TableCell>
+                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Phone Number</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                    
-                <TablePagination
-                    rowsPerPageOptions={[3]}
-                    component="div"
-                    count={businessProfiles.length}
-                    rowsPerPage={businessRowsPerPage}
-                    page={businessPage}
-                    onPageChange={handleBusinessPageChange}
-                    onRowsPerPageChange={handleBusinessRowsPerPageChange}/>
+                            </TableHead>
+
+                            <TableBody>
+                                {businessProfiles
+                                    .filter(profile => filter === 'All' || profile.type === filter)
+                                    .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
+                                    .map((profile) => (
+                                        <TableRow key={`${profile.type}-${profile.id}`}>
+                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.type}</TableCell>
+                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.companyName || profile.lastName}</TableCell>
+                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.industry}</TableCell>
+                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.emailAddress}</TableCell>
+                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.phoneNumber}</TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    <TablePagination
+                        rowsPerPageOptions={[3]}
+                        component="div"
+                        count={businessProfiles.length}
+                        rowsPerPage={businessRowsPerPage}
+                        page={businessPage}
+                        onPageChange={handleBusinessPageChange}
+                        onRowsPerPageChange={handleBusinessRowsPerPageChange} />
                 </Box>
 
                 {/* Right Boxes */}
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 2 }}>
                     {/* Box for Create Funding Round Button */}
-                    <Box sx={{ borderRadius: 4, mb: 2 }}>
+                    <Box sx={{ borderRadius: 4, mb: 0 }}>
                         <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff', mb: 1 }} fullWidth onClick={handleOpenFundingRound}>
                             Create Funding Round
-                        </Button>
-
-                        <Button variant="outlined" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff' }} fullWidth onClick={handleOpenCapTable}>
-                            Create Cap Table
                         </Button>
                     </Box>
 
                     {/* Box for Find New Companies Button */}
-                    <Box sx={{ background: 'white', p: 6, borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'center'}}>
-                        <Typography variant="h5" sx={{fontWeight: 'bold'}}>Find New Companies</Typography>
+                    <Box sx={{ background: 'white', p: 6, borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'center' }}>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Find New Companies</Typography>
                         <Typography variant="h6">Connect with the right people at qualified companies.</Typography>
 
                         <Box sx={{ mt: 2 }}>
@@ -306,13 +308,13 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                        <Select value={selectedStartupFunding} onChange={handleStartupChangeFunding} variant="outlined" sx={{ minWidth: 150 }}>
+                            <Select value={selectedStartupFunding} onChange={handleStartupChangeFunding} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 {businessProfiles.filter(profile => profile.type === 'Startup')
                                     .slice(fundingPage * fundingRowsPerPage, fundingPage * fundingRowsPerPage + fundingRowsPerPage)
                                     .map((startup) => (
-                                    <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
-                                ))}
+                                        <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
+                                    ))}
                             </Select>
                         </FormControl>
                     </Box>
@@ -322,14 +324,14 @@ function UserDashboard() {
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Funding Type</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Money Raised</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Target Funding</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Funding Type</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Money Raised</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Target Funding</TableCell>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {filteredFundingRounds.map((round) => (
+                            {filteredFundingRounds.map((round) => (
                                 <TableRow key={round.id}>
                                     <TableCell sx={{ textAlign: 'center' }}>{round.fundingType}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
@@ -348,13 +350,13 @@ function UserDashboard() {
                     </Table>
 
                     <TablePagination
-                    rowsPerPageOptions={[3]}
-                    component="div"
-                    count={fundingRounds.length}
-                    rowsPerPage={fundingRowsPerPage}
-                    page={fundingPage}
-                    onPageChange={handleFundingPageChange}
-                    onRowsPerPageChange={handleFundingRowsPerPageChange}/>
+                        rowsPerPageOptions={[3]}
+                        component="div"
+                        count={fundingRounds.length}
+                        rowsPerPage={fundingRowsPerPage}
+                        page={fundingPage}
+                        onPageChange={handleFundingPageChange}
+                        onRowsPerPageChange={handleFundingRowsPerPageChange} />
                 </TableContainer>
             </Box>
 
@@ -369,7 +371,7 @@ function UserDashboard() {
                     <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
                         <FormControl sx={{ minWidth: 120 }}>
-                        <Select value={selectedStartupCapTable} onChange={handleStartupChangeCapTable} variant="outlined" sx={{ minWidth: 150 }}>
+                            <Select value={selectedStartupCapTable} onChange={handleStartupChangeCapTable} variant="outlined" sx={{ minWidth: 150 }}>
                                 <MenuItem value="All">All</MenuItem>
                                 {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
                                     <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
@@ -383,41 +385,38 @@ function UserDashboard() {
                     <Table>
                         <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
                             <TableRow>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Shareholder's Name</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Title</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Total Share</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold'}}>Percentage</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Shareholder's Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Title</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Total Share</TableCell>
+                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Percentage</TableCell>
                                 <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {filteredCapTables.map((table) => (
-                            <TableRow key={table.id}>
-                                <TableCell sx={{ textAlign: 'center' }}>{table.investorName}</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>{table.shares}</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>10%</TableCell>
-                                <TableCell sx={{ textAlign: 'center' }}>
-                                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
-                                        View
-                                    </Button>
-                                    <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                            {filteredCapTables.map((table) => (
+                                <TableRow key={table.id}>
+                                    <TableCell sx={{ textAlign: 'center' }}>{table.name}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{table.totalShares}</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>{table.percentage.toFixed(2)}%</TableCell>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
+                                            View
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
 
                     <TablePagination
-                    rowsPerPageOptions={[3]}
-                    component="div"
-                    // count={businessProfiles.length}
-                    rowsPerPage={capRowsPerPage}
-                    page={capPage}
-                    onPageChange={handleCapPageChange}
-                    onRowsPerPageChange={handleCapRowsPerPageChange}/>
+                        rowsPerPageOptions={[3]}
+                        component="div"
+                        // count={businessProfiles.length}
+                        rowsPerPage={capRowsPerPage}
+                        page={capPage}
+                        onPageChange={handleCapPageChange}
+                        onRowsPerPageChange={handleCapRowsPerPageChange} />
                 </TableContainer>
             </Box>
 
@@ -474,45 +473,6 @@ function UserDashboard() {
                         alignItems: 'center'
                     }}>
 
-                <Box
-                    sx={{
-                        background: '#F2F2F2',
-                        maxWidth: '100%',
-                        maxHeight: '90%',
-                        overflowY: 'auto',
-                        boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
-                    }}>
-
-                            <ViewFundingRound />
-
-                        <DialogActions>
-                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
-                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingProfile}>
-                                Close
-                                </Button>
-                            </Box>
-                        </DialogActions>
-                    </Box>
-                </Box>
-            )}
-
-
-            {/* Custom Full Page Dialog for Cap Table */}
-            {openCapTable && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1300,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-
                     <Box
                         sx={{
                             background: '#F2F2F2',
@@ -522,12 +482,12 @@ function UserDashboard() {
                             boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
                         }}>
 
-                        <CreateCapTable />
+                        <ViewFundingRound />
 
                         <DialogActions>
                             <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
-                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseCapTable}>
-                                    Cancel
+                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingProfile}>
+                                    Close
                                 </Button>
                             </Box>
                         </DialogActions>

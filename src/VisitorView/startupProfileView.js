@@ -4,7 +4,7 @@ import { Avatar, Box, Divider, List, ListItem, ListItemIcon, ListItemText, Toolb
 import StoreIcon from '@mui/icons-material/Store';
 import PaidIcon from '@mui/icons-material/Paid';
 import StarsIcon from '@mui/icons-material/Stars';
-
+import { useLocation } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 
 const drawerWidth = 240;
@@ -12,6 +12,13 @@ const drawerWidth = 240;
 function StartUpView() {
   const [selectedPage, setSelectedPage] = useState('summary');
   const [isFollowed, setIsFollowed] = useState(false); 
+
+    const location = useLocation();
+    const { startup } = location.state || {};  // Ensure that startup is fetched from state or set to an empty object if state is undefined
+  
+    if (!startup) {
+      return <div>No startup data available</div>;
+    }
 
   const handlePageChange = (page) => {
     setSelectedPage(page);
@@ -30,7 +37,7 @@ function StartUpView() {
         <Box mr={4}>
         <Avatar variant="rounded" sx={{ width: 150, height: 150, border: '5px solid rgba(0, 116, 144, 1)', borderRadius: 3, ml: 8 }}></Avatar>
         </Box>
-        <Typography variant="h4" gutterBottom>Facebook</Typography>
+        <Typography variant="h4" gutterBottom>{startup.companyName}</Typography>
         <StarsIcon sx={{ cursor: 'pointer', ml: 1, mt: -1, color: isFollowed ? 'rgba(0, 116, 144, 1)' : 'inherit' }} onClick={handleFollowToggle} />
       </Box>
 
@@ -79,21 +86,21 @@ function StartUpView() {
                   <Grid item xs={12} sx={{ textAlign: 'justify' }}>
                     <Typography variant="h6"><strong>Description</strong></Typography>
                     <Typography variant="body1">
-                      Founded with a vision to drive technological advancements and deliver unparalleled quality, Shelli Corporation stands at the forefront of innovation in the global market. With a diverse portfolio spanning industries such as technology, manufacturing, and services, Shelli Corporation is dedicated to creating value and fostering sustainable growth for our clients and communities.
+                      {startup.companyDescription}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={4}>
                     <Typography variant="h6"><strong>Founded Date</strong></Typography>
                     <Typography variant="body1">
-                      September 24, 2024
+                      {startup.foundedDate}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={4}>
                     <Typography variant="h6"><strong>Company Type</strong></Typography>
                     <Typography variant="body1">
-                      Non-profit
+                      {startup.typeOfCompany}
                     </Typography>                  
                   </Grid>
 
@@ -101,14 +108,14 @@ function StartUpView() {
                   <Grid item xs={4}>
                     <Typography variant="h6"><strong>No. of Employees</strong></Typography>
                     <Typography variant="body1">
-                      10-50
+                      {startup.numberOfEmployees}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={6}>
                     <Typography variant="h6"><strong>Location</strong></Typography>
                     <Typography variant="body1">
-                      811 Ucma Village Apas Cebu City
+                      {startup.streetAddress}, {startup.city}, {startup.state}
                     </Typography>                  
                   </Grid>
                 </Grid>
@@ -124,23 +131,23 @@ function StartUpView() {
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
                     <Typography variant="h6"><strong>Website</strong></Typography>
-                      <Typography variant="body1">Discover More on My Official Website at <strong>https://www.crunchbase.com/person/denis-shafranik</strong></Typography>
+                      <Typography variant="body1">Discover More on My Official Website at <strong>{startup.website}</strong></Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>LinkedIn</strong></Typography>
-                      <Typography variant="body1">Hazelyn Balingcasag</Typography>
+                      <Typography variant="body1">{startup.linkedIn}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Facebook</strong></Typography>
-                      <Typography variant="body1">Hazelyn Balingcasag</Typography>
+                      <Typography variant="body1">{startup.facebook}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Twitter</strong></Typography>
-                      <Typography variant="body1">Hazelyn Balingcasag</Typography>
+                      <Typography variant="body1">{startup.twitter}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Instagram</strong></Typography>
-                      <Typography variant="body1">Hazelyn Balingcasag</Typography>
+                      <Typography variant="body1">{startup.instagram}</Typography>
                     </Grid>
                   </Grid>
                 </Grid>

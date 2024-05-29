@@ -1,184 +1,144 @@
 import React, { useState, useEffect } from 'react';
+import { Box, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, FormControl, Select, MenuItem, TablePagination } from '@mui/material';
 import axios from 'axios';
-import { Box, Typography, TextField, Button, Select, MenuItem, Grid, FormControl, Autocomplete } from '@mui/material';
 
-function CreateCapTable() {
-    const [title, setTitle] = useState('');
-    const [totalShares, setTotalShares] = useState('');
-    const [investors, setInvestors] = useState([{ name: null, title: '', shares: '' }]);
-    const [allInvestors, setAllInvestors] = useState([]);
-    const [selectedStartupId, setSelectedStartupId] = useState('');
-    const [startups, setStartups] = useState([]);
+function CapTable() {
+    const [capTableData, setCapTableData] = useState([]);
+    const [selectedStartupCapTable, setSelectedStartupCapTable] = useState('All');
+    const [filteredCapTables, setFilteredCapTables] = useState([]);
+    const [capPage, setCapPage] = useState(0);
+    const [capRowsPerPage, setCapRowsPerPage] = useState(3);
+    const [fundingRounds, setFundingRounds] = useState([]);
 
     useEffect(() => {
-        const fetchStartups = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/startups', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                setStartups(response.data);
+                const response = await axios.get('http://localhost:3000/funding-rounds/all');
+                setFundingRounds(response.data);
             } catch (error) {
-                console.error('Error fetching startups:', error);
+                console.error('Error fetching funding rounds:', error);
             }
         };
 
-        const fetchInvestors = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/investors/all', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                setAllInvestors(response.data);
-            } catch (error) {
-                console.error('Error fetching investors:', error);
-            }
-        };
-
-        fetchStartups();
-        fetchInvestors();
+        fetchData();
     }, []);
 
-    const handleCreateCapTable = async () => {
-        try {
-            // Filter selected investors with valid data and map them to the required format
-            const selectedInvestors = investors
-                .filter(investor => investor.name && investor.name.id !== null)
-                .map(investor => ({
-                    id: investor.name.id,
-                    title: investor.title,
-                    shares: parseInt(investor.shares)
-                }));
-    
-            // Calculate total shares
-            const totalShares = selectedInvestors.reduce((acc, investor) => acc + investor.shares, 0);
-    
-            // Construct formData object
-            const formData = {
-                title: "Example Cap Table", // Hardcoded as per the provided payload
-                totalShares,
-                startup: { id: selectedStartupId }, // Hardcoded as per the provided payload
-                investors: selectedInvestors,
-                shares: selectedInvestors.map(investor => investor.shares),
-                titles: selectedInvestors.map(investor => investor.title) // Extract titles from selected investors
-            };
-    
-            // Send POST request to the backend
-            const response = await axios.post('http://localhost:3000/cap-table/createcap', formData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
+    const calculateCapTable = () => {
+        const totalSharesMap = new Map();
+
+        fundingRounds.forEach(round => {
+            round.capTableInvestors.forEach(investor => {
+                const investorId = investor.investor.id;
+                const shares = parseFloat(investor.shares);
+
+                if (totalSharesMap.has(investorId)) {
+                    totalSharesMap.set(investorId, totalSharesMap.get(investorId) + shares);
+                } else {
+                    totalSharesMap.set(investorId, shares);
                 }
             });
-    
-            console.log('Cap Table created successfully:', response.data);
-        } catch (error) {
-            console.error('Failed to create cap table:', error);
+        });
+
+        const totalMoneyRaised = fundingRounds.reduce((acc, round) => acc + parseFloat(round.moneyRaised), 0);
+
+        const capTableData = [];
+        totalSharesMap.forEach((shares, investorId) => {
+            const percentageOwnership = (shares / totalMoneyRaised) * 100;
+            capTableData.push({
+                investorId,
+                shares,
+                percentageOwnership
+            });
+        });
+
+        setCapTableData(capTableData);
+    };
+
+    const filterCapTableData = () => {
+        let filteredData = capTableData;
+        if (selectedStartupCapTable !== 'All') {
+            filteredData = filteredData.filter(item => item.startupId === selectedStartupCapTable);
         }
-    };
-    
-
-    const handleAddInvestor = () => {
-        setInvestors([...investors, { name: null, title: '', shares: '' }]);
+        setFilteredCapTables(filteredData);
     };
 
-    const handleInvestorChange = (index, field, value) => {
-        const updatedInvestors = [...investors];
-        updatedInvestors[index][field] = value;
-        setInvestors(updatedInvestors);
+    useEffect(() => {
+        calculateCapTable();
+    }, [fundingRounds]);
+
+    useEffect(() => {
+        filterCapTableData();
+    }, [selectedStartupCapTable, capTableData]);
+
+    const handleCapPageChange = (event, newPage) => {
+        setCapPage(newPage);
     };
 
-    const handleSharesChange = (index, value) => {
-        const updatedInvestors = [...investors];
-        updatedInvestors[index].shares = value;
-        setInvestors(updatedInvestors);
-
-        const totalShares = updatedInvestors.reduce((acc, investor) => acc + (parseInt(investor.shares) || 0), 0);
-        setTotalShares(totalShares);
+    const handleCapRowsPerPageChange = (event) => {
+        setCapRowsPerPage(parseInt(event.target.value, 10));
+        setCapPage(0);
     };
 
     return (
-        <Box component="main" sx={{ flexGrow: 1, width: '100%', overflowX: 'hidden', maxWidth: '1000px', background: '#F2F2F2', p: 3 }}>
-            <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 2, pt: 2, pb: 2 }}>
-                Create Cap Table
-            </Typography>
-
-            <Grid container spacing={3} sx={{ ml: 2 }}>
-                <Grid item xs={12} sm={11}>
-                    <FormControl fullWidth variant="filled">
-                        <label>StartUp Name</label>
-                        <Select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)}>
-                            {startups.map((startup) => (
-                                <MenuItem key={startup.id} value={startup.id}>
-                                    {startup.companyName}
-                                </MenuItem>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
+                <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+                    My Cap Table
+                </Typography>
+                <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
+                    <FormControl sx={{ minWidth: 120 }}>
+                        <Select value={selectedStartupCapTable} onChange={(e) => setSelectedStartupCapTable(e.target.value)} variant="outlined" sx={{ minWidth: 150 }}>
+                            <MenuItem value="All">All</MenuItem>
+                            {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
+                                <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
-                </Grid>
-
-                {investors.map((investor, index) => (
-                    <Grid item xs={12} sm={11} key={index}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <label>Shareholder's Name</label>
-                                <Autocomplete
-                                    options={allInvestors}
-                                    getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
-                                    value={investor.name ? allInvestors.find((option) => option.id === investor.name.id) : null}
-                                    onChange={(event, newValue) => handleInvestorChange(index, 'name', newValue)}
-                                    renderInput={(params) => <TextField {...params} variant="filled" />}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <label>Title</label>
-                                <TextField
-                                    fullWidth
-                                    variant="filled"
-                                    value={investor.title}
-                                    onChange={(e) => handleInvestorChange(index, 'title', e.target.value)}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <label>Shares</label>
-                                <TextField
-                                    fullWidth
-                                    variant="filled"
-                                    value={investor.shares}
-                                    onChange={(e) => handleSharesChange(index, e.target.value)}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                ))}
-
-                <Grid item xs={12} sm={11}>
-                    <Button
-                        variant="contained"
-                        onClick={handleAddInvestor}
-                        sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
-                    >
-                        Add Investor
-                    </Button>
-                </Grid>
-            
-
-            <Grid item xs={1} sm={2.5}>
-            <Button
-                variant="outlined"
-                sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff', mt: 0, ml:87 }}
-                fullWidth
-                onClick={handleCreateCapTable}
-            >
-                Create Cap Table
-            </Button>
-            </Grid>
-        </Grid>
+                </Box>
+            </Box>
+            <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2 }}>
+                <Table>
+                    <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
+                        <TableRow>
+                            <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Shareholder's Name</TableCell>
+                            <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Title</TableCell>
+                            <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Total Share</TableCell>
+                            <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Percentage</TableCell>
+                            <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredCapTables.slice(capPage * capRowsPerPage, capPage * capRowsPerPage + capRowsPerPage).map((table) => (
+                            <TableRow key={table.investorId}>
+                                <TableCell sx={{ textAlign: 'center' }}>Investor Name</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.shares}</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>{table.percentageOwnership.toFixed(2)}%</TableCell>
+                                <TableCell sx={{ textAlign: 'center' }}>
+                                    <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
+                                        View
+                                    </Button>
+                                    <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                        Delete
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[3]}
+                    component="div"
+                    count={filteredCapTables.length}
+                    rowsPerPage={capRowsPerPage}
+                    page={capPage}
+                    onPageChange={handleCapPageChange}
+                    onRowsPerPageChange={handleCapRowsPerPageChange}
+                />
+            </TableContainer>
         </Box>
     );
 }
 
-export default CreateCapTable;
+export default CapTable;
