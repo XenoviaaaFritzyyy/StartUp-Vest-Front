@@ -32,6 +32,8 @@ function UserDashboard() {
     const [capPage, setCapPage] = useState(0);
     const [capRowsPerPage, setCapRowsPerPage] = useState(3);
 
+    const [selectedFundingRoundDetails, setSelectedFundingRoundDetails] = useState(null);
+
     const [userData, setUserData] = useState({
         firstName: '',
         lastName: '',
@@ -206,8 +208,37 @@ function UserDashboard() {
     };
 
 
-
-
+    const handleViewFundingRound = async (fundingRoundId) => {
+        try {
+            const response = await axios.get(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            console.log('Funding Round Details:', response.data); // Check the fetched data
+            setSelectedFundingRoundDetails(response.data);
+            setOpenViewFundingRound(true);
+        } catch (error) {
+            console.error('Error fetching funding round details:', error);
+        }
+    };
+    
+    const handleSoftDeleteFundingRound = async (fundingRoundId) => {
+        try {
+            await axios.delete(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            // Remove the deleted funding round from the state to update the UI
+            const updatedFundingRounds = fundingRounds.filter(round => round.id !== fundingRoundId);
+            setFundingRounds(updatedFundingRounds);
+            setFilteredFundingRounds(updatedFundingRounds);
+        } catch (error) {
+            console.error('Failed to soft delete funding round:', error);
+            // Optionally, display an error message to the user
+        }
+    };
 
 
     return (
@@ -337,10 +368,14 @@ function UserDashboard() {
                                     <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
                                     <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenFundingProfile}>
+                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleViewFundingRound(round.id)}>
                                             View
                                         </Button>
-                                        <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}>
+                                        <Button
+                                            variant="outlined"
+                                            sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}
+                                            onClick={() => handleSoftDeleteFundingRound(round.id)}
+                                        >
                                             Delete
                                         </Button>
                                     </TableCell>
@@ -482,7 +517,11 @@ function UserDashboard() {
                             boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
                         }}>
 
-                        <ViewFundingRound />
+                        <ViewFundingRound
+                                open={openViewFundingRound}
+                                onClose={handleCloseFundingProfile}
+                                fundingRoundDetails={selectedFundingRoundDetails}
+                            />
 
                         <DialogActions>
                             <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
