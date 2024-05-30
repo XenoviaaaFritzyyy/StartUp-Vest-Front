@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Select, MenuItem, Grid, FormControl, Autocomplete } from '@mui/material';
 import axios from 'axios';
 
-function ViewFundingRound() {
+function CreateFundingRound() {
     const [startups, setStartups] = useState([]);
     const [selectedStartupId, setSelectedStartupId] = useState('');
     const [fundingType, setFundingType] = useState('');
@@ -12,13 +12,16 @@ function ViewFundingRound() {
     const [closedMonth, setClosedMonth] = useState('');
     const [closedDay, setClosedDay] = useState('');
     const [closedYear, setClosedYear] = useState('');
-    const [moneyRaised, setMoneyRaised] = useState('');
+    const [moneyRaised, setMoneyRaised] = useState(0);
     const [currency, setCurrency] = useState('USD'); // added currency state
     const [targetFunding, setTargetFunding] = useState('');
     const [preMoneyValuation, setPreMoneyValuation] = useState('');
+
+    //CAP TABLE
+    const [totalShares, setTotalShares] = useState(0);
     const [allInvestors, setAllInvestors] = useState([]); // to store all fetched investors
-    const [selectedInvestors, setSelectedInvestors] = useState([]); // to store selected investors
-    const [editMode, setEditMode] = useState(false); // to toggle edit mode
+    const [investors, setInvestors] = useState([{ name: null, title: '', shares: '' }]);
+    // to store selected investors
 
     const days = [...Array(31).keys()].map(i => i + 1);
     const months = Array.from({ length: 12 }, (_, i) => {
@@ -53,69 +56,67 @@ function ViewFundingRound() {
             }
         };
 
-        const fetchFundingRound = async (id) => {
-            try {
-                const response = await axios.get(`http://localhost:3000/funding-rounds/${id}`, {
-                });
-                const data = response.data;
-                setSelectedStartupId(data.startup.id);
-                setFundingType(data.fundingType);
-                const [annYear, annMonth, annDay] = data.announcedDate.split('-');
-                setAnnouncedYear(annYear);
-                setAnnouncedMonth(parseInt(annMonth, 10));
-                setAnnouncedDay(parseInt(annDay, 10));
-                const [cloYear, cloMonth, cloDay] = data.closedDate.split('-');
-                setClosedYear(cloYear);
-                setClosedMonth(parseInt(cloMonth, 10));
-                setClosedDay(parseInt(cloDay, 10));
-                setMoneyRaised(data.moneyRaised);
-                setCurrency(data.moneyRaisedCurrency); // set currency
-                setTargetFunding(data.targetFunding);
-                setPreMoneyValuation(data.preMoneyValuation);
-                setSelectedInvestors(data.investors);
-            } catch (error) {
-                console.error('Error fetching funding round:', error);
-            }
-        };
-
         fetchStartups();
         fetchInvestors();
-        fetchFundingRound(1); // Fetch data for funding round with ID 1 for demonstration
+        console.log(allInvestors)
     }, []);
 
-    const handleInvestorChange = (index, newValue) => {
-        const updatedInvestors = [...selectedInvestors];
-        updatedInvestors[index] = newValue;
-        setSelectedInvestors(updatedInvestors);
+    const handleInvestorChange = (index, field, value) => {
+        const updatedInvestors = [...investors];
+        updatedInvestors[index][field] = value;
+        setInvestors(updatedInvestors);
     };
+
 
     const handleAddInvestor = () => {
-        setSelectedInvestors([...selectedInvestors, null]);
+        setInvestors([...investors, { name: null, title: '', shares: '' }]);
     };
 
-    const handleSaveFundingRound = async () => {
-        const updatedFundingRound = {
-            startup: { id: selectedStartupId },
-            fundingType,
-            announcedDate: `${announcedYear}-${announcedMonth}-${announcedDay}`,
-            closedDate: `${closedYear}-${closedMonth}-${closedDay}`,
-            moneyRaised,
-            moneyRaisedCurrency: currency, // added currency
-            targetFunding,
-            preMoneyValuation,
-            investors: selectedInvestors.map(investor => ({ id: investor.id })),
-        };
-
+    const handleCreateFundingRound = async () => {
         try {
-            await axios.put(`http://localhost:3000/funding-rounds/1`, updatedFundingRound, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            setEditMode(false);
+
+            const selectedInvestors = investors
+                .filter(investor => investor.name && investor.name.id !== null)
+                .map(investor => ({
+                    id: investor.name.id,
+                    title: investor.title,
+                    shares: parseInt(investor.shares)
+                }));
+
+            // Calculate total shares
+            const moneyRaised = selectedInvestors.reduce((acc, investor) => acc + investor.shares, 0);
+            setMoneyRaised(moneyRaised);
+            console.log('Selected Investors:', selectedInvestors);
+
+
+            const formData = {
+                startup: { id: selectedStartupId },
+                fundingType,
+                announcedDate: `${announcedYear}-${announcedMonth}-${announcedDay}`,
+                closedDate: `${closedYear}-${closedMonth}-${closedDay}`,
+                moneyRaised,
+                moneyRaisedCurrency: currency,
+                targetFunding,
+                preMoneyValuation,
+                investors: selectedInvestors,
+                shares: selectedInvestors.map(investor => investor.shares),
+                titles: selectedInvestors.map(investor => investor.title)
+
+            };
+
+            const response = await axios.post('http://localhost:3000/funding-rounds/createfund', formData);
+
+            console.log('Investor IDs:', selectedInvestors);
+            console.log('Funding round created successfully:', response.data);
         } catch (error) {
-            console.error('Error saving funding round:', error);
+            console.error('Failed to create funding round:', error);
         }
+    };
+
+    const handleSharesChange = (index, value) => {
+        const updatedInvestors = [...investors];
+        updatedInvestors[index].shares = value;
+        setInvestors(updatedInvestors);
     };
 
     return (
@@ -229,35 +230,6 @@ function ViewFundingRound() {
                         </Grid>
 
                         <Grid item xs={8}>
-                            <label><b>Money Raised</b><br />Amount</label>
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type='number'
-                                value={moneyRaised}
-                                onChange={(e) => setMoneyRaised(e.target.value)}
-                                disabled={!editMode}
-                            />
-                        </Grid>
-
-                        <Grid item xs={4}>
-                            <label><br />Currency</label>
-                            <Select
-                                fullWidth
-                                variant="filled"
-                                value={currency}
-                                onChange={(e) => setCurrency(e.target.value)}
-                                disabled={!editMode}
-                            >
-                                <MenuItem value="USD">USD</MenuItem>
-                                <MenuItem value="EUR">EUR</MenuItem>
-                                <MenuItem value="GBP">GBP</MenuItem>
-                                <MenuItem value="JPY">JPY</MenuItem>
-                                <MenuItem value="PESO">PESO</MenuItem>
-                            </Select>
-                        </Grid>
-
-                        <Grid item xs={8}>
                             <label><b>Target Funding</b><br />Amount</label>
                             <TextField
                                 fullWidth
@@ -265,7 +237,6 @@ function ViewFundingRound() {
                                 type='number'
                                 value={targetFunding}
                                 onChange={(e) => setTargetFunding(e.target.value)}
-                                disabled={!editMode}
                             />
                         </Grid>
 
@@ -276,7 +247,6 @@ function ViewFundingRound() {
                                 variant="filled"
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
-                                disabled={!editMode}
                             >
                                 <MenuItem value="USD">USD</MenuItem>
                                 <MenuItem value="EUR">EUR</MenuItem>
@@ -294,7 +264,6 @@ function ViewFundingRound() {
                                 type='number'
                                 value={preMoneyValuation}
                                 onChange={(e) => setPreMoneyValuation(e.target.value)}
-                                disabled={!editMode}
                             />
                         </Grid>
                     </Grid>
@@ -306,45 +275,54 @@ function ViewFundingRound() {
             </Typography>
 
             <Grid container spacing={3} sx={{ ml: 2 }}>
-                {selectedInvestors.map((investor, index) => (
+                {investors.map((investor, index) => (
                     <Grid item xs={12} sm={11} key={index}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <label>Investor {index + 1}</label>
+                            <Grid item xs={4}>
+                                <label>Shareholder's Name</label>
                                 <Autocomplete
                                     options={allInvestors}
                                     getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
-                                    value={investor}
-                                    onChange={(event, newValue) => handleInvestorChange(index, newValue)}
+                                    value={investor.name ? allInvestors.find((option) => option.id === investor.name.id) : null}
+                                    onChange={(event, newValue) => handleInvestorChange(index, 'name', newValue)}
                                     renderInput={(params) => <TextField {...params} variant="filled" />}
-                                    disabled={!editMode}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <label>Title</label>
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    value={investor.title}
+                                    onChange={(e) => handleInvestorChange(index, 'title', e.target.value)}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <label>Shares</label>
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    value={investor.shares}
+                                    onChange={(e) => handleSharesChange(index, e.target.value)}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
                 ))}
                 <Grid item xs={12} sm={11}>
-                    <Button 
-                        variant="outlined" 
-                        sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)', '&:hover': { color: 'rgba(0, 116, 144, 0.7)', borderColor: 'rgba(0, 116, 144, 0.7)' }}} 
-                        onClick={handleAddInvestor}
-                        disabled={!editMode}
-                    >
+                    <Button variant="outlined" sx={{ color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)', '&:hover': { color: 'rgba(0, 116, 144, 0.7)', borderColor: 'rgba(0, 116, 144, 0.7)' } }} onClick={handleAddInvestor}>
                         Add Investor
                     </Button>
                 </Grid>
             </Grid>
 
-            <Button 
-                variant="contained" 
-                sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' }}}
-                style={{ marginLeft: '74%' }} 
-                onClick={editMode ? handleSaveFundingRound : () => setEditMode(true)}
-            >
-                {editMode ? 'Save Funding Round' : 'Edit Funding Round'}
+            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} style={{ marginLeft: '76%' }} onClick={handleCreateFundingRound}>
+                Edit Funding Round
             </Button>
         </Box>
     );
 }
 
-export default ViewFundingRound;
+export default CreateFundingRound;
