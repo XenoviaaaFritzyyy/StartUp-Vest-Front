@@ -1,139 +1,91 @@
 import { useEffect, useState } from 'react';
-import Navbar from "../Navbar/Navbar";
-import { Box, Typography, Toolbar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, TablePagination } from '@mui/material';
-import { Link } from 'react-router-dom';
-
-import CreateFundingRound from '../Form/CreateFundingRound';
-import ViewFundingRound from '../Form/ViewFundingRound';
 import axios from 'axios';
+import StarsIcon from '@mui/icons-material/Stars';
+import { Box, Typography, Toolbar, Grid, Button, Menu, MenuItem,Tabs, Tab, ListItemText, List, ListItemIcon, ListItem } from '@mui/material';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import StarIcon from '@mui/icons-material/Star';
+import Person2Icon from '@mui/icons-material/Person2';
+import HistoryIcon from '@mui/icons-material/History'; 
 
-const drawerWidth = 240;
+import Navbar from "../Navbar/Navbar";
+import CreateFundingRoundDialog from '../Dialogs/CreateFundingRoundDialog';
+import CreateBusinessProfileDialog from '../Dialogs/CreateBusinessProfileDialog';
+import BusinessProfileTable from '../Tables/BusinessProfileTable';
+import FundingRoundTable from '../Tables/FundingRoundTable';
+import CapTable from '../Tables/CapTableTable';
+
+const drawerWidth = 300;
 
 function UserDashboard() {
-    const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
-    const [openViewFundingRound, setOpenViewFundingRound] = useState(false);
-    const [openCapTable, setOpenCapTable] = useState(false);
+    const [tabValue, setTabValue] = useState(0);
+
+    // PROFILE
+    const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
     const [businessProfiles, setBusinessProfiles] = useState([]);
-    // const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
-    const [filter, setFilter] = useState('All');
-    const [selectedStartup, setSelectedStartup] = useState('All');
+    const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
+    const [openViewStartup, setOpenViewStartup] = useState(false);
+    const [openViewInvestor, setOpenViewInvestor] = useState(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [profileToDelete, setProfileToDelete] = useState(null);
+
+    // FUNDING ROUND
+    const [openCreateFundingRound, setOpenCreateFundingRound] = useState(false);
     const [fundingRounds, setFundingRounds] = useState([]);
+    const [selectedFundingRoundDetails, setSelectedFundingRoundDetails] = useState(null);
+    const [openViewFundingRound, setOpenViewFundingRound] = useState(false);
     const [filteredFundingRounds, setFilteredFundingRounds] = useState([]);
-    const [selectedStartupFunding, setSelectedStartupFunding] = useState('All');
+
+    // CAP TABLE
     const [selectedStartupCapTable, setSelectedStartupCapTable] = useState('All');
     const [capTables, setCapTables] = useState([]);
     const [filteredCapTables, setFilteredCapTables] = useState([]);
-
-    // Pagination
-    const [businessPage, setBusinessPage] = useState(0);
-    const [businessRowsPerPage, setBusinessRowsPerPage] = useState(3);
-    const [fundingPage, setFundingPage] = useState(0);
-    const [fundingRowsPerPage, setFundingRowsPerPage] = useState(3);
-    const [capPage, setCapPage] = useState(0);
-    const [capRowsPerPage, setCapRowsPerPage] = useState(3);
-
-    const [selectedFundingRoundDetails, setSelectedFundingRoundDetails] = useState(null);
-
-    const [userData, setUserData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        contactNumber: '',
-        gender: '',
-        avatar: '',
-    });
-
+    
     useEffect(() => {
-        document.body.style.backgroundColor = '#D3D3D3';
-        return () => {
-            document.body.style.backgroundColor = '';
-        };
-    }, []);
-
-    useEffect(() => {
-        // fetchUserData();
         fetchBusinessProfiles();
         fetchFundingRounds();
         fetchCapTable();
     }, []);
 
-    const handleOpenFundingRound = () => {
-        setOpenCreateFundingRound(true);
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
     };
 
-    const handleCloseFundingRound = () => {
-        setOpenCreateFundingRound(false);
+    // PROFILE
+    const handleOpenBusinessProfile = () => {
+        setCreateBusinessProfile(true);
+      };
+    
+      const handleCloseBusinessProfile = () => {
+        setCreateBusinessProfile(false);
+        fetchBusinessProfiles();
+      };
+
+    const handleOpenStartUp = (profile) => {
+        setSelectedBusinessProfile(profile);
+        setOpenViewStartup(true);
     };
-
-    const handleOpenFundingProfile = () => {
-        setOpenViewFundingRound(true);
-    }
-
-    const handleCloseFundingProfile = () => {
-        setOpenViewFundingRound(false);
-    }
-
-    const handleOpenCapTable = () => {
-        setOpenCapTable(true);
-    }
-
-    const handleCloseCapTable = () => {
-        setOpenCapTable(false);
-    }
-
-    const handleFilterChange = (event) => {
-        setFilter(event.target.value);
+    
+    const handleCloseStartUp = () => {
+        setOpenViewStartup(false);
     };
+    
+    const handleOpenInvestor = (profile) => {
+        setSelectedBusinessProfile(profile);
+        setOpenViewInvestor(true);
+    };    
 
-    const handleBusinessPageChange = (event, newPage) => {
-        setBusinessPage(newPage);
+    const handleCloseInvestor = () => {
+        setOpenViewInvestor(false);
+    };  
+    
+    const handleOpenDeleteDialog = (profile) => {
+        setProfileToDelete(profile);
+        setOpenDeleteDialog(true);
     };
-
-    const handleBusinessRowsPerPageChange = (event) => {
-        setBusinessRowsPerPage(parseInt(event.target.value, 10));
-        setBusinessPage(0);
+    
+    const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
     };
-
-    const handleFundingPageChange = (event, newPage) => {
-        setFundingPage(newPage);
-    };
-
-    const handleFundingRowsPerPageChange = (event) => {
-        setFundingRowsPerPage(parseInt(event.target.value, 10));
-        setFundingPage(0);
-    };
-
-    const handleCapPageChange = (event, newPage) => {
-        setCapPage(newPage);
-    };
-
-    const handleCapRowsPerPageChange = (event) => {
-        setCapRowsPerPage(parseInt(event.target.value, 10));
-        setCapPage(0);
-    };
-
-    const handleStartupChangeFunding = (event) => {
-        setSelectedStartupFunding(event.target.value);
-        filterFundingRounds(event.target.value);
-    };
-
-    const handleStartupChangeCapTable = (event) => {
-        const selectedCompanyId = event.target.value;
-        setSelectedStartupCapTable(selectedCompanyId);
-        fetchCapTable(selectedCompanyId);
-    };
-    // const fetchUserData = async () => {
-    //     try {
-    //         const response = await axios.get('http://localhost:3000/users/profile', {
-    //             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    //             },
-    //         });
-
-    //     setUserData(response.data);
-    //         } catch (error) {
-    //             console.error('Failed to fetch user data:', error);
-    //         }
-    //     };
 
     const fetchBusinessProfiles = async () => {
         try {
@@ -149,31 +101,79 @@ function UserDashboard() {
                 },
             });
 
-
-            const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
-            const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
-
-            setBusinessProfiles([...startups, ...investors]);
+            const startups = responseStartups.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Startup' }));
+            const investors = responseInvestors.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Investor' }));
+    
+            setBusinessProfiles([...investors, ...startups]);
         } catch (error) {
             console.error('Failed to fetch business profiles:', error);
         }
     };
 
-    const filterFundingRounds = (selectedStartup) => {
-        if (selectedStartup === 'All') {
-            setFilteredFundingRounds(fundingRounds);
-        } else {
-            const filteredRounds = fundingRounds.filter(round => round.startup && round.startup.id === selectedStartup);
-            setFilteredFundingRounds(filteredRounds);
+    const handleSoftDelete = async () => {
+        if (!profileToDelete) {
+            console.error('No profile selected');
+            return;
+        }
+    
+        try {
+            // Determine the endpoint based on the type of the profile
+            const endpoint = `http://localhost:3000/startups/${profileToDelete.id}/delete`;
+    
+            await axios.put(endpoint, {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+    
+            fetchBusinessProfiles();
+        } catch (error) {
+            console.error('Failed to delete profile:', error);
+        }
+    };
+    
+    // FUNDING ROUND
+    const handleOpenFundingRound = () => {
+        setOpenCreateFundingRound(true);
+    };
+
+    const handleCloseFundingRound = () => {
+        setOpenCreateFundingRound(false);
+        fetchFundingRounds();
+    };
+
+    const handleCloseFundingProfile = () => {
+        setOpenViewFundingRound(false);
+    }
+
+    const handleViewFundingRound = async (fundingRoundId) => {
+        try {
+            const response = await axios.get(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            console.log('Funding Round Details:', response.data);
+            setSelectedFundingRoundDetails(response.data);
+            setOpenViewFundingRound(true);
+        } catch (error) {
+            console.error('Error fetching funding round details:', error);
         }
     };
 
-    const filterCapTables = (selectedStartup) => {
-        if (selectedStartup === 'All') {
-            setFilteredCapTables(capTables);
-        } else {
-            const filteredTables = capTables.filter(table => table.startup && table.startup.id === selectedStartup);
-            setFilteredCapTables(filteredTables);
+    const handleSoftDeleteFundingRound = async (fundingRoundId) => {
+        try {
+            await axios.delete(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            // Remove the deleted funding round from the state to update the UI
+            const updatedFundingRounds = fundingRounds.filter(round => round.id !== fundingRoundId);
+            setFundingRounds(updatedFundingRounds);
+            setFilteredFundingRounds(updatedFundingRounds);
+        } catch (error) {
+            console.error('Failed to soft delete funding round:', error);
         }
     };
 
@@ -186,12 +186,15 @@ function UserDashboard() {
             });
             setFundingRounds(response.data);
             setFilteredFundingRounds(response.data);
-
-
         } catch (error) {
             console.error('Error fetching funding rounds:', error);
         }
     };
+
+    // CAP TABLE
+    useEffect(() => {
+        fetchCapTable(selectedStartupCapTable);
+    }, [selectedStartupCapTable]);
 
     const fetchCapTable = async (companyId) => {
         try {
@@ -207,332 +210,185 @@ function UserDashboard() {
         }
     };
 
-
-    const handleViewFundingRound = async (fundingRoundId) => {
-        try {
-            const response = await axios.get(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            console.log('Funding Round Details:', response.data); // Check the fetched data
-            setSelectedFundingRoundDetails(response.data);
-            setOpenViewFundingRound(true);
-        } catch (error) {
-            console.error('Error fetching funding round details:', error);
-        }
+    const handleStartupChangeCapTable = (event) => {
+        const selectedCompanyId = event.target.value;
+        setSelectedStartupCapTable(selectedCompanyId);
+        fetchCapTable(selectedCompanyId);
     };
-    
-    const handleSoftDeleteFundingRound = async (fundingRoundId) => {
-        try {
-            await axios.delete(`http://localhost:3000/funding-rounds/${fundingRoundId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            // Remove the deleted funding round from the state to update the UI
-            const updatedFundingRounds = fundingRounds.filter(round => round.id !== fundingRoundId);
-            setFundingRounds(updatedFundingRounds);
-            setFilteredFundingRounds(updatedFundingRounds);
-        } catch (error) {
-            console.error('Failed to soft delete funding round:', error);
-            // Optionally, display an error message to the user
-        }
-    };
-
 
     return (
         <>
             <Navbar />
             <Toolbar />
 
-            <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
+            <Box 
+                component="main" 
+                sx={{ display: 'flex', flexGrow: 1, pr: 7, pt: 5, pb: 8, paddingLeft: `${drawerWidth}px`, overflowX: 'hidden' }}>
 
-                {/* Left Box */}
-                <Box sx={{ flex: 2, background: 'white', display: 'flex', alignItems: 'center', flexDirection: 'column', ml: 3, borderRadius: 2, pt: 5, pl: 5, pr: 5 }}>
-                    <Typography variant="h5">Invested Companies</Typography>
-
-                    <Grid container alignItems="center" justifyContent="flex-end" spacing={2}>
-                        <Grid item>
-                            <Typography variant="h6">Filter By:</Typography>
-                        </Grid>
-
-                        <Grid item>
-                            <Select value={filter} onChange={handleFilterChange} variant="outlined" sx={{ minWidth: 150 }}>
-                                <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="Startup">Startup</MenuItem>
-                                <MenuItem value="Investor">Investor</MenuItem>
-                            </Select>
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                            <Typography variant="h5">User Dashboard</Typography>
+                            <PopupState variant="popover" popupId="demo-popup-menu">
+                                {(popupState) => (
+                                    <>
+                                        <Button variant="contained" startIcon={<StarsIcon />} {...bindTrigger(popupState)} 
+                                        sx={{ width: '150px', backgroundColor: '#007490', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}>Create</Button>
+                                        <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={handleOpenBusinessProfile}>Business Profile</MenuItem>
+                                            <MenuItem onClick={handleOpenFundingRound}>Funding Round</MenuItem>
+                                        </Menu>
+                                    </>
+                                )}
+                            </PopupState>
+                        </Box>
                     </Grid>
 
-                    <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white', borderRadius: 4 }}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Company Type</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Startup Name</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Industry</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Contact Email</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify', fontWeight: 'bold' }}>Phone Number</TableCell>
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody>
-                                {businessProfiles
-                                    .filter(profile => filter === 'All' || profile.type === filter)
-                                    .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
-                                    .map((profile) => (
-                                        <TableRow key={`${profile.type}-${profile.id}`}>
-                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.type}</TableCell>
-                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.companyName || profile.lastName}</TableCell>
-                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.industry}</TableCell>
-                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.emailAddress}</TableCell>
-                                            <TableCell sx={{ textAlign: 'justify' }}>{profile.phoneNumber}</TableCell>
-                                        </TableRow>
-                                    ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    <TablePagination
-                        rowsPerPageOptions={[3]}
-                        component="div"
-                        count={businessProfiles.length}
-                        rowsPerPage={businessRowsPerPage}
-                        page={businessPage}
-                        onPageChange={handleBusinessPageChange}
-                        onRowsPerPageChange={handleBusinessRowsPerPageChange} />
-                </Box>
-
-                {/* Right Boxes */}
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingLeft: 2 }}>
-                    {/* Box for Create Funding Round Button */}
-                    <Box sx={{ borderRadius: 4, mb: 0 }}>
-                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { backgroundColor: 'rgba(0, 116, 144, 0.8)' }, color: '#fff', mb: 1 }} fullWidth onClick={handleOpenFundingRound}>
-                            Create Funding Round
-                        </Button>
-                    </Box>
-
-                    {/* Box for Find New Companies Button */}
-                    <Box sx={{ background: 'white', p: 6, borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'center' }}>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Find New Companies</Typography>
-                        <Typography variant="h6">Connect with the right people at qualified companies.</Typography>
-
-                        <Box sx={{ mt: 2 }}>
-                            {/* Wrap the button with Link */}
-                            <Button variant="outlined" fullWidth component={Link} to="/companies">
-                                Get Started
-                            </Button>
+                    {/* Top Row - 5 Boxes */}
+                    <Grid item xs={12} sm={3}>
+                        <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                            <Typography>Funded Companies</Typography>
+                            <Typography variant="h5">2 out 5</Typography>
                         </Box>
-                    </Box>
-                </Box>
-            </Box>
+                    </Grid>
 
-            {/* Table */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
-                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                        My Founding Round
-                    </Typography>
+                    <Grid item xs={12} sm={2}>
+                        <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                            <Typography>Company Count</Typography>
+                            <Typography variant="h5">5</Typography>
+                        </Box>
+                    </Grid>
 
-                    <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
-                        <FormControl sx={{ minWidth: 120 }}>
-                            <Select value={selectedStartupFunding} onChange={handleStartupChangeFunding} variant="outlined" sx={{ minWidth: 150 }}>
-                                <MenuItem value="All">All</MenuItem>
-                                {businessProfiles.filter(profile => profile.type === 'Startup')
-                                    .slice(fundingPage * fundingRowsPerPage, fundingPage * fundingRowsPerPage + fundingRowsPerPage)
-                                    .map((startup) => (
-                                        <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
-                                    ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                </Box>
+                    <Grid item xs={12} sm={2}>
+                        <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                            <Typography>Investor Count</Typography>
+                            <Typography variant="h5">10</Typography>
+                        </Box>
+                    </Grid>
 
-                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2 }}>
-                    <Table>
-                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Funding Type</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Money Raised</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Target Funding</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredFundingRounds.map((round) => (
-                                <TableRow key={round.id}>
-                                    <TableCell sx={{ textAlign: 'center' }}>{round.fundingType}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleViewFundingRound(round.id)}>
-                                            View
-                                        </Button>
-                                        <Button
-                                            variant="outlined"
-                                            sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}
-                                            onClick={() => handleSoftDeleteFundingRound(round.id)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <Grid item xs={12} sm={2}>
+                        <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                            <Typography>Funding Rounds</Typography>
+                            <Typography variant="h5">3</Typography>
+                        </Box>
+                    </Grid>
 
-                    <TablePagination
-                        rowsPerPageOptions={[3]}
-                        component="div"
-                        count={fundingRounds.length}
-                        rowsPerPage={fundingRowsPerPage}
-                        page={fundingPage}
-                        onPageChange={handleFundingPageChange}
-                        onRowsPerPageChange={handleFundingRowsPerPageChange} />
-                </TableContainer>
-            </Box>
+                    <Grid item xs={12} sm={3}>
+                        <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                            <Typography>Total Amount Funded</Typography>
+                            <Typography variant="h5">100,000</Typography>
+                        </Box>
+                    </Grid>
 
-            {/* Table */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, pr: 7, pb: 5, pl: `${drawerWidth}px`, width: '100%', overflowX: 'hidden', backgroundColor: '#D3D3D3' }}>
+                    {/* Middle Row - Two Boxes */}
+                    <Grid item xs={12} sm={9}>
+                        <Box sx={{ backgroundColor: 'white', height: 420, display: 'flex', flexDirection: 'column', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
+                        <Typography variant="h6"
+                            sx={{ p: 1 , background: 'linear-gradient(to top, #0093d0, #00779d, #005b6e)', color: 'white', fontWeight: 'bold' }}>
+                               Total Investment Graph
+                            </Typography>
+                        </Box>
+                    </Grid>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 3 }}>
-                    <Typography variant="h4" sx={{ pl: 4, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-                        My Cap Table
-                    </Typography>
+                    <Grid item xs={12} sm={3}>
+                        <Box sx={{ backgroundColor: 'white', height: 420, display: 'flex', flexDirection: 'column', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
+                            <Typography variant="h6"
+                            sx={{ p: 1 , background: 'linear-gradient(to top, #0093d0, #00779d, #005b6e)', color: 'white', fontWeight: 'bold' }}>
+                                Recent Activity
+                            </Typography>
+                            
+                            <List sx={{ pl: 1, overflowY: 'auto', flex: 1 }}>
+                            <ListItem>
+                                <ListItemText primary="Created Funding Round" secondary="August 29, 2024"/>
+                            </ListItem>
+                            </List>
+                        </Box>
+                    </Grid>
 
-                    <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="subtitle1" sx={{ pr: 1 }}>Filter by Company:</Typography>
-                        <FormControl sx={{ minWidth: 120 }}>
-                            <Select value={selectedStartupCapTable} onChange={handleStartupChangeCapTable} variant="outlined" sx={{ minWidth: 150 }}>
-                                <MenuItem value="All">All</MenuItem>
-                                {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
-                                    <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                </Box>
-
-                <TableContainer component={Box} sx={{ backgroundColor: 'white', borderRadius: 2, ml: 3, mt: 2 }}>
-                    <Table>
-                        <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
-                            <TableRow>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Shareholder's Name</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Title</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Total Share</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Percentage</TableCell>
-                                <TableCell sx={{ textAlign: 'center', fontWeight: 'bold' }}>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredCapTables.map((table) => (
-                                <TableRow key={table.id}>
-                                    <TableCell sx={{ textAlign: 'center' }}>{table.name}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{table.totalShares}</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>{table.percentage.toFixed(2)}%</TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenCapTable}>
-                                            View
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-
-                    <TablePagination
-                        rowsPerPageOptions={[3]}
-                        component="div"
-                        // count={businessProfiles.length}
-                        rowsPerPage={capRowsPerPage}
-                        page={capPage}
-                        onPageChange={handleCapPageChange}
-                        onRowsPerPageChange={handleCapRowsPerPageChange} />
-                </TableContainer>
-            </Box>
-
-            {/* Custom Full Page Dialog for Creating Funding Round */}
-            {openCreateFundingRound && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1300,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-
-                    <Box
-                        sx={{
-                            background: '#F2F2F2',
-                            maxWidth: '100%',
-                            maxHeight: '90%',
-                            overflowY: 'auto',
-                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
-                        }}>
-
-                        <CreateFundingRound />
-
-                        <DialogActions>
-                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
-                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingRound}>
-                                    Cancel
-                                </Button>
+                    {/* Bottom Row - Two Boxes */}
+                    <Grid item xs={12} sm={6}>
+                        <Box sx={{ background: 'linear-gradient(135deg, #0093d0, #005b6e)', height: 100, display: 'flex',  flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 3, boxShadow: '0 12px 24px rgba(0, 0, 0, 0.4)', border: '1px solid rgba(255, 255, 255, 0.2)', position: 'relative', overflow: 'hidden' }}>
+                            <Box sx={{ position: 'absolute', top: 15, right: 15, width: 60, height: 60, borderRadius: '50%',backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)', zIndex: 1, transform: 'rotate(15deg)', transition: 'transform 0.3s, box-shadow 0.3s', '&:hover': { transform: 'rotate(0deg)', boxShadow: '0 12px 24px rgba(0, 0, 0, 0.6)'}}}>
+                                <StarIcon sx={{ color: '#005b6e', fontSize: 36, filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))' }} />
                             </Box>
-                        </DialogActions>
+                            <Typography sx={{ color: '#ffffff', textAlign: 'center', fontSize: 14, mb: 0.5 }}>
+                                Highest-Funded Company
+                            </Typography>
+                            <Typography variant="h5" sx={{  color: '#ffffff', fontWeight: 'bold', textAlign: 'center' }}>
+                                Shell Company
+                            </Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <Box sx={{ background: 'linear-gradient(135deg, #0093d0, #005b6e)', height: 100, display: 'flex',  flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 3, boxShadow: '0 12px 24px rgba(0, 0, 0, 0.4)', border: '1px solid rgba(255, 255, 255, 0.2)', position: 'relative', overflow: 'hidden', mb: 5 }}>
+                            <Box sx={{ position: 'absolute', top: 15, right: 15, width: 60, height: 60, borderRadius: '50%',backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)', zIndex: 1, transform: 'rotate(15deg)', transition: 'transform 0.3s, box-shadow 0.3s', '&:hover': { transform: 'rotate(0deg)', boxShadow: '0 12px 24px rgba(0, 0, 0, 0.6)'}}}>
+                                <Person2Icon sx={{ color: '#005b6e', fontSize: 36, filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))' }} />
+                        </Box>
+                            <Typography sx={{ color: '#ffffff', textAlign: 'center', fontSize: 14, mb: 0.5 }}>
+                                Top Investment Contributor
+                            </Typography>
+                            <Typography variant="h5" sx={{  color: '#ffffff', fontWeight: 'bold', textAlign: 'center' }}>
+                                Hazelyn Balingcasag
+                            </Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                    <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs" sx={{ '& .MuiTabs-indicator': { backgroundColor: '#007490' } }}>
+                        <Tab label="My Profile" sx={{ color: tabValue === 0 ? '#007490' : 'text.secondary', '&.Mui-selected': {
+                            color: '#007490' } }}/>
+                        <Tab label="My Funding Round" sx={{ color: tabValue === 1 ? '#007490' : 'text.secondary', '&.Mui-selected': {
+                            color: '#007490' } }}/>
+                        <Tab label="My Captable" sx={{ color: tabValue === 2 ? '#007490' : 'text.secondary', '&.Mui-selected': {
+                            color: '#007490' } }}/>
+                    </Tabs>
+
+                    <Box sx={{ pt: 3}}>
+                        {tabValue === 0 && (
+                            <BusinessProfileTable 
+                                businessProfiles={businessProfiles}
+                                handleOpenStartUp={handleOpenStartUp}
+                                handleOpenInvestor={handleOpenInvestor}
+                                handleOpenDeleteDialog={handleOpenDeleteDialog}
+                                selectedBusinessProfile={selectedBusinessProfile}
+                                openViewStartup={openViewStartup}
+                                openViewInvestor={openViewInvestor}
+                                openDeleteDialog={openDeleteDialog}
+                                handleCloseStartUp={handleCloseStartUp}
+                                handleCloseInvestor={handleCloseInvestor}
+                                handleCloseDeleteDialog={handleCloseDeleteDialog}
+                                handleSoftDelete={handleSoftDelete}
+                                profileToDelete={profileToDelete}/>                            
+                            )}
+                            
+                            {tabValue === 1 && (
+                                <FundingRoundTable 
+                                    filteredFundingRounds={filteredFundingRounds}
+                                    fundingRounds={fundingRounds}
+                                    handleViewFundingRound={handleViewFundingRound}
+                                    handleSoftDeleteFundingRound={handleSoftDeleteFundingRound}
+                                    selectedFundingRoundDetails={selectedFundingRoundDetails}
+                                    openViewFundingRound={openViewFundingRound}
+                                    handleCloseFundingRound={handleCloseFundingRound}
+                                    handleCloseFundingProfile={handleCloseFundingProfile}
+                                    businessProfiles={businessProfiles} />
+                            )}
+
+                            {tabValue === 2 && (
+                            <CapTable 
+                                filteredCapTables={filteredCapTables}
+                                businessProfiles={businessProfiles} 
+                                selectedStartupCapTable={selectedStartupCapTable} 
+                                handleStartupChangeCapTable={handleStartupChangeCapTable} />
+                            )}
                     </Box>
-                </Box>
-            )}
+                </Grid>
+                </Grid>
+            </Box>
 
-            {openViewFundingRound && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1300,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-
-                    <Box
-                        sx={{
-                            background: '#F2F2F2',
-                            maxWidth: '100%',
-                            maxHeight: '90%',
-                            overflowY: 'auto',
-                            boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)'
-                        }}>
-
-                        <ViewFundingRound
-                                open={openViewFundingRound}
-                                onClose={handleCloseFundingProfile}
-                                fundingRoundDetails={selectedFundingRoundDetails}
-                            />
-
-                        <DialogActions>
-                            <Box sx={{ display: 'flex', mt: 1, mb: 1, mr: 5 }}>
-                                <Button variant="text" sx={{ mr: 2, color: 'rgba(0, 116, 144, 1)' }} onClick={handleCloseFundingProfile}>
-                                    Close
-                                </Button>
-                            </Box>
-                        </DialogActions>
-                    </Box>
-                </Box>
-            )}
+            <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
+            <CreateFundingRoundDialog open={openCreateFundingRound} onClose={handleCloseFundingRound} />
         </>
     );
 }
