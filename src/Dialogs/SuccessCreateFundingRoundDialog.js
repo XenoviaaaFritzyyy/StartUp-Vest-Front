@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 
-function SuccessCreateBusinessProfileDialog({ open, onClose, companyName }) {
+function SuccessCreateFundingRoundDialog({ open, onClose }) {
     const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(open);
 
     useEffect(() => {
@@ -20,11 +20,11 @@ function SuccessCreateBusinessProfileDialog({ open, onClose, companyName }) {
         <>
             <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ bgcolor: '#4caf50', color: 'white', mb: 3 }}>
-                    <Typography variant="h6">Profile Created</Typography>
+                    <Typography variant="h6">Funding Round Created</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Typography variant="body1">
-                        The profile for <strong>{companyName}</strong> has been successfully created.
+                        The funding round has been successfully created.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -33,8 +33,7 @@ function SuccessCreateBusinessProfileDialog({ open, onClose, companyName }) {
                             setIsSuccessDialogOpen(false);
                             onClose();
                         }} 
-                        sx={{ color: '#4caf50', '&:hover': { backgroundColor: '#e8f5e9' } }}
-                    >
+                        sx={{ color: '#4caf50', '&:hover': { backgroundColor: '#e8f5e9' } }}>
                         OK
                     </Button>
                 </DialogActions>
@@ -43,4 +42,4 @@ function SuccessCreateBusinessProfileDialog({ open, onClose, companyName }) {
     );
 }
 
-export default SuccessCreateBusinessProfileDialog;
+export default SuccessCreateFundingRoundDialog;

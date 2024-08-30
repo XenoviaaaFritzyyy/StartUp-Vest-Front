@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import countries from '../static/countries';
-import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete} from '@mui/material';
+import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, Button, Autocomplete} from '@mui/material';
 import axios from 'axios';
 
 function ViewInvestorProfile({ profile }) {
@@ -144,6 +144,7 @@ function ViewInvestorProfile({ profile }) {
                     accept="image/*"
                     id="avatar-upload"
                     onChange={handleAvatarChange}
+                    disabled={!isEditable} 
                     ref={fileInputRef}
                     style={{ display: 'none'}}/>                      
                 </Grid>
@@ -162,27 +163,27 @@ function ViewInvestorProfile({ profile }) {
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <label>First Name *</label>
-                                    <TextField fullWidth variant="filled" value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
                                     <label>Last Name *</label>
-                                    <TextField fullWidth variant="filled" value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>Email Address *</label>
-                                    <TextField fullWidth variant="filled" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
                                     <label>Contact Information *</label>
-                                    <TextField fullWidth variant="filled" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={6}>
                                     <label>Gender *</label>
-                                    <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable}>
+                                    <Select fullWidth variant="outlined" value={gender} onChange={(e) => setGender(e.target.value)} disabled={!isEditable} sx={{ height: '45px' }}>
                                         <MenuItem value={'Male'}>Male</MenuItem>
                                         <MenuItem value={'Female'}>Female</MenuItem>
                                         <MenuItem value={'Neutral'}>Neutral</MenuItem>
@@ -192,7 +193,7 @@ function ViewInvestorProfile({ profile }) {
 
                                 <Grid item xs={12}>
                                     <label>Biography *</label>
-                                    <TextField fullWidth variant="filled" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" multiline rows={5} value={biography} onChange={(e) => setBiography(e.target.value)} disabled={!isEditable}/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -207,7 +208,7 @@ function ViewInvestorProfile({ profile }) {
                             <Grid container spacing={2}>
                                 <Grid item xs={8}>
                                     <label>Street Address *</label>
-                                    <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
@@ -235,8 +236,7 @@ function ViewInvestorProfile({ profile }) {
                                             <TextField
                                                 {...params}
                                                 fullWidth
-                                                variant="filled"
-                                                label="Choose a country"
+                                                variant="outlined"
                                                 inputProps={{
                                                     ...params.inputProps,
                                                     autoComplete: 'new-password',
@@ -244,22 +244,23 @@ function ViewInvestorProfile({ profile }) {
                                                 disabled={!isEditable}
                                             />
                                         )}
+                                        sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px'} }}
                                     />
                                 </Grid>
 
                                 <Grid item xs={4}>
                                     <label>City *</label>
-                                    <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
                                     <label>State *</label>
-                                    <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={4}>
                                     <label>Postal/Zip Code *</label>
-                                    <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -274,27 +275,27 @@ function ViewInvestorProfile({ profile }) {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <label>Website</label>
-                                    <TextField fullWidth variant="filled" value={website} onChange={(e) => setWebsite(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={website} onChange={(e) => setWebsite(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>Facebook</label>
-                                    <TextField fullWidth variant="filled" value={facebook} onChange={(e) => setFacebook(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={facebook} onChange={(e) => setFacebook(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>Twitter</label>
-                                    <TextField fullWidth variant="filled" value={twitter} onChange={(e) => setTwitter(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={twitter} onChange={(e) => setTwitter(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>Instagram</label>
-                                    <TextField fullWidth variant="filled" value={instagram} onChange={(e) => setInstagram(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={instagram} onChange={(e) => setInstagram(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>LinkedIn</label>
-                                    <TextField fullWidth variant="filled" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} disabled={!isEditable}/>
+                                    <TextField fullWidth variant="outlined" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
                             </Grid>
                         </Grid>

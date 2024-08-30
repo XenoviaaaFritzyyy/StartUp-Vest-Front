@@ -14,11 +14,7 @@ function ViewStartupProfile({ profile }) {
     if (profile && profile.foundedDate) {
         [month, day, year] = profile.foundedDate.split(/[\s,]+/);
     }
-    // const [foundedDay, setFoundedDay] = useState('');
-    // const [foundedMonth, setFoundedMonth] = useState('');
-    // const [foundedYear, setFoundedYear] = useState(''); 
-    // Split the date string into its components
-    // Use these components to set the initial state
+    
     const [foundedMonth, setFoundedMonth] = useState(month);
     const [foundedDay, setFoundedDay] = useState(day);
     const [foundedYear, setFoundedYear] = useState(year);
@@ -167,6 +163,7 @@ function ViewStartupProfile({ profile }) {
                 accept="image/*"
                 id="avatar-upload"
                 onChange={handleAvatarChange}
+                disabled={!isEditable} 
                 ref={fileInputRef}
                 style={{ display: 'none'}}/>                      
             </Grid>
@@ -183,30 +180,30 @@ function ViewStartupProfile({ profile }) {
                             <label>Company Name *</label>
                             <TextField 
                                 fullWidth 
-                                variant="filled"
+                                variant="outlined"
                                 value={companyName}
-                                onChange={(e) => setCompanyName(e.target.value)} disabled={!isEditable}/>
+                                onChange={(e) => setCompanyName(e.target.value)} disabled={!isEditable}
+                                sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                         </Grid>
 
                         <Grid item xs={12}>
                             <label>Company Description *</label>
                             <TextField
                                 fullWidth
-                                variant="filled"
+                                variant="outlined"
                                 value={companyDescription}
-                                onChange={(e) => setCompanyDescription(e.target.value)} disabled={!isEditable}
+                                onChange={(e) => setCompanyDescription(e.target.value)} disabled={!isEditable} 
                                 multiline
-                                rows={4}/>
+                                rows={5}/>
                         </Grid>
 
                     <Grid item xs={4}>
                         <label><b>Founded Date *</b><br/>Month</label>
-                        <FormControl fullWidth variant="filled">
+                        <FormControl fullWidth variant="outlined">
                             <Select
                                 labelId="month-label"
                                 value={foundedMonth}
-                                onChange={(e) => setFoundedMonth(e.target.value)} disabled={!isEditable}
-                            >  
+                                onChange={(e) => setFoundedMonth(e.target.value)} disabled={!isEditable} sx={{ height: '45px'}}>  
                                 {months.map((month) => (
                                     <MenuItem key={month} value={month}>{month}</MenuItem>
                                 ))}
@@ -216,12 +213,11 @@ function ViewStartupProfile({ profile }) {
 
                     <Grid item xs={4}>
                         <label><br/>Day</label>
-                        <FormControl fullWidth variant="filled">
+                        <FormControl fullWidth variant="outlined">
                             <Select
                                 labelId="day-label"
                                 value={foundedDay}
-                                onChange={(e) => setFoundedDay(e.target.value)} disabled={!isEditable}
-                                >
+                                onChange={(e) => setFoundedDay(e.target.value)} disabled={!isEditable} sx={{ height: '45px'}}>
                                 {days.map((day) => (
                                     <MenuItem key={day} value={day}>{day}</MenuItem>
                                 ))}
@@ -231,11 +227,11 @@ function ViewStartupProfile({ profile }) {
 
                     <Grid item xs={4}>
                     <label><br/>Year</label>
-                    <FormControl fullWidth variant="filled">
+                    <FormControl fullWidth variant="outlined">
                         <Select
                             labelId="year-label"
                             value={foundedYear}
-                            onChange={(e) => setFoundedYear(e.target.value)} disabled={!isEditable}>
+                            onChange={(e) => setFoundedYear(e.target.value)} disabled={!isEditable} sx={{ height: '45px'}}>
                             {years.map((year) => (
                                 <MenuItem key={year} value={year}>{year}</MenuItem>
                             ))}
@@ -249,10 +245,9 @@ function ViewStartupProfile({ profile }) {
                         <Grid item xs={12}>  
                             <Select 
                                 fullWidth 
-                                variant="filled"
+                                variant="outlined"
                                 value={typeOfCompany}
-                                onChange={(e) => setTypeOfCompany(e.target.value)} disabled={!isEditable}
-                            >
+                                onChange={(e) => setTypeOfCompany(e.target.value)} disabled={!isEditable} sx={{ height: '45px'}}>
                                 <MenuItem value={'profit'}>Profit</MenuItem>
                                 <MenuItem value={'non-profit'}>Non-Profit</MenuItem>
                             </Select>
@@ -266,10 +261,9 @@ function ViewStartupProfile({ profile }) {
                         <Grid item xs={12}>  
                             <Select 
                                 fullWidth 
-                                variant="filled"
+                                variant="outlined"
                                 value={numberOfEmployees}
-                                onChange={(e) => setNumberOfEmployees(e.target.value)} disabled={!isEditable}
-                            >
+                                onChange={(e) => setNumberOfEmployees(e.target.value)} disabled={!isEditable} sx={{ height: '45px'}}>
                                 <MenuItem value={'lessthan10'}>less than 10</MenuItem>
                                 <MenuItem value={'10-50'}>10-50</MenuItem>
                                 <MenuItem value={'50-100'}>50-100</MenuItem>
@@ -281,12 +275,12 @@ function ViewStartupProfile({ profile }) {
 
                 <Grid item xs={4}>
                     <label>Phone Number *</label>
-                        <TextField fullWidth variant="filled" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                 </Grid>
 
                 <Grid item xs={12}>
                     <label>Contact Email *</label>
-                        <TextField fullWidth variant="filled" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -301,7 +295,8 @@ function ViewStartupProfile({ profile }) {
                 <Grid container spacing={2}>
                     <Grid item xs={8}>
                         <label>Street Address *</label>
-                        <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}
+                        />
                     </Grid>
 
                     <Grid item xs={4}>
@@ -329,31 +324,30 @@ function ViewStartupProfile({ profile }) {
                                 <TextField
                                     {...params}
                                     fullWidth
-                                    variant="filled"
-                                    label="Choose a country"
+                                    variant="outlined"
                                     inputProps={{
                                         ...params.inputProps,
                                         autoComplete: 'new-password',
                                     }}
-                                    disabled={!isEditable}
-                                />
+                                    disabled={!isEditable}/>
                             )}
+                            sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px'} }}
                         />
                     </Grid>
 
                     <Grid item xs={4}>
                         <label>City *</label>
-                        <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={city} onChange={(e) => setCity(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                     </Grid>
 
                     <Grid item xs={4}>
                         <label>State *</label>
-                        <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={state} onChange={(e) => setState(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                     </Grid>
 
                     <Grid item xs={4}>
                         <label>Postal/Zip Code *</label>
-                        <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -367,7 +361,7 @@ function ViewStartupProfile({ profile }) {
         <Grid item xs={12} sm={11.4}>
             <Grid container spacing={2}>
             <Grid item xs={12}>  
-                <Select fullWidth variant="filled" value={industry} onChange={(e) => setIndustry(e.target.value)} disabled={!isEditable}>
+                <Select fullWidth variant="outlined" value={industry} onChange={(e) => setIndustry(e.target.value)} disabled={!isEditable} sx={{ height: '45px' }}>
                 {industries.map(industry => (
                     <MenuItem key={industry} value={industry}>{industry}</MenuItem>
                 ))}
@@ -386,27 +380,27 @@ function ViewStartupProfile({ profile }) {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <label>Website</label>
-                        <TextField fullWidth variant="filled" value={website} onChange={(e) => setWebsite(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={website} onChange={(e) => setWebsite(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                     </Grid>
 
                     <Grid item xs={12}>
                         <label>Facebook</label>
-                        <TextField fullWidth variant="filled" value={facebook} onChange={(e) => setFacebook(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={facebook} onChange={(e) => setFacebook(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                     </Grid>
 
                     <Grid item xs={12}>
                         <label>Twitter</label>
-                        <TextField fullWidth variant="filled" value={twitter} onChange={(e) => setTwitter(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={twitter} onChange={(e) => setTwitter(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                     </Grid>
 
                     <Grid item xs={12}>
                         <label>Instagram</label>
-                        <TextField fullWidth variant="filled" value={instagram} onChange={(e) => setInstagram(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={instagram} onChange={(e) => setInstagram(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                     </Grid>
 
                     <Grid item xs={12}>
                         <label>LinkedIn</label>
-                        <TextField fullWidth variant="filled" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} disabled={!isEditable}/>
+                        <TextField fullWidth variant="outlined" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} disabled={!isEditable} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                     </Grid>
                 </Grid>
             </Grid>
