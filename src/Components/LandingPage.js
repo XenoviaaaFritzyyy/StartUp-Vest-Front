@@ -34,7 +34,7 @@ const LandingPage = () => {
         />
 
         <Box>
-          <Button component={Link} to="/login" variant="outlined" color="primary" sx={{ mr: 2 }}>
+          <Button component={Link} to="/login" variant="text" color="primary" sx={{ mr: 2, color: '#007490' }}>
             Login
           </Button>
 
@@ -114,7 +114,7 @@ const LandingPage = () => {
             <Typography variant="h2" gutterBottom sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', ml: 3 }}>
               Empower Your Startup Journey
             </Typography>
-            <Typography variant="h6" align="justify" paragraph sx={{ml: 3, mr: 3}}>
+            <Typography variant="h6" align="justify" paragraph sx={{ml: 3, mr: 3, color: '#5d5555' }}>
               Unlock the tools to manage growth, connect with investors, and secure funding. Experience real-time analytics, seamless investment tracking, and unparalleled networking opportunities. Your ultimate platform for startup success.
             </Typography>
           </Box>

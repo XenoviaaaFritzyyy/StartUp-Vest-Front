@@ -12,7 +12,7 @@ import Navbar from '../Navbar/Navbar';
 const drawerWidth = 240;
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Full Name' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Full Name' },
   { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
   { id: 'organization', numeric: false, disablePadding: false, label: 'Organization' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email Address' },
@@ -55,11 +55,12 @@ function EnhancedTableHead(props) {
             align="left"
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ width: headCell.width, fontWeight: 'bold' }}>
+            style={{ width: headCell.width, fontWeight: 'bold', backgroundColor: '#007490', color: '#ffffff', }}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}>
+              onClick={createSortHandler(headCell.id)}
+              style={{ color: '#ffffff' }}>
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
@@ -189,7 +190,7 @@ export default function Companies() {
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', p: 3 }}>
+      <Paper sx={{ width: '100%', p: 3 }} elevation={0}>
         <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
@@ -211,7 +212,7 @@ export default function Companies() {
                   onClick={() => handleRowClick(row)}>
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.firstName.charAt(0)}</Avatar>
+                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, ml: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.firstName.charAt(0)}</Avatar>
                       {row.firstName} {row.lastName}
                     </Box>
                   </TableCell>
@@ -236,8 +237,7 @@ export default function Companies() {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+          onRowsPerPageChange={handleChangeRowsPerPage}/>
       </Paper>
     </Box>
   );

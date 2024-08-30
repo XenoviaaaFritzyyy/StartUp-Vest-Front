@@ -32,7 +32,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'startup', numeric: false, disablePadding: true, label: 'StartUp Name' },
+  { id: 'startup', numeric: false, disablePadding: false, label: 'StartUp Name', },
   { id: 'industry', numeric: false, disablePadding: false, label: 'Industry' },
   { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
   { id: 'founded', numeric: false, disablePadding: false, label: 'Founded Date' },
@@ -54,11 +54,12 @@ function EnhancedTableHead(props) {
             align="left"
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ width: headCell.width, fontWeight: 'bold' }}>
+            style={{ width: headCell.width, fontWeight: 'bold', backgroundColor: '#007490', color: '#ffffff'}}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}>
+              onClick={createSortHandler(headCell.id)}
+              style={{ color: '#ffffff'}}>
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
@@ -91,9 +92,7 @@ function EnhancedTableToolbar({ onRequestSearch }) {
     <Toolbar sx={{ pt: 5, mb: 3 }}>
       <Typography
         sx={{ flex: '1 1 100%', color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}
-        variant="h5"
-        id="tableTitle"
-        component="div">
+        variant="h5">
         Search Companies
       </Typography>
 
@@ -180,7 +179,7 @@ export default function Companies() {
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', p: 3 }}>
+      <Paper sx={{ width: '100%', p: 3 }} elevation={0}>
         <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
@@ -198,11 +197,11 @@ export default function Companies() {
                   hover
                   tabIndex={-1}
                   key={row.id}
-                  sx={{ cursor: 'pointer', height: '75px' }}
+                  sx={{ cursor: 'pointer', height: '75px',  }}
                   onClick={() => handleRowClick(row)}>
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>
+                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, ml: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>
                         {row.avatar} 
                         {/* wla pa ang avatar chichu */}
                       </Avatar>
@@ -212,7 +211,8 @@ export default function Companies() {
                   <TableCell align="left">{row.industry}</TableCell>
                   <TableCell align="left">{row.streetAddress}</TableCell>
                   <TableCell align="left">{row.foundedDate}</TableCell>
-                  <TableCell align="left">{row.companyDescription}</TableCell>
+                  <TableCell align="left">{row.companyDescription.split(' ').slice(0, 25).join(' ')}...
+                  </TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (

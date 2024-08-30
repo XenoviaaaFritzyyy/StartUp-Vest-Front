@@ -103,11 +103,12 @@ function EnhancedTableHead(props) {
             align="left"
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            style={{ width: headCell.width, fontWeight: 'bold' }}>
+            style={{ width: headCell.width, fontWeight: 'bold', backgroundColor: '#007490', color: '#ffffff',  }}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}>
+              onClick={createSortHandler(headCell.id)}
+              style={{ color: '#ffffff' }}>
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
@@ -233,7 +234,7 @@ export default function FundingRound() {
       <Navbar />
       <Toolbar />
 
-      <Paper sx={{ width: '100%', p: 3 }}>
+      <Paper sx={{ width: '100%', p: 3 }} elevation={0}>
         <EnhancedTableToolbar onRequestSearch={handleSearch} />
         <TableContainer>
           <Table
@@ -256,7 +257,7 @@ export default function FundingRound() {
 
                   <TableCell component="th" scope="row" padding="none">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.avatar}</Avatar>
+                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, ml: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.avatar}</Avatar>
                       {row.startupName}
                     </Box>
                   </TableCell>
@@ -282,8 +283,7 @@ export default function FundingRound() {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+          onRowsPerPageChange={handleChangeRowsPerPage}/>
       </Paper>
     </Box>
   );

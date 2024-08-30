@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import CreateBusinessProfileDialog from '../Dialogs/CreateBusinessProfileDialog';
-import ViewStartupProfileDialog from '../Dialogs/ViewStartupProfileDialog';
-import ViewInvestorProfileDialog from '../Dialogs/ViewInvestorProfileDialog';
-import ConfirmDeleteDialog from '../Dialogs/ConfirmDeleteDialog';
 
-import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
+import { Box, Typography, Toolbar, TextField, Avatar, Button, Select, MenuItem, Grid} from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -14,13 +11,6 @@ function Profile() {
   const [isEditable, setIsEditable] = useState(false);
   const [openCreateBusinessProfile, setCreateBusinessProfile] = useState(false);
   const [businessProfiles, setBusinessProfiles] = useState([]);
-  const [selectedBusinessProfile, setSelectedBusinessProfile] = useState(null);
-  const [openViewStartup, setOpenViewStartup] = useState(false);
-  const [openViewInvestor, setOpenViewInvestor] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(3);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [profileToDelete, setProfileToDelete] = useState(null);
 
     const [userData, setUserData] = useState({
         firstName: '',
@@ -43,24 +33,6 @@ function Profile() {
             fetchProfilePicture(userData.id);
         }
     }, [userData.id]);
-
-    // useEffect(() => {
-    //     // Revoke the old blob URL when the component unmounts or before setting a new one
-    //     return () => {
-    //       if (userData.avatar) {
-    //         URL.revokeObjectURL(userData.avatar);
-    //       }
-    //     };
-    //   }, [userData.avatar]);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const fetchUserData = async () => {
     try {
@@ -87,9 +59,6 @@ function Profile() {
                 },
             });
 
-            // const startups = responseStartups.data.map(profile => ({ ...profile, type: 'Startup' }));
-            // const investors = responseInvestors.data.map(profile => ({ ...profile, type: 'Investor' }));
-
             const startups = responseStartups.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Startup' }));
             const investors = responseInvestors.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Investor' }));
     
@@ -102,18 +71,6 @@ function Profile() {
     const handleEditClick = () => {
         setIsEditable(!isEditable);
     };
-
-    // const handleAvatarChange = (event) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => { setUserData((prevData) => ({...prevData, avatar: reader.result, }));
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
-
-    // console.log(userData.id)
 
     // Function to handle file upload
     const handleAvatarUpload = async (file) => {
@@ -181,24 +138,6 @@ function Profile() {
     fetchBusinessProfiles();
   };
 
-  const handleOpenStartUp = (profile) => {
-    setSelectedBusinessProfile(profile);
-    setOpenViewStartup(true);
-  };
-
-  const handleCloseStartUp = () => {
-    setOpenViewStartup(false);
-  };
-
-  const handleOpenInvestor = (profile) => {
-    setSelectedBusinessProfile(profile);
-    setOpenViewInvestor(true);
-  };
-
-  const handleCloseInvestor = () => {
-    setOpenViewInvestor(false);
-  };
-
   const handleSaveChanges = async () => {
     try {
       await updateUser(userData);
@@ -206,15 +145,6 @@ function Profile() {
     } catch (error) {
       console.error('Failed to update user data:', error);
     }
-  };
-
-  const handleOpenDeleteDialog = (profile) => {
-    setProfileToDelete(profile);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
   };
   
   const updateUser = async (userData) => {
@@ -229,95 +159,72 @@ function Profile() {
       throw error;
     }
   };  
-
-    const handleSoftDelete = async () => {
-        if (!profileToDelete) {
-            console.error('No profile selected');
-            return;
-        }
     
-        try {
-            // Determine the endpoint based on the type of the profile
-            const endpoint = `http://localhost:3000/startups/${profileToDelete.id}/delete`;
-    
-            await axios.put(endpoint, {}, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-    
-            // Refresh the page or fetch the data again to reflect the changes
-            fetchBusinessProfiles();
-        } catch (error) {
-            console.error('Failed to delete profile:', error);
-        }
-    };
-    
-
   return (
     <>
       <Navbar />
       <Toolbar />
-      <Box component="main" sx={{ flexGrow: 1, p: 4, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
-        <Typography variant="h4" sx={{ paddingLeft: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 4, mt: 3, paddingLeft: `${drawerWidth}px`, width: '100%', overflowX: 'hidden' }}>
+        <Typography variant="h5" sx={{ paddingLeft: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
           Account Information
         </Typography>
 
-        <Box component="main" sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, pb: 6, mt: 2 }}>
-          <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 8, pt: 3, pb: 3 }}>
+        <Box component="main" sx={{ mr: 5, borderRadius: 2, ml: 8, pb: 6, mt: 3, boxShadow: '0 0 10px rgba(0,0,0,0.25)' }}>
+          <Typography sx={{ color: 'white', background: 'rgba(0, 116, 144, 1)', fontWeight: '500', pl: 8, pt: 1.5, pb: 1.5, mb: 3, fontSize: '20px' }}>
             Personal Information
           </Typography>
-
-                    <Grid container spacing={2} sx={{ ml: 6 }}>
-                        <Grid item xs={12} sm={3}>
-                            <label htmlFor="avatar-upload">
-                            <Avatar
-                            sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }}
-                            src={profilePicUrl}
-                            // Add a key prop to force re-render when the avatar changes
-                            />
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="avatar-upload"
-                                style={{ display: 'none' }}
-                                onChange={(event) => {
-                                    const file = event.target.files[0];
-                                    if (file && userData.id) {
-                                    updateProfilePicture(userData.id, file);
-                                    }
-                                }}
-                                disabled={!isEditable}
-                                />
-                            <Typography sx={{ mt: 1, ml: 6.5, color: '#414a4c' }}>Upload Photo</Typography>
-                        </Grid>
+          
+            <Grid container spacing={2} sx={{ ml: 7 }}>
+              <Grid item xs={12} sm={2.5}>
+                <label htmlFor="avatar-upload">
+                  <Avatar sx={{ width: 200, height: 200, mt: 4, cursor: 'pointer', border: '5px rgba(0, 116, 144, 1) solid' }}
+                    src={profilePicUrl}/>
+                </label>
+                
+                <input type="file" accept="image/*" id="avatar-upload" style={{ display: 'none' }}
+                  onChange={(event) => {
+                    const file = event.target.files[0];
+                      if (file && userData.id) {
+                        updateProfilePicture(userData.id, file);
+                      }
+                    }}
+                disabled={!isEditable}/>
+              <Typography sx={{ mt: 1, ml: 6.5, color: 'rgba(0, 116, 144, 1)' }}>Upload Photo</Typography>
+            </Grid>
 
             <Grid item xs={12} sm={7.8}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <label>First Name</label>
-                  <TextField fullWidth variant="filled" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                  <TextField fullWidth variant="outlined" value={userData.firstName} onChange={(e) => setUserData((prevData) => ({ ...prevData, firstName: e.target.value }))} InputProps={{ disabled: !isEditable, style: {
+                     height: '45px', boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+                  } }} />
                 </Grid>
 
                 <Grid item xs={6}>
                   <label>Last Name</label>
-                  <TextField fullWidth variant="filled" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                  <TextField fullWidth variant="outlined" value={userData.lastName} onChange={(e) => setUserData((prevData) => ({ ...prevData, lastName: e.target.value }))} InputProps={{ disabled: !isEditable, style: {
+                     height: '45px', boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+                    } }} />
                 </Grid>
 
                 <Grid item xs={12}>
                   <label>Email Address</label>
-                  <TextField fullWidth variant="filled" value={userData.email} onChange={(e) => setUserData((prevData) => ({ ...prevData, email: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                  <TextField fullWidth variant="outlined" value={userData.email} onChange={(e) => setUserData((prevData) => ({ ...prevData, email: e.target.value }))} InputProps={{ disabled: !isEditable, style: {
+                     height: '45px', boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+                    } }} />
                 </Grid>
 
                 <Grid item xs={6}>
                   <label>Phone Number</label>
-                  <TextField fullWidth variant="filled" value={userData.contactNumber} onChange={(e) => setUserData((prevData) => ({ ...prevData, contactNumber: e.target.value }))} InputProps={{ readOnly: !isEditable }} />
+                  <TextField fullWidth variant="outlined" value={userData.contactNumber} onChange={(e) => setUserData((prevData) => ({ ...prevData, contactNumber: e.target.value }))} InputProps={{ disabled: !isEditable, style: {
+                     height: '45px', boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+                    } }} />
                 </Grid>
 
                 <Grid item xs={6}>
                   <label>Gender</label>
-                  <Select fullWidth variant="filled" value={userData.gender} onChange={(e) => setUserData((prevData) => ({ ...prevData, gender: e.target.value }))} disabled={!isEditable}>
+                  <Select fullWidth variant="outlined" value={userData.gender} onChange={(e) => setUserData((prevData) => ({ ...prevData, gender: e.target.value }))} disabled={!isEditable} style={{ height: '45px', boxShadow: '0 0 10px rgba(0,0,0,0.2)' }}>
                     <MenuItem value={'Male'}>Male</MenuItem>
                     <MenuItem value={'Female'}>Female</MenuItem>
                     <MenuItem value={'Neutral'}>Neutral</MenuItem>
@@ -339,97 +246,34 @@ function Profile() {
           </Grid>
         </Box>
 
-        <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-          <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-            Create Business Profile
+        <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 8, mb: 4 }}>
+          <Typography variant="h5" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
+            Business Profile
           </Typography>
 
-          <Box sx={{ background: '#F2F2F2', mr: 5, borderRadius: 2, ml: 8, mt: 3, pb: 3, pt: 3, pl: 6.5, pr: 6.5, display: 'flex', alignItems: 'center' }}>
-            <Avatar src="/images/business.png" sx={{ mr: 2, width: 100, height: 100, border: '3px rgba(0, 116, 144, 1) solid' }}>H</Avatar>
-            <Typography variant="h6" sx={{ flex: 1, color: '#414a4c', fontWeight: '500'}}>
-              Establishing a business profile lends credibility to your venture. Don’t wait, enhance your business’s trustworthiness by creating your profile today!
-            </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mt: 4, ml: 8, mr: 5 }}>
+            <Box sx={{ borderRadius: 2, p: 4, display: 'flex', alignItems: 'center', boxShadow: '0 0 10px rgba(0,0,0,0.25)', width: '70%' }}>
+              <Avatar src="/images/prof.jpg" variant='square' sx={{ mr: 3, width: 200, height: 220, border: '4px rgba(0, 116, 144, 1) solid', borderRadius: 2}}></Avatar>
+              <Typography align='justify' sx={{ color: '#414a4c', fontWeight: '500' }}>
+                <b>Why Create a Business Profile?</b><br/>
+                Creating a business profile on Startup Vest benefits both startups and investors.
+                <br /><br /><b>Startups</b> gain visibility and credibility, making it easier to attract funding and network with industry leaders and partners. <b>Investors</b> access a diverse range of startups, enabling portfolio diversification and informed decisions. The platform’s tools streamline the search process and facilitate direct communication with founders.
+              </Typography>
+            </Box>
 
-            <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={handleOpenBusinessProfile}>
-              Create
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'column', borderRadius: 2, p: 4, display: 'flex', alignItems: 'center', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: '28%', backgroundColor: '#007490'}}>
+              <Typography align='justify' sx={{ color: 'white', fontWeight: '500', mb: 2, mt: 6 }}>
+                <b>Don't wait any longer.</b><br /> Build your business profile now and unlock limitless potential!
+              </Typography>
+
+              <Button variant="contained" fullWidth sx={{ color: '#007490', background: 'white', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'white'} }} onClick={handleOpenBusinessProfile}>
+                Create Profile
+              </Button>
+            </Box>
           </Box>
         </Box>
 
-        <Box component="main" sx={{ display: 'flex', flexDirection: 'column', mt: 3 }}>
-          <Typography variant="h4" sx={{ pl: 8, color: 'rgba(0, 116, 144, 1)', fontWeight: 'bold' }}>
-            Business Profile Information
-          </Typography>
-
-          <Box sx={{ mr: 5, borderRadius: 2, ml: 8, mt: 3 }}>
-            <TableContainer>
-              <Table>
-                <TableHead sx={{ backgroundColor: 'rgba(0, 116, 144, 0.1)' }}>
-                  <TableRow>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Type</Typography>
-                    </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Company Name</Typography>
-                    </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Industry</Typography>
-                    </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Action</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {businessProfiles
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((profile) => (
-                      <TableRow key={`${profile.type}-${profile.id}`}>
-                        <TableCell sx={{ textAlign: 'center' }}>{profile.type}</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>{profile.companyName || '-----' }</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>{profile.industry || '-----' }</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>
-                            {profile.type === 'Investor' ? (
-                                <Button variant="contained" sx={{ width: 'calc(60% - 35px)', background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleOpenInvestor(profile)}>
-                                View
-                                </Button>
-                            ) : (
-                                <>
-                                <Button variant="contained" sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }} onClick={() => handleOpenStartUp(profile)}>
-                                    View
-                                </Button>
-                                <Button variant="outlined" sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }} onClick={() => handleOpenDeleteDialog(profile)}>
-                                    Delete
-                                </Button>
-                                </>
-                            )}
-                            </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <TablePagination rowsPerPageOptions={[3]}
-              component="div"
-              count={businessProfiles.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage} />
-
-            <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
-            <ViewStartupProfileDialog open={openViewStartup} profile={selectedBusinessProfile} onClose={handleCloseStartUp} />
-            <ViewInvestorProfileDialog open={openViewInvestor} profile={selectedBusinessProfile} onClose={handleCloseInvestor} />
-
-            <ConfirmDeleteDialog
-              open={openDeleteDialog}
-              onClose={handleCloseDeleteDialog}
-              onConfirm={handleSoftDelete}
-              companyName={profileToDelete ? profileToDelete.companyName : null}/>
-          </Box>
-        </Box>
+        <CreateBusinessProfileDialog open={openCreateBusinessProfile} onClose={handleCloseBusinessProfile} />
       </Box>
     </>
   );
