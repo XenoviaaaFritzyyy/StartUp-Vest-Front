@@ -2,17 +2,17 @@ import { useState, useRef } from 'react';
 import countries from '../static/countries';
 import industries from '../static/industries';
 import SuccessCreateBusinessProfileDialog from '../Dialogs/SuccessCreateBusinessProfileDialog';
-import { Box, Typography, TextField, Avatar, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete, InputLabel} from '@mui/material';
+import { Box, Typography, TextField, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete} from '@mui/material';
 import axios from 'axios';
 
 function CreateBusinessProfile() {
     const [selectedProfileType, setSelectedProfileType] = useState(null);
     const [avatar, setAvatar] = useState('');
-    const fileInputRef = useRef(null);
+    // const fileInputRef = useRef(null);
 
-    const [day, setDay] = useState('');
-    const [month, setMonth] = useState('');
-    const [year, setYear] = useState('');
+    // const [day, setDay] = useState('');
+    // const [month, setMonth] = useState('');
+    // const [year, setYear] = useState('');
 
     // Profile Form Data Usestates
     const [firstName, setFirstName] = useState('');
@@ -57,26 +57,24 @@ function CreateBusinessProfile() {
         setSelectedProfileType(cardType);
     };
 
-    const handleAvatarClick = () => {
-        fileInputRef.current.click();
-    };
+    // const handleAvatarClick = () => {
+    //     fileInputRef.current.click();
+    // };
 
-    const handleAvatarChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatar(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    // const handleAvatarChange = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             setAvatar(reader.result);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
 
     const handleCreateProfile = async () => {
         try {
-          // Prepare the data for the profile
           const profileData = {
-            // ... fill this with the data from your form ...
             firstName: firstName,
             lastName: lastName,
             emailAddress: emailAddress,
@@ -130,12 +128,12 @@ function CreateBusinessProfile() {
         <Box component="main" sx={{ flexGrow: 1, width: '100%', overflowX: 'hidden', maxWidth: '1000px',  background: '#F2F2F2'}}>
 
             <Box component="main" sx={{mr: 5, borderRadius: 2 }}>
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
-                    Profile Type *
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                    Profile Type 
                 </Typography>
 
             <Box sx={{ display: 'flex', gap: 2, pl: 5, pb: 2, textAlign: 'center' }}>
-            <Card onClick={() => handleCardClick('Startup Company')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', height: '200px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
+            <Card onClick={() => handleCardClick('Startup Company')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', height: '100px', cursor: 'pointer', border: selectedProfileType === 'Startup Company' ? '3px solid rgba(0, 116, 144, 1)' : '2px solid grey' }}>
                     <CardContent>
                         <Typography variant="h5" component="div">
                             Startup Company
@@ -146,7 +144,7 @@ function CreateBusinessProfile() {
                 </CardContent>
             </Card>
 
-            <Card onClick={() => handleCardClick('Investor')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '2px solid rgba(0, 116, 144, 1)' : 'none' }}>
+            <Card onClick={() => handleCardClick('Investor')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', width: '500px', cursor: 'pointer', border: selectedProfileType === 'Investor' ? '3px solid #007490' : '2px solid grey' }}>
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Investor
@@ -160,7 +158,7 @@ function CreateBusinessProfile() {
 
             {selectedProfileType === 'Startup Company' && (
                 <>
-                    <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3 }}>
+                    <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3 }}>
                         Overview
                     </Typography>
 
@@ -171,16 +169,18 @@ function CreateBusinessProfile() {
                                     <label>Company Name *</label>
                                     <TextField 
                                         fullWidth 
-                                        variant="filled"
+                                        required
+                                        variant="outlined"
                                         value={companyName}
-                                        onChange={(e) => setCompanyName(e.target.value)}/>
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                        sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                                 </Grid>
 
                                 <Grid item xs={12}>
                                     <label>Company Description *</label>
                                     <TextField
                                         fullWidth
-                                        variant="filled"
+                                        variant="outlined"
                                         value={companyDescription}
                                         onChange={(e) => setCompanyDescription(e.target.value)}
                                         multiline
@@ -189,27 +189,28 @@ function CreateBusinessProfile() {
 
                             <Grid item xs={4}>
                                 <label><b>Founded Date *</b><br/>Month</label>
-                                <FormControl fullWidth variant="filled">
-                                    <Select
+                                <FormControl fullWidth variant="outlined">
+                                    <Select                              
                                         labelId="month-label"
                                         value={foundedMonth}
                                         onChange={(e) => setFoundedMonth(e.target.value)}
-                                    >  
+                                        sx={{ height: '45px' }}>  
                                         {months.map((month) => (
                                             <MenuItem key={month} value={month}>{month}</MenuItem>
-                                        ))}
+                                        )) 
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label><br/>Day</label>
-                                <FormControl fullWidth variant="filled">
+                                <FormControl fullWidth variant="outlined">
                                     <Select
                                         labelId="day-label"
                                         value={foundedDay}
                                         onChange={(e) => setFoundedDay(e.target.value)}
-                                        >
+                                        sx={{ height: '45px' }}>
                                         {days.map((day) => (
                                             <MenuItem key={day} value={day}>{day}</MenuItem>
                                         ))}
@@ -219,11 +220,12 @@ function CreateBusinessProfile() {
 
                             <Grid item xs={4}>
                             <label><br/>Year</label>
-                            <FormControl fullWidth variant="filled">
+                            <FormControl fullWidth variant="outlined">
                                 <Select
                                     labelId="year-label"
                                     value={foundedYear}
-                                    onChange={(e) => setFoundedYear(e.target.value)}>
+                                    onChange={(e) => setFoundedYear(e.target.value)}
+                                    sx={{ height: '45px' }}>
                                     {years.map((year) => (
                                         <MenuItem key={year} value={year}>{year}</MenuItem>
                                     ))}
@@ -237,10 +239,10 @@ function CreateBusinessProfile() {
                                 <Grid item xs={12}>  
                                     <Select 
                                         fullWidth 
-                                        variant="filled"
+                                        variant="outlined"
                                         value={typeOfCompany}
                                         onChange={(e) => setTypeOfCompany(e.target.value)}
-                                    >
+                                        sx={{ height: '45px' }}>
                                         <MenuItem value={'profit'}>Profit</MenuItem>
                                         <MenuItem value={'non-profit'}>Non-Profit</MenuItem>
                                     </Select>
@@ -254,10 +256,10 @@ function CreateBusinessProfile() {
                                 <Grid item xs={12}>  
                                     <Select 
                                         fullWidth 
-                                        variant="filled"
+                                        variant="outlined"
                                         value={numberOfEmployees}
                                         onChange={(e) => setNumberOfEmployees(e.target.value)}
-                                    >
+                                        sx={{ height: '45px' }}>
                                         <MenuItem value={'lessthan10'}>less than 10</MenuItem>
                                         <MenuItem value={'10-50'}>10-50</MenuItem>
                                         <MenuItem value={'50-100'}>50-100</MenuItem>
@@ -269,18 +271,20 @@ function CreateBusinessProfile() {
 
                         <Grid item xs={4}>
                             <label>Phone Number *</label>
-                                <TextField fullWidth variant="filled" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} />
+                                <TextField fullWidth variant="outlined" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} 
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                         </Grid>
 
                         <Grid item xs={12}>
                             <label>Contact Email *</label>
-                                <TextField fullWidth variant="filled" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
                     Location
                 </Typography>
 
@@ -289,7 +293,8 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <label>Street Address *</label>
-                                <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} s/>
                             </Grid>
 
                             <Grid item xs={4}>
@@ -307,9 +312,7 @@ function CreateBusinessProfile() {
                                                 loading="lazy"
                                                 width="20"
                                                 src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                                                alt=""
-                                            />
+                                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}/>
                                             {option.label} ({option.code}) +{option.phone}
                                         </Box>
                                     )}
@@ -317,49 +320,51 @@ function CreateBusinessProfile() {
                                         <TextField
                                             {...params}
                                             fullWidth
-                                            variant="filled"
-                                            label="Choose a country"
+                                            variant="outlined"
                                             inputProps={{
                                                 ...params.inputProps,
                                                 autoComplete: 'new-password', // disable autocomplete and autofill
-                                            }}
-                                        />
+                                            }}/>
                                     )}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px'} }}
                                 />
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>City *</label>
-                                <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={city} onChange={(e) => setCity(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>State *</label>
-                                <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={state} onChange={(e) => setState(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>Postal/Zip Code *</label>
-                                <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={postalCode} onChange={(e) => setPostalCode(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
-                    Industry *
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                    Industry
                 </Typography>
 
                 <Grid container spacing={3} sx={{ ml: 2 }}>
                     <Grid item xs={12} sm={11.4}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>  
-                            <FormControl fullWidth variant="filled">
-                                <InputLabel id="industry-label">Choose an Industry</InputLabel>
+                            <FormControl fullWidth variant="outlined">
                                 <Select
                                     labelId="industry-label"
                                     value={industry}
-                                    onChange={(e) => setIndustry(e.target.value)}>
+                                    onChange={(e) => setIndustry(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} >
                                     {industries.map(industry => (
                                         <MenuItem key={industry} value={industry}>{industry}</MenuItem>
                                     ))}
@@ -379,27 +384,29 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <label>Website</label>
-                                <TextField fullWidth variant="filled" value={website} onChange={(e) => setWebsite(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={website} onChange={(e) => setWebsite(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Facebook</label>
-                                <TextField fullWidth variant="filled" value={facebook} onChange={(e) => setFacebook(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={facebook} onChange={(e) => setFacebook(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Twitter</label>
-                                <TextField fullWidth variant="filled" value={twitter} onChange={(e) => setTwitter(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={twitter} onChange={(e) => setTwitter(e.target.value)}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Instagram</label>
-                                <TextField fullWidth variant="filled"value={instagram} onChange={(e) => setInstagram(e.target.value)}/>
+                                <TextField fullWidth variant="outlined"value={instagram} onChange={(e) => setInstagram(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>LinkedIn</label>
-                                <TextField fullWidth variant="filled"value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)}/>
+                                <TextField fullWidth variant="outlined"value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -421,27 +428,28 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <label>First Name</label>
-                                <TextField fullWidth variant="filled" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={firstName} onChange={(e) => setFirstName(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Last Name</label>
-                                <TextField fullWidth variant="filled" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={lastName} onChange={(e) => setLastName(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Email Address</label>
-                                <TextField fullWidth variant="filled" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Contact Information</label>
-                                <TextField fullWidth variant="filled" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Gender</label>
-                                    <Select fullWidth variant="filled" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                    <Select fullWidth variant="outlined" value={gender} onChange={(e) => setGender(e.target.value)}
+                                        sx={{ height: '45px',}}>
                                         <MenuItem value={'male'}>Male</MenuItem>
                                         <MenuItem value={'female'}>Female</MenuItem>
                                         <MenuItem value={'neutral'}>Neutral</MenuItem>
@@ -451,7 +459,7 @@ function CreateBusinessProfile() {
 
                             <Grid item xs={12}>
                                 <label>Biography</label>
-                                <TextField fullWidth variant="filled" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)} />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -466,7 +474,7 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <label>Street Address</label>
-                                <TextField fullWidth variant="filled" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={4}>
@@ -484,9 +492,7 @@ function CreateBusinessProfile() {
                                                 loading="lazy"
                                                 width="20"
                                                 src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                                                alt=""
-                                            />
+                                                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`} />
                                             {option.label} ({option.code}) +{option.phone}
                                         </Box>
                                     )}
@@ -494,30 +500,30 @@ function CreateBusinessProfile() {
                                         <TextField
                                             {...params}
                                             fullWidth
-                                            variant="filled"
-                                            label="Choose a country"
+                                            variant="outlined"
                                             inputProps={{
                                                 ...params.inputProps,
                                                 autoComplete: 'new-password', // disable autocomplete and autofill
                                             }}
                                         />
                                     )}
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px'}, }}
                                 />
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>City</label>
-                                <TextField fullWidth variant="filled" value={city} onChange={(e) => setCity(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={city} onChange={(e) => setCity(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' },}}/>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>State</label>
-                                <TextField fullWidth variant="filled" value={state} onChange={(e) => setState(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={state} onChange={(e) => setState(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }, }}/>
                             </Grid>
 
                             <Grid item xs={4}>
                                 <label>Postal/Zip Code</label>
-                                <TextField fullWidth variant="filled" value={postalCode} onChange={(e) => setPostalCode(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -532,27 +538,27 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <label>Website</label>
-                                <TextField fullWidth variant="filled" value={website} onChange={(e) => setWebsite(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={website} onChange={(e) => setWebsite(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Facebook</label>
-                                <TextField fullWidth variant="filled" value={facebook} onChange={(e) => setFacebook(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={facebook} onChange={(e) => setFacebook(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Twitter</label>
-                                <TextField fullWidth variant="filled" value={twitter} onChange={(e) => setTwitter(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={twitter} onChange={(e) => setTwitter(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Instagram</label>
-                                <TextField fullWidth variant="filled" value={instagram} onChange={(e) => setInstagram(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={instagram} onChange={(e) => setInstagram(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>LinkedIn</label>
-                                <TextField fullWidth variant="filled" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)}/>
+                                <TextField fullWidth variant="outlined" value={linkedIn} onChange={(e) => setLinkedIn(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
                             </Grid>
                         </Grid>
                     </Grid>
