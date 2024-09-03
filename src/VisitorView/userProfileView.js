@@ -107,7 +107,7 @@ function UserProfileView() {
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>LinkedIn</strong></Typography>
-                          <Typography variant="body1">{profile.linkedIn || '---' }</Typography>
+                          <Typography variant="body1" sx={{ wordBreak: 'break-all' }} >{profile.linkedIn || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Facebook</strong></Typography>
@@ -115,7 +115,7 @@ function UserProfileView() {
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Twitter</strong></Typography>
-                          <Typography variant="body1">{profile.twitter || '---' }</Typography>
+                          <Typography variant="body1" sx={{ wordBreak: 'break-all' }} >{profile.twitter || '---' }</Typography>
                         </Grid>
                         <Grid item xs={6}>
                           <Typography variant="h6"><strong>Instagram</strong></Typography>

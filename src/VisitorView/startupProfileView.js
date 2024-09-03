@@ -135,7 +135,7 @@ function StartUpView() {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>LinkedIn</strong></Typography>
-                      <Typography variant="body1">{startup.linkedIn}</Typography>
+                      <Typography variant="body1" sx={{ wordBreak: 'break-all' }} >{startup.linkedIn}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Facebook</strong></Typography>
@@ -143,7 +143,7 @@ function StartUpView() {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Twitter</strong></Typography>
-                      <Typography variant="body1">{startup.twitter}</Typography>
+                      <Typography variant="body1" sx={{ wordBreak: 'break-all' }} >{startup.twitter}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="h6"><strong>Instagram</strong></Typography>

@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import { Avatar, Box, Divider, Toolbar, Typography, Grid, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, DialogActions, FormControl, TablePagination } from '@mui/material';
 import StarsIcon from '@mui/icons-material/Stars';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 
 const drawerWidth = 240;
 
-function FoundingRoundView() {
+function FundingRoundView() {
   const [isFollowed, setIsFollowed] = useState(false);
+
+  const location = useLocation();
+  const { fundinground } = location.state || {};
+
+  console.log('Funding Round Data:', fundinground); 
+
+  if (!fundinground) {
+    return <div>No funding round data available</div>;
+  }
 
   const handleFollowToggle = () => {
     setIsFollowed(!isFollowed);
@@ -23,7 +33,7 @@ function FoundingRoundView() {
           <Box mr={4}>
           <Avatar variant="rounded" sx={{ width: 150, height: 150, border: '5px solid rgba(0, 116, 144, 1)', borderRadius: 3, ml: 8 }}></Avatar>
           </Box>
-          <Typography variant="h4" gutterBottom>Seed A - Facebook</Typography>
+          <Typography variant="h4" gutterBottom>{fundinground.fundingType} - {fundinground.startupName}</Typography>
           <StarsIcon sx={{ cursor: 'pointer', ml: 1, mt: -1, color: isFollowed ? 'rgba(0, 116, 144, 1)' : 'inherit' }} onClick={handleFollowToggle} />
         </Box>
 
@@ -40,32 +50,34 @@ function FoundingRoundView() {
                     <Grid container spacing={3}>
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>StartUp Name</strong></Typography>
-                        <Typography variant="body1">Facebook</Typography>
+                        <Typography variant="body1">{fundinground.startupName}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Announced Date</strong></Typography>
-                        <Typography variant="body1">July 24, 2024</Typography>
+                        <Typography variant="body1">{fundinground.announcedDate}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Closed on Date</strong></Typography>
-                        <Typography variant="body1">August 28, 2024</Typography>
+                        <Typography variant="body1">{fundinground.closedDate}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Funding Type</strong></Typography>
-                        <Typography variant="body1">Seed Round</Typography>
+                        <Typography variant="body1">{fundinground.fundingType}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Money Raised</strong></Typography>
-                        <Typography variant="body1">---</Typography>
+                        <Typography variant="body1">{fundinground.moneyRaisedCurrency} {fundinground.moneyRaised}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
                         <Typography variant="h6"><strong>Pre-Money Valuation</strong></Typography>
-                        <Typography variant="body1">P1M</Typography>
+                        <Typography variant="body1">
+                          {fundinground.preMoneyValuation ? fundinground.preMoneyValuation : 'N/A'}
+                        </Typography>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -85,17 +97,17 @@ function FoundingRoundView() {
                         </TableHead>
                         
                         <TableBody>
-                            {/* {businessProfiles
-                                .filter(profile => filter === 'All' || profile.type === filter)
-                                .slice(businessPage * businessRowsPerPage, businessPage * businessRowsPerPage + businessRowsPerPage)
-                                .map((profile) => ( */}
-                                <TableRow>
-                                    <TableCell sx={{ textAlign: 'center' }}>AA</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>AA</TableCell>
-                                    <TableCell sx={{ textAlign: 'justify' }}>AA</TableCell>
-                                </TableRow>
-                            {/* ))} */}
-                        </TableBody>
+                      {/* Loop through each capTableInvestor */}
+                      {fundinground.capTableInvestors && fundinground.capTableInvestors.map((investorDetail, index) => (
+                        <TableRow key={index}>
+                          <TableCell sx={{ textAlign: 'center' }}>
+                            {investorDetail.investor.firstName} {investorDetail.investor.lastName}
+                          </TableCell>
+                          <TableCell sx={{ textAlign: 'center' }}>{investorDetail.title}</TableCell>
+                          <TableCell sx={{ textAlign: 'center' }}>{investorDetail.shares}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
                     </Table>
                 </TableContainer>
                     
@@ -129,4 +141,4 @@ function FoundingRoundView() {
   );
 }
 
-export default FoundingRoundView;
+export default FundingRoundView;

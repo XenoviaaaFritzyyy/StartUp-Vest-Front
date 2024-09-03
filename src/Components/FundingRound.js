@@ -4,20 +4,26 @@ import PropTypes from 'prop-types';
 import SearchIcon from '@mui/icons-material/Search';
 import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 import Navbar from '../Navbar/Navbar';
+
 const drawerWidth = 240;
 
-function createData(id, transactionName, startupName, fundingType, moneyRaised, announcedDate, closedDate, avatar) {
+function createData(id, transactionName, startupName, fundingType, moneyRaised, 
+  moneyRaisedCurrency, announcedDate, closedDate, avatar, preMoneyValuation, capTableInvestors ) {
   return {
     id,
     transactionName,
     startupName,
     fundingType,
     moneyRaised,
+    moneyRaisedCurrency,
     announcedDate,
     closedDate,
-    avatar
+    avatar,
+    preMoneyValuation,
+    capTableInvestors
   };
 }
 
@@ -167,6 +173,8 @@ export default function FundingRound() {
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   useEffect(() => {
     const fetchFundingRounds = async () => {
       try {
@@ -177,9 +185,12 @@ export default function FundingRound() {
           fundingRound.startup?.companyName ?? 'N/A',
           fundingRound.fundingType,
           fundingRound.moneyRaised || '---',
+          fundingRound.moneyRaisedCurrency || 'USD',
           new Date(fundingRound.announcedDate).toLocaleDateString(),
           new Date(fundingRound.closedDate).toLocaleDateString(),
-          fundingRound.avatar || ''
+          fundingRound.avatar || '',
+          fundingRound.preMoneyValuation || 'N/A',
+          fundingRound.capTableInvestors // Pass capTableInvestors details
         ));
         setRows(fetchedRows);
         setFilteredRows(fetchedRows);
@@ -190,6 +201,10 @@ export default function FundingRound() {
 
     fetchFundingRounds();
   }, []);
+
+  const handleRowClick = (fundinground) => {
+    navigate(`/fundingroundview`, { state: { fundinground } });
+  };  
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -212,6 +227,8 @@ export default function FundingRound() {
       (row.fundingType?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
       (row.moneyRaised?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
       (row.announcedDate?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.preMoneyValuation?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
+      (row.moneyRaisedCurrency?.toLowerCase() || '').includes(searchText.toLowerCase()) ||
       (row.closedDate?.toLowerCase() || '').includes(searchText.toLowerCase())
     );
     setFilteredRows(filtered);
@@ -246,33 +263,44 @@ export default function FundingRound() {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort} />
+              <TableBody>
+                {visibleRows.map((row, index) => (
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    sx={{ cursor: 'pointer', height: '75px' }}
+                    onClick={() => handleRowClick(row)} 
+                  >
+                    <TableCell component="th" scope="row" padding="none">
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, ml: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.avatar}</Avatar>
+                        {row.startupName}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="left">{row.fundingType}</TableCell>
+                    <TableCell align="left">{row.moneyRaisedCurrency} {row.moneyRaised}</TableCell>
+                    <TableCell align="left">{row.announcedDate}</TableCell>
+                    <TableCell align="left">{row.closedDate}</TableCell>
 
-            <TableBody>
-              {visibleRows.map((row, index) => (
-                <TableRow
-                  hover
-                  tabIndex={-1}
-                  key={row.id}
-                  sx={{ cursor: 'pointer', height: '75px' }}>
+                    {/* Render capTableInvestors details
+                    {row.capTableInvestors && row.capTableInvestors.map((investor, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell colSpan={6}>
+                          <Typography variant="subtitle2">Investor: {investor.investor.firstName} {investor.investor.lastName}</Typography>
+                          <Typography variant="body2">Title: {investor.title}, Shares: {investor.shares}</Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))} */}
+                  </TableRow>
+                ))}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
 
-                  <TableCell component="th" scope="row" padding="none">
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar variant='rounded' sx={{ width: 30, height: 30, mr: 2, ml: 2, border: '2px solid rgba(0, 116, 144, 1)' }}>{row.avatar}</Avatar>
-                      {row.startupName}
-                    </Box>
-                  </TableCell>
-                  <TableCell align="left">{row.fundingType}</TableCell>
-                  <TableCell align="left">{row.moneyRaised}</TableCell>
-                  <TableCell align="left">{row.announcedDate}</TableCell>
-                  <TableCell align="left">{row.closedDate}</TableCell>
-                </TableRow>
-              ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
           </Table>
         </TableContainer>
 
@@ -288,4 +316,3 @@ export default function FundingRound() {
     </Box>
   );
 }
-
