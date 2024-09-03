@@ -37,16 +37,24 @@ function CapTable({
     setLocalCapPage(0);
   };
 
+  // Calculate the index of the first and last row to display
+  const startIndex = localCapPage * localCapRowsPerPage;
+  const endIndex = startIndex + localCapRowsPerPage;
+
+  // Slice the filtered data to display only the rows for the current page
+  const paginatedCapTables = filteredCapTables.slice(startIndex, endIndex);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="subtitle1" sx={{ pr: 1 }}>By Company:</Typography>
         <FormControl sx={{ minWidth: 200 }}>
-          <Select 
-            value={filterValue} 
-            onChange={handleFilterChange} 
-            variant="outlined" 
-            sx={{ minWidth: 150, height: '45px' }}>
+          <Select
+            value={filterValue}
+            onChange={handleFilterChange}
+            variant="outlined"
+            sx={{ minWidth: 150, height: '45px' }}
+          >
             <MenuItem value="All">All</MenuItem>
             {businessProfiles.filter(profile => profile.type === 'Startup').map((startup) => (
               <MenuItem key={startup.id} value={startup.id}>{startup.companyName}</MenuItem>
@@ -56,7 +64,7 @@ function CapTable({
       </Box>
 
       {/* Table */}
-      <TableContainer sx={{borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
+      <TableContainer sx={{ borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         <Table>
           <TableHead sx={{ backgroundColor: '#007490' }}>
             <TableRow>
@@ -71,22 +79,29 @@ function CapTable({
               </TableCell>
               <TableCell sx={{ textAlign: 'center' }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#F2F2F2' }}>Percentage</Typography>
-              </TableCell>  
+              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {filteredCapTables.slice(
-              localCapPage * localCapRowsPerPage,
-              localCapPage * localCapRowsPerPage + localCapRowsPerPage
-            ).map((table) => (
-              <TableRow key={table.id}>
-                <TableCell sx={{ textAlign: 'center' }}>{table.name}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{table.totalShares}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{table.percentage.toFixed(2)}%</TableCell>
+            {paginatedCapTables.length > 0 ? (
+              paginatedCapTables.map((table) => (
+                <TableRow key={table.id}>
+                  <TableCell sx={{ textAlign: 'center' }}>{table.name}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{table.title}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{table.totalShares}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>
+                    {table.percentage !== undefined ? table.percentage.toFixed(2) : 'N/A'}%
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
+                  <Typography variant="body2">No investors found in this company.</Typography>
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
 
