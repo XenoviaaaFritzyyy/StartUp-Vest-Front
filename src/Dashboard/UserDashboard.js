@@ -44,6 +44,7 @@ function UserDashboard() {
         fetchBusinessProfiles();
         fetchFundingRounds();
         fetchCapTable();
+        fetchCapTablesAllInvestors();
     }, []);
 
     const handleTabChange = (event, newValue) => {
@@ -193,12 +194,34 @@ function UserDashboard() {
 
     // CAP TABLE
     useEffect(() => {
-        fetchCapTable(selectedStartupCapTable);
+        fetchCapTablesAllInvestors(selectedStartupCapTable);
+        fetchCapTable(selectedStartupCapTable)
     }, [selectedStartupCapTable]);
 
     const fetchCapTable = async (companyId) => {
         try {
             const response = await axios.get(`http://localhost:3000/funding-rounds/investors/${companyId}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              },
+            });
+            setCapTables(response.data);
+            setFilteredCapTables(response.data);
+          } catch (error) {
+            if (response.data.length === 0) {
+              // Handle the "No investors found" error
+              setCapTables([]);
+              setFilteredCapTables([]);
+              // Display the message in your UI
+            } else {
+              console.error('Error fetching investors:', error);
+            }
+          }
+    };
+
+    const fetchCapTablesAllInvestors = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/funding-rounds/investors/all', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -214,6 +237,7 @@ function UserDashboard() {
         const selectedCompanyId = event.target.value;
         setSelectedStartupCapTable(selectedCompanyId);
         fetchCapTable(selectedCompanyId);
+        fetchCapTablesAllInvestors(selectedCompanyId);
     };
 
     return (

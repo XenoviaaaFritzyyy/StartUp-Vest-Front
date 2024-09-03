@@ -14,7 +14,6 @@ function FundingRoundTable({
   handleCloseFundingProfile,
   businessProfiles
 }) {
-
   const [localFundingPage, setLocalFundingPage] = useState(fundingPage);
   const [localFundingRowsPerPage, setLocalFundingRowsPerPage] = useState(fundingRowsPerPage);
 
@@ -27,9 +26,14 @@ function FundingRoundTable({
     setSelectedStartupFunding(event.target.value);
   };
 
+  // Get list of startup IDs the user created
+  const userCreatedStartupIds = businessProfiles
+    .filter(profile => profile.type === 'Startup')
+    .map(startup => startup.id);
+
   // Filter funding rounds based on the selected startup
   const filteredFundingRounds = selectedStartupFunding === 'All'
-    ? fundingRounds
+    ? fundingRounds.filter(round => round.startup && userCreatedStartupIds.includes(round.startup.id))
     : fundingRounds.filter(round => round.startup && round.startup.id === selectedStartupFunding);
 
   // Calculate the index of the first and last row to display
@@ -107,27 +111,35 @@ function FundingRoundTable({
           </TableHead>
           
           <TableBody>
-            {paginatedFundingRounds.map((round) => (
-              <TableRow key={round.id}>
-                <TableCell sx={{ textAlign: 'center' }}>{round.fundingType}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>
-                  <Button
-                    variant="contained"
-                    sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
-                    onClick={() => handleViewFundingRound(round.id)}>
-                    View
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}
-                    onClick={() => handleOpenDeleteFundingRoundDialog(round)}>
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+          {paginatedFundingRounds.length > 0 ? (
+              paginatedFundingRounds.map((round) => (
+                <TableRow key={round.id}>
+                  <TableCell sx={{ textAlign: 'center' }}>{round.fundingType}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{round.moneyRaised}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{round.targetFunding}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>
+                    <Button
+                      variant="contained"
+                      sx={{ background: 'rgba(0, 116, 144, 1)', '&:hover': { boxShadow: '0 0 10px rgba(0,0,0,0.5)', backgroundColor: 'rgba(0, 116, 144, 1)' } }}
+                      onClick={() => handleViewFundingRound(round.id)}>
+                      View
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      sx={{ marginLeft: '20px', color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)' }}
+                      onClick={() => handleOpenDeleteFundingRoundDialog(round)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
+                    No funding rounds available for your startups.
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
 
