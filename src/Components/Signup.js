@@ -275,7 +275,7 @@ function Signup() {
 
             <Typography sx={{ textAlign: 'center', color: '#F2F2F2', fontSize: '0.8rem' }}>
               Already have an account?{' '}
-              <Link to="/login" style={{ color: '#F2F2F2', textDecoration: 'none' }}>
+              <Link to="/login" style={{ color: '#F2F2F2', textDecoration: 'underine', fontWeight: 'bold' }}>
                 Sign in
               </Link>
             </Typography>
