@@ -44,37 +44,45 @@ function FundingRoundView() {
             {/* Left Box. Investor Information */}
             <Grid item xs={12} md={8}>
               <Box sx={{ background: 'white', display: 'flex', flexDirection: 'column', borderRadius: 2, pb: 3, pl: 5, pr: 5 }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', mb: 2 }}>Overview</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', mb: 2 }}>Overview</Typography>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="body1">
+                          To invest in our company, a minimum purchase of 10,000 shares is required. This ensures a meaningful investment and supports our long-term growth.
+                          <br /><br />
+                          For more information, please contact us.
+                         </Typography>
+                      </Grid>
+
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>StartUp Name</strong></Typography>
+                        <Typography><strong>StartUp Name</strong></Typography>
                         <Typography variant="body1">{fundinground.startupName}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Announced Date</strong></Typography>
+                        <Typography><strong>Announced Date</strong></Typography>
                         <Typography variant="body1">{fundinground.announcedDate}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Closed on Date</strong></Typography>
+                        <Typography><strong>Closed on Date</strong></Typography>
                         <Typography variant="body1">{fundinground.closedDate}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Funding Type</strong></Typography>
+                        <Typography><strong>Funding Type</strong></Typography>
                         <Typography variant="body1">{fundinground.fundingType}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Money Raised</strong></Typography>
+                        <Typography><strong>Money Raised</strong></Typography>
                         <Typography variant="body1">{fundinground.moneyRaisedCurrency} {fundinground.moneyRaised}</Typography>
                       </Grid>
 
                       <Grid item xs={4}>
-                        <Typography variant="h6"><strong>Pre-Money Valuation</strong></Typography>
+                        <Typography><strong>Pre-Money Valuation</strong></Typography>
                         <Typography variant="body1">
                           {fundinground.preMoneyValuation ? fundinground.preMoneyValuation : 'N/A'}
                         </Typography>
@@ -85,7 +93,7 @@ function FundingRoundView() {
 
                 <Divider sx={{ mt: 5, mb: 3 }} />
 
-                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', }}>Investors</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'rgba(0, 116, 144, 1)', }}>Investors</Typography>
                 <TableContainer component={Box} sx={{ mt: 2, backgroundColor: 'white'}}>
                     <Table>
                         <TableHead>
@@ -120,19 +128,6 @@ function FundingRoundView() {
                     onPageChange={handleBusinessPageChange}
                     onRowsPerPageChange={handleBusinessRowsPerPageChange}/> */}
                 </Box>
-            </Grid>
-
-            {/* Right Box */}
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ p: 6, borderRadius: 2, background: '#F2F2F2'}}>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Discover Opportunities</Typography>
-                  <Typography variant="h6">Explore new ventures and opportunities that match your interests.</Typography>
-                  <Button variant="outlined" fullWidth component={Link} to="/companies" sx={{mt: 3, color: 'rgba(0, 116, 144, 1)', borderColor: 'rgba(0, 116, 144, 1)', '&:hover': { color: 'rgba(0, 116, 144, 0.7)', borderColor: 'rgba(0, 116, 144, 0.7)'}}}>
-                    Check Companies
-                  </Button>
-                </Box>
-              </Box>
             </Grid>
           </Grid>
         </Box>
