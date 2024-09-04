@@ -39,6 +39,15 @@ function UserDashboard() {
     const [selectedStartupCapTable, setSelectedStartupCapTable] = useState('All');
     const [capTables, setCapTables] = useState([]);
     const [filteredCapTables, setFilteredCapTables] = useState([]);
+
+    // COUNTS
+    const [fundedCompaniesCount, setFundedCompaniesCount] = useState(0);
+    const [companyCount, setCompanyCount] = useState(0);
+    const [investorCount, setInvestorCount] = useState(0);
+    // const [fundingRoundCount, setFundingRoundCount] = useState(0);
+    const [totalAmountFunded, setTotalAmountFunded] = useState(0);
+
+    const [recentActivities, setRecentActivities] = useState([]);
     
     useEffect(() => {
         fetchBusinessProfiles();
@@ -106,6 +115,11 @@ function UserDashboard() {
             const investors = responseInvestors.data.filter(profile => !profile.isDeleted).map(profile => ({ ...profile, type: 'Investor' }));
     
             setBusinessProfiles([...investors, ...startups]);
+
+            // Update counts
+            setCompanyCount(startups.length);
+            setInvestorCount(investors.length);
+            setFundedCompaniesCount(investors.length > 0 ? 1 : 0); // Example logic, adjust based on your criteria
         } catch (error) {
             console.error('Failed to fetch business profiles:', error);
         }
@@ -116,18 +130,23 @@ function UserDashboard() {
             console.error('No profile selected');
             return;
         }
-    
+
         try {
-            // Determine the endpoint based on the type of the profile
             const endpoint = `http://localhost:3000/startups/${profileToDelete.id}/delete`;
-    
+
             await axios.put(endpoint, {}, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-    
+
             fetchBusinessProfiles();
+
+            // Add recent activity
+            setRecentActivities(prevActivities => [
+                { action: 'Deleted Business Profile', description: `${profileToDelete.companyName} was deleted`, date: new Date().toLocaleDateString() },
+                ...prevActivities.slice(0, 4) // Limit to 5 recent activities
+            ]);
         } catch (error) {
             console.error('Failed to delete profile:', error);
         }
@@ -141,6 +160,12 @@ function UserDashboard() {
     const handleCloseFundingRound = () => {
         setOpenCreateFundingRound(false);
         fetchFundingRounds();
+
+        // Add recent activity
+        setRecentActivities(prevActivities => [
+            { action: 'Created Funding Round', description: 'A new funding round was created', date: new Date().toLocaleDateString() },
+            ...prevActivities.slice(0, 4) // Limit to 5 recent activities
+        ]);
     };
 
     const handleCloseFundingProfile = () => {
@@ -173,6 +198,12 @@ function UserDashboard() {
             const updatedFundingRounds = fundingRounds.filter(round => round.id !== fundingRoundId);
             setFundingRounds(updatedFundingRounds);
             setFilteredFundingRounds(updatedFundingRounds);
+
+            // Add recent activity
+            setRecentActivities(prevActivities => [
+                { action: 'Delete Funding Round', description: 'A new funding round was deleted', date: new Date().toLocaleDateString() },
+                ...prevActivities.slice(0, 4) // Limit to 5 recent activities
+            ]);
         } catch (error) {
             console.error('Failed to soft delete funding round:', error);
         }
@@ -187,6 +218,9 @@ function UserDashboard() {
             });
             setFundingRounds(response.data);
             setFilteredFundingRounds(response.data);
+            // Calculate the total amount funded
+            const totalFunded = fundingRounds.reduce((total, round) => total + round.amount, 0);
+            setTotalAmountFunded(totalFunded);
         } catch (error) {
             console.error('Error fetching funding rounds:', error);
         }
@@ -194,30 +228,34 @@ function UserDashboard() {
 
     // CAP TABLE
     useEffect(() => {
-        fetchCapTablesAllInvestors(selectedStartupCapTable);
-        fetchCapTable(selectedStartupCapTable)
+        if (selectedStartupCapTable === 'All') {
+            fetchCapTablesAllInvestors();
+        } else {
+            fetchCapTable(selectedStartupCapTable);
+        }
     }, [selectedStartupCapTable]);
 
     const fetchCapTable = async (companyId) => {
         try {
             const response = await axios.get(`http://localhost:3000/funding-rounds/investors/${companyId}`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
             });
-            setCapTables(response.data);
-            setFilteredCapTables(response.data);
-          } catch (error) {
+    
             if (response.data.length === 0) {
-              // Handle the "No investors found" error
-              setCapTables([]);
-              setFilteredCapTables([]);
-              // Display the message in your UI
+                // Handle the "No investors found" scenario
+                setCapTables([]);
+                setFilteredCapTables([]);
             } else {
-              console.error('Error fetching investors:', error);
+                setCapTables(response.data);
+                setFilteredCapTables(response.data);
             }
-          }
+        } catch (error) {
+            console.error('Error fetching investors:', error);
+        }
     };
+    
 
     const fetchCapTablesAllInvestors = async () => {
         try {
@@ -272,35 +310,35 @@ function UserDashboard() {
                     <Grid item xs={12} sm={3}>
                         <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                             <Typography>Funded Companies</Typography>
-                            <Typography variant="h5">2 out 5</Typography>
+                            <Typography variant="h5">{fundedCompaniesCount} out of {companyCount}</Typography>
                         </Box>
                     </Grid>
 
                     <Grid item xs={12} sm={2}>
                         <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                             <Typography>Company Count</Typography>
-                            <Typography variant="h5">5</Typography>
+                            <Typography variant="h5">{companyCount}</Typography>
                         </Box>
                     </Grid>
 
                     <Grid item xs={12} sm={2}>
                         <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                             <Typography>Investor Count</Typography>
-                            <Typography variant="h5">10</Typography>
+                            <Typography variant="h5">{investorCount}</Typography>
                         </Box>
                     </Grid>
 
                     <Grid item xs={12} sm={2}>
                         <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                             <Typography>Funding Rounds</Typography>
-                            <Typography variant="h5">3</Typography>
+                            <Typography variant="h5">{fundedCompaniesCount}</Typography>
                         </Box>
                     </Grid>
 
                     <Grid item xs={12} sm={3}>
                         <Box sx={{ background: 'linear-gradient(to bottom, #0093d0, #00779d, #005b6e)', color: 'white', height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 2, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                             <Typography>Total Amount Funded</Typography>
-                            <Typography variant="h5">100,000</Typography>
+                            <Typography variant="h5">{totalAmountFunded.toLocaleString()}</Typography>
                         </Box>
                     </Grid>
 
@@ -321,10 +359,18 @@ function UserDashboard() {
                                 Recent Activity
                             </Typography>
                             
-                            <List sx={{ pl: 1, overflowY: 'auto', flex: 1 }}>
-                            <ListItem>
-                                <ListItemText primary="Created Funding Round" secondary="August 29, 2024"/>
-                            </ListItem>
+                             <List sx={{ pl: 1, overflowY: 'auto', flex: 1 }}>
+                                {recentActivities.length === 0 ? (
+                                    <ListItem>
+                                        <ListItemText primary="No recent activity" />
+                                    </ListItem>
+                                ) : (
+                                    recentActivities.map((activity, index) => (
+                                        <ListItem key={index}>
+                                            <ListItemText primary={activity.action} secondary={`${activity.description} - ${activity.date}`} />
+                                        </ListItem>
+                                    ))
+                                )}
                             </List>
                         </Box>
                     </Grid>
@@ -396,7 +442,8 @@ function UserDashboard() {
                                     openViewFundingRound={openViewFundingRound}
                                     handleCloseFundingRound={handleCloseFundingRound}
                                     handleCloseFundingProfile={handleCloseFundingProfile}
-                                    businessProfiles={businessProfiles} />
+                                    businessProfiles={businessProfiles}
+                                    onTotalAmountFundedChange={setTotalAmountFunded} />
                             )}
 
                             {tabValue === 2 && (

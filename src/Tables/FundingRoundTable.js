@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button, Typography, FormControl, Select, MenuItem } from '@mui/material';
 import ViewFundingRoundDialog from '../Dialogs/ViewFundingRoundDialog';
 import ConfirmDeleteDialog from '../Dialogs/ConfirmDeleteFundingRoundDialog';
@@ -12,7 +12,8 @@ function FundingRoundTable({
   selectedFundingRoundDetails,
   openViewFundingRound,
   handleCloseFundingProfile,
-  businessProfiles
+  businessProfiles,
+  onTotalAmountFundedChange
 }) {
   const [localFundingPage, setLocalFundingPage] = useState(fundingPage);
   const [localFundingRowsPerPage, setLocalFundingRowsPerPage] = useState(fundingRowsPerPage);
@@ -20,6 +21,8 @@ function FundingRoundTable({
   const [openDeleteFundingRoundDialog, setOpenDeleteFundingRoundDialog] = useState(false);
   const [fundingRoundToDelete, setFundingRoundToDelete] = useState(null);
   const [selectedStartupFunding, setSelectedStartupFunding] = useState('All');
+
+  const [totalAmountFunded, setTotalAmountFunded] = useState(0);
 
   // Handle the startup filter change
   const handleStartupChangeFunding = (event) => {
@@ -35,6 +38,14 @@ function FundingRoundTable({
   const filteredFundingRounds = selectedStartupFunding === 'All'
     ? fundingRounds.filter(round => round.startup && userCreatedStartupIds.includes(round.startup.id))
     : fundingRounds.filter(round => round.startup && round.startup.id === selectedStartupFunding);
+
+    // Calculate the total amount funded from filtered funding rounds
+  useEffect(() => {
+    const totalFunded = filteredFundingRounds.reduce((sum, round) => sum + (round.moneyRaised || 0), 0);
+    setTotalAmountFunded(totalFunded);
+    // Pass the computed value back to the parent (UserDashboard)
+    onTotalAmountFundedChange(totalFunded);
+  }, [filteredFundingRounds, onTotalAmountFundedChange]);
 
   // Calculate the index of the first and last row to display
   const startIndex = localFundingPage * localFundingRowsPerPage;
