@@ -1,127 +1,133 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import countries from '../static/countries';
 import industries from '../static/industries';
 import SuccessCreateBusinessProfileDialog from '../Dialogs/SuccessCreateBusinessProfileDialog';
-import { Box, Typography, TextField, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete} from '@mui/material';
+import { Box, Typography, TextField, Select, MenuItem, Grid, FormControl, Card, CardContent, Button, Autocomplete, FormHelperText } from '@mui/material';
 import axios from 'axios';
 
 function CreateBusinessProfile() {
-    const [selectedProfileType, setSelectedProfileType] = useState(null);
-    const [avatar, setAvatar] = useState('');
-    // const fileInputRef = useRef(null);
+  const [selectedProfileType, setSelectedProfileType] = useState(null);
 
-    // const [day, setDay] = useState('');
-    // const [month, setMonth] = useState('');
-    // const [year, setYear] = useState('');
+  // Profile Form Data Usestates
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
+  const [contactInformation, setContactInformation] = useState('');
+  const [gender, setGender] = useState('');
+  const [biography, setBiography] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [website, setWebsite] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [twitter, setTwitter] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [linkedIn, setLinkedIn] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
+  const [foundedDay, setFoundedDay] = useState('');
+  const [foundedMonth, setFoundedMonth] = useState('');
+  const [foundedYear, setFoundedYear] = useState('');
+  const [typeOfCompany, setTypeOfCompany] = useState('');
+  const [numberOfEmployees, setNumberOfEmployees] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [industry, setIndustry] = useState('');
 
-    // Profile Form Data Usestates
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [emailAddress, setEmailAddress] = useState('');
-    const [contactInformation, setContactInformation] = useState('');
-    const [gender, setGender] = useState('');
-    const [biography, setBiography] = useState('');
-    const [streetAddress, setStreetAddress] = useState('');
-    const [country, setCountry] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [postalCode, setPostalCode] = useState('');
-    const [website, setWebsite] = useState('');
-    const [facebook, setFacebook] = useState('');
-    const [twitter, setTwitter] = useState('');
-    const [instagram, setInstagram] = useState('');
-    const [linkedIn, setLinkedIn] = useState('');
-    const [companyName, setCompanyName] = useState('');
-    const [companyDescription, setCompanyDescription] = useState('');
-    // const [foundDate, setFoundDate] = useState('');
-    const [foundedDay, setFoundedDay] = useState('');
-    const [foundedMonth, setFoundedMonth] = useState('');
-    const [foundedYear, setFoundedYear] = useState(''); 
-    const [typeOfCompany, setTypeOfCompany] = useState('');
-    const [numberOfEmployees, setNumberOfEmployees] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [contactEmail, setContactEmail] = useState('');
-    const [industry, setIndustry] = useState('');
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
-    // Add a new state variable for the profile type
-    // const [profileType, setProfileType] = useState('');
-    const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  // Error State Variables
+  const [errors, setErrors] = useState({});
 
-    const days = [...Array(31).keys()].map(i => i + 1);
-    const months = Array.from({ length: 12 }, (_, i) => {
-        return new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(2000, i, 1));
-    });
-    const years = [...Array(51).keys()].map(i => new Date().getFullYear() - i);
-      
-    const handleCardClick = (cardType) => {
-        setSelectedProfileType(cardType);
-    };
+  const days = [...Array(31).keys()].map(i => i + 1);
+  const months = Array.from({ length: 12 }, (_, i) => {
+    return new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(2000, i, 1));
+  });
+  const years = [...Array(51).keys()].map(i => new Date().getFullYear() - i);
 
-    // const handleAvatarClick = () => {
-    //     fileInputRef.current.click();
-    // };
+  const handleCardClick = (cardType) => {
+    setSelectedProfileType(cardType);
+  };
 
-    // const handleAvatarChange = (event) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setAvatar(reader.result);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
+  const validateFields = () => {
+    const requiredErrorMessage = 'This field cannot be empty.';
+    const newErrors = {};
 
-    const handleCreateProfile = async () => {
-        try {
-          const profileData = {
-            firstName: firstName,
-            lastName: lastName,
-            emailAddress: emailAddress,
-            contactInformation: contactInformation,
-            gender: gender,
-            biography: biography,
-            streetAddress: streetAddress,
-            country: country,
-            city: city,
-            state: state,
-            postalCode: postalCode,
-            website: website,
-            facebook: facebook,
-            twitter: twitter,
-            instagram: instagram,
-            linkedIn: linkedIn,
-            companyName: companyName,
-            companyDescription: companyDescription,
-            foundedDate: `${foundedMonth} ${foundedDay}, ${foundedYear}`,
-            typeOfCompany: typeOfCompany,
-            numberOfEmployees: numberOfEmployees,
-            phoneNumber: phoneNumber,
-            contactEmail: contactEmail,
-            industry: industry,
-          };
-      
-          // Determine the correct endpoint based on the selected profile type
-          let endpoint;
-          if (selectedProfileType === 'Startup Company') {
-            endpoint = 'http://localhost:3000/startups/create';
-          } else if (selectedProfileType === 'Investor') {
-            endpoint = 'http://localhost:3000/investors/create';
-          } else {
-            throw new Error('Invalid profile type');
-          }
-      
-          // Make a POST request to your backend to create the profile
-          await axios.post(endpoint, profileData, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the JWT is stored in localStorage
-            },
-          });
-          setSuccessDialogOpen(true);
-        } catch (error) {
-          console.error('Failed to create profile:', error);
-        }
+    if (selectedProfileType === 'Startup Company') {
+      if (!companyName) newErrors.companyName = requiredErrorMessage;
+      if (!companyDescription) newErrors.companyDescription = requiredErrorMessage;
+      if (!foundedMonth) newErrors.foundedMonth = requiredErrorMessage;
+      if (!foundedDay) newErrors.foundedDay = requiredErrorMessage;
+      if (!foundedYear) newErrors.foundedYear = requiredErrorMessage;
+      if (!typeOfCompany) newErrors.typeOfCompany = requiredErrorMessage;
+      if (!numberOfEmployees) newErrors.numberOfEmployees = requiredErrorMessage;
+      if (!phoneNumber) newErrors.phoneNumber = requiredErrorMessage;
+      if (!contactEmail) newErrors.contactEmail = requiredErrorMessage;
+    } else if (selectedProfileType === 'Investor') {
+      if (!firstName) newErrors.firstName = requiredErrorMessage;
+      if (!lastName) newErrors.lastName = requiredErrorMessage;
+      if (!emailAddress) newErrors.emailAddress = requiredErrorMessage;
+      if (!contactInformation) newErrors.contactInformation = requiredErrorMessage;
+      if (!gender) newErrors.gender = requiredErrorMessage;
+      if (!biography) newErrors.biography = requiredErrorMessage;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; 
+  };
+
+  const handleCreateProfile = async () => {
+    if (!validateFields()) return; 
+
+    try {
+      const profileData = {
+        firstName: firstName,
+        lastName: lastName,
+        emailAddress: emailAddress,
+        contactInformation: contactInformation,
+        gender: gender,
+        biography: biography,
+        streetAddress: streetAddress,
+        country: country,
+        city: city,
+        state: state,
+        postalCode: postalCode,
+        website: website,
+        facebook: facebook,
+        twitter: twitter,
+        instagram: instagram,
+        linkedIn: linkedIn,
+        companyName: companyName,
+        companyDescription: companyDescription,
+        foundedDate: `${foundedMonth} ${foundedDay}, ${foundedYear}`,
+        typeOfCompany: typeOfCompany,
+        numberOfEmployees: numberOfEmployees,
+        phoneNumber: phoneNumber,
+        contactEmail: contactEmail,
+        industry: industry,
       };
+
+      let endpoint;
+      if (selectedProfileType === 'Startup Company') {
+        endpoint = 'http://localhost:3000/startups/create';
+      } else if (selectedProfileType === 'Investor') {
+        endpoint = 'http://localhost:3000/investors/create';
+      } else {
+        throw new Error('Invalid profile type');
+      }
+
+      await axios.post(endpoint, profileData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setSuccessDialogOpen(true);
+    } catch (error) {
+      console.error('Failed to create profile:', error);
+    }
+  };    
       
     return (
         <>
@@ -158,7 +164,7 @@ function CreateBusinessProfile() {
 
             {selectedProfileType === 'Startup Company' && (
                 <>
-                    <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3 }}>
+                    <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3     }}>
                         Overview
                     </Typography>
 
@@ -173,7 +179,9 @@ function CreateBusinessProfile() {
                                         variant="outlined"
                                         value={companyName}
                                         onChange={(e) => setCompanyName(e.target.value)}
-                                        sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}/>
+                                        sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}
+                                        error={!!errors.companyName} />
+                                        {errors.companyName && (<FormHelperText error>{errors.companyName}</FormHelperText>)}
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -184,7 +192,9 @@ function CreateBusinessProfile() {
                                         value={companyDescription}
                                         onChange={(e) => setCompanyDescription(e.target.value)}
                                         multiline
-                                        rows={4}/>
+                                        rows={4}
+                                        error={!!errors.companyDescription}/>
+                                        {errors.companyDescription && (<FormHelperText error>{errors.companyDescription}</FormHelperText>)}
                                 </Grid>
 
                             <Grid item xs={4}>
@@ -194,13 +204,15 @@ function CreateBusinessProfile() {
                                         labelId="month-label"
                                         value={foundedMonth}
                                         onChange={(e) => setFoundedMonth(e.target.value)}
-                                        sx={{ height: '45px' }}>  
+                                        sx={{ height: '45px' }}
+                                        error={!!errors.foundedMonth}>  
                                         {months.map((month) => (
                                             <MenuItem key={month} value={month}>{month}</MenuItem>
                                         )) 
                                         }
                                     </Select>
                                 </FormControl>
+                                {errors.foundedMonth && (<FormHelperText error>{errors.foundedMonth}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={4}>
@@ -210,7 +222,8 @@ function CreateBusinessProfile() {
                                         labelId="day-label"
                                         value={foundedDay}
                                         onChange={(e) => setFoundedDay(e.target.value)}
-                                        sx={{ height: '45px' }}>
+                                        sx={{ height: '45px' }}
+                                        error={!!errors.foundedDay}>
                                         {days.map((day) => (
                                             <MenuItem key={day} value={day}>{day}</MenuItem>
                                         ))}
@@ -225,7 +238,8 @@ function CreateBusinessProfile() {
                                     labelId="year-label"
                                     value={foundedYear}
                                     onChange={(e) => setFoundedYear(e.target.value)}
-                                    sx={{ height: '45px' }}>
+                                    sx={{ height: '45px' }}
+                                    error={!!errors.foundedYear}>
                                     {years.map((year) => (
                                         <MenuItem key={year} value={year}>{year}</MenuItem>
                                     ))}
@@ -242,10 +256,12 @@ function CreateBusinessProfile() {
                                         variant="outlined"
                                         value={typeOfCompany}
                                         onChange={(e) => setTypeOfCompany(e.target.value)}
-                                        sx={{ height: '45px' }}>
+                                        sx={{ height: '45px' }}
+                                        error={!!errors.typeOfCompany}>
                                         <MenuItem value={'profit'}>Profit</MenuItem>
                                         <MenuItem value={'non-profit'}>Non-Profit</MenuItem>
                                     </Select>
+                                    {errors.typeOfCompany && (<FormHelperText error>{errors.typeOfCompany}</FormHelperText>)}
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -259,12 +275,14 @@ function CreateBusinessProfile() {
                                         variant="outlined"
                                         value={numberOfEmployees}
                                         onChange={(e) => setNumberOfEmployees(e.target.value)}
-                                        sx={{ height: '45px' }}>
+                                        sx={{ height: '45px' }}
+                                        error={!!errors.numberOfEmployees}>
                                         <MenuItem value={'lessthan10'}>less than 10</MenuItem>
                                         <MenuItem value={'10-50'}>10-50</MenuItem>
                                         <MenuItem value={'50-100'}>50-100</MenuItem>
                                         <MenuItem value={'100 above'}>100 above</MenuItem>
                                     </Select>
+                                    {errors.typeOfCompany && (<FormHelperText error>{errors.typeOfCompany}</FormHelperText>)}
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -272,13 +290,17 @@ function CreateBusinessProfile() {
                         <Grid item xs={4}>
                             <label>Phone Number *</label>
                                 <TextField fullWidth variant="outlined" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} inputProps={{ min: 0, step: 1, pattern: "\\d{11}" }} 
-                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}
+                                    error={!!errors.phoneNumber} />
+                                {errors.typeOfCompany && (<FormHelperText error>{errors.typeOfCompany}</FormHelperText>)}
                         </Grid>
 
                         <Grid item xs={12}>
                             <label>Contact Email *</label>
                                 <TextField fullWidth variant="outlined" type='email' value={contactEmail} onChange={(e) => setContactEmail(e.target.value)}
-                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }} />
+                                    sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}
+                                    error={!!errors.contactEmail} />
+                                    {errors.contactEmail && (<FormHelperText error>{errors.contactEmail}</FormHelperText>)}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -375,7 +397,7 @@ function CreateBusinessProfile() {
                     </Grid>
                 </Grid>
 
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
                     Links
                 </Typography>
 
@@ -419,7 +441,7 @@ function CreateBusinessProfile() {
 
             {selectedProfileType === 'Investor' && (
                 <>
-                    <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3 }}>
+                    <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pb: 3 }}>
                         Overview
                     </Typography>
                 
@@ -428,44 +450,59 @@ function CreateBusinessProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <label>First Name</label>
-                                <TextField fullWidth variant="outlined" value={firstName} onChange={(e) => setFirstName(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
+                                <TextField fullWidth variant="outlined" value={firstName} onChange={(e) => setFirstName(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}
+                                error={!!errors.firstName}/>
+                                {errors.firstName && (<FormHelperText error>{errors.firstName}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Last Name</label>
-                                <TextField fullWidth variant="outlined" value={lastName} onChange={(e) => setLastName(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
+                                <TextField fullWidth variant="outlined" value={lastName} onChange={(e) => setLastName(e.target.value)} 
+                                sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}
+                                error={!!errors.lastName}/>
+                                {errors.lastName && (<FormHelperText error>{errors.lastName}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Email Address</label>
-                                <TextField fullWidth variant="outlined" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
+                                <TextField fullWidth variant="outlined" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} 
+                                sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}
+                                error={!!errors.emailAddress}/>
+                                {errors.emailAddress && (<FormHelperText error>{errors.emailAddress}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Contact Information</label>
-                                <TextField fullWidth variant="outlined" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}/>
+                                <TextField fullWidth variant="outlined" value={contactInformation} onChange={(e) => setContactInformation(e.target.value)} 
+                                sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' }}}
+                                error={!!errors.contactInformation}/>
+                                {errors.contactInformation && (<FormHelperText error>{errors.contactInformation}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={6}>
                                 <label>Gender</label>
                                     <Select fullWidth variant="outlined" value={gender} onChange={(e) => setGender(e.target.value)}
-                                        sx={{ height: '45px',}}>
+                                        sx={{ height: '45px',}}
+                                        error={!!errors.gender}>
                                         <MenuItem value={'male'}>Male</MenuItem>
                                         <MenuItem value={'female'}>Female</MenuItem>
                                         <MenuItem value={'neutral'}>Neutral</MenuItem>
                                         <MenuItem value={'other'}>Other</MenuItem>
                                     </Select>
+                                    {errors.gender && (<FormHelperText error>{errors.gender}</FormHelperText>)}
                             </Grid>
 
                             <Grid item xs={12}>
                                 <label>Biography</label>
-                                <TextField fullWidth variant="outlined" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)} />
+                                <TextField fullWidth variant="outlined" multiline rows={4} value={biography} onChange={(e) => setBiography(e.target.value)}
+                                error={!!errors.biography} />
+                                {errors.biography && (<FormHelperText error>{errors.biography}</FormHelperText>)}
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
                     Location
                 </Typography>
 
@@ -529,7 +566,7 @@ function CreateBusinessProfile() {
                     </Grid>
                 </Grid>
 
-                <Typography variant="h5" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
+                <Typography variant="h6" sx={{ color: '#414a4c', fontWeight: '500', pl: 5, pt: 3, pb: 3 }}>
                     Links
                 </Typography>
 
