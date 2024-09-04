@@ -73,14 +73,16 @@ function CreateFundingRound() {
     };
 
     const validateForm = () => {
+        const requiredErrorMessage = 'This field cannot be empty.';
         const newErrors = {};
-        if (!selectedStartupId) newErrors.selectedStartupId = 'Startup is required.';
-        if (!fundingType) newErrors.fundingType = 'Funding Type is required.';
-        if (!announcedMonth || !announcedDay || !announcedYear) newErrors.announcedDate = 'Announced Date is required.';
-        if (!closedMonth || !closedDay || !closedYear) newErrors.closedDate = 'Closed Date is required.';
-        if (!targetFunding) newErrors.targetFunding = 'Target Funding Amount is required.';
-        if (!preMoneyValuation) newErrors.preMoneyValuation = 'Pre-Money Valuation is required.';
-
+    
+        if (!selectedStartupId) newErrors.selectedStartupId = requiredErrorMessage;
+        if (!fundingType) newErrors.fundingType = requiredErrorMessage;
+        if (!announcedMonth || !announcedDay || !announcedYear) newErrors.announcedDate = requiredErrorMessage;
+        if (!closedMonth || !closedDay || !closedYear) newErrors.closedDate = requiredErrorMessage;
+        if (!targetFunding) newErrors.targetFunding = requiredErrorMessage;
+        if (!preMoneyValuation) newErrors.preMoneyValuation = requiredErrorMessage;
+    
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -266,6 +268,7 @@ function CreateFundingRound() {
                                 onChange={(e) => setCurrency(e.target.value)}
                                 sx={{ height: '45px' }}>
                                 <MenuItem value="PESO">PESO</MenuItem>
+                                <MenuItem value="USD">USD</MenuItem>
                                 <MenuItem value="EUR">EUR</MenuItem>
                                 <MenuItem value="GBP">GBP</MenuItem>
                                 <MenuItem value="JPY">JPY</MenuItem>
@@ -304,19 +307,21 @@ function CreateFundingRound() {
                                     onChange={(e) => setPreMoneyValuation(e.target.value)}
                                     sx={{ height: '45px', '& .MuiInputBase-root': { height: '45px' } }}
                                     error={!!errors.preMoneyValuation}/>
-                                {errors.preMoneyValuation && <FormHelperText>{errors.preMoneyValuation}</FormHelperText>}
+                                    {errors.preMoneyValuation && <FormHelperText>{errors.preMoneyValuation}</FormHelperText>}
                             </FormControl>
                         </Grid>
 
                         <Grid item xs={4}>
-                            <label>Currency</label>
+                            <label><b>Currency</b></label>
                             <Select
                                 fullWidth
                                 variant="outlined"
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
+                                disabled
                                 sx={{ height: '45px' }}>
                                 <MenuItem value="PESO">PESO</MenuItem>
+                                <MenuItem value="USD">USD</MenuItem>
                                 <MenuItem value="EUR">EUR</MenuItem>
                                 <MenuItem value="GBP">GBP</MenuItem>
                                 <MenuItem value="JPY">JPY</MenuItem>
@@ -335,7 +340,7 @@ function CreateFundingRound() {
                     <Grid item xs={12} sm={11} key={index}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
-                                <label>Shareholder's Name</label>
+                                <label><b>Shareholder's Name</b></label>
                                 <Autocomplete
                                     options={allInvestors}
                                     getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
@@ -346,7 +351,7 @@ function CreateFundingRound() {
                             </Grid>
 
                             <Grid item xs={4}>
-                                <label>Title</label>
+                                <label><b>Title</b></label>
                                 <TextField
                                     fullWidth
                                     variant="outlined"
@@ -356,7 +361,7 @@ function CreateFundingRound() {
                             </Grid>
 
                             <Grid item xs={4}>
-                                <label>Shares</label>
+                                <label><b>Shares</b></label>
                                 <TextField
                                     fullWidth
                                     variant="outlined"
